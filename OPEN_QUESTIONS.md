@@ -29,3 +29,39 @@
 - Question: Chapter 06 gives boss HP, damage, knockback resistance, value, phase movement behavior, and phase speed modifiers, but does not state a standalone base movement speed for Invoker/Predator.
 - Document locations: `game_mechanics_docs/06_敌人与实体系统.md` §7.1 and §7.3.
 - Conservative handling: The M2 boss rows encode the documented HP/damage/drop/value fields and omit a base speed value; boss movement remains behavior-driven pending source data.
+
+## M3 Weapon Quality Slots
+
+- Question: Chapter 03 describes "61 weapons x each grade" but the weapon tables list 201 concrete grade rows, leaving 43 family/quality slots without stats.
+- Document locations: `game_mechanics_docs/03_武器系统.md` §10 and the 10.1/10.2 weapon tables.
+- Conservative handling: M3 data keeps all 61 families with four quality slots each, marks undocumented slots as `available=false`, and only creates stat-bearing variants for documented rows.
+
+## M3 Complex Effect Serialization
+
+- Question: Several character, weapon, and item effects are described behaviorally but do not include every serialized effect-class field needed for a complete runtime implementation, especially pet/structure/projectile/explosion wrapper objects.
+- Document locations: `game_mechanics_docs/02_角色系统.md` §3, `game_mechanics_docs/03_武器系统.md` §10-11, `game_mechanics_docs/05_道具清单.md` §3-4, and `game_mechanics_docs/08_效果系统.md` §2.
+- Conservative handling: M3 imports parsed effect keys when deterministic and preserves the original text as `raw_effect_text` payloads with doc line traceability when the docs are not specific enough to synthesize a safe runtime object.
+
+## Starter Enemy Contact Radius
+
+- Question: Chapter 06 documents the player collision radius (24) and hurt radius (21), but the M2 starter enemy JSON does not yet include per-enemy body/contact radii.
+- Document locations: `game_mechanics_docs/06_敌人与实体系统.md` §9 and `game_mechanics_docs/10_输入操控与玩家手感.md` §7.
+- Conservative handling: The M2C runtime uses player hurt radius 21 plus a starter enemy body radius 24 for contact damage until full enemy hitbox data is imported.
+
+## Starter Weapon Knockback Bounds
+
+- Question: Chapter 01 says weapon knockback is `clamp(base + player knockback, min, max)`, but the M2 starter weapon rows do not yet include per-weapon knockback min/max bounds.
+- Document locations: `game_mechanics_docs/01_核心属性与数值系统.md` §5.5 and `game_mechanics_docs/06_敌人与实体系统.md` §3.5.
+- Conservative handling: The M2C runtime resolves knockback as `base + player knockback`, applies `negative_knockback` sign reversal, and leaves bound clamping for the future full weapon data import.
+
+## Integer Rounding for Shop and Recycle Prices
+
+- Question: Chapter 04 gives exact shop/recycle price formulas and explicitly says HP-shop and reroll prices use `ceil`, but it does not state how normal fractional material prices are displayed/deducted.
+- Document locations: `game_mechanics_docs/04_商店经济与升级系统.md` §2.3, §2.7, §6.
+- Conservative handling: The economy API exposes `shop_price_raw` for the exact formula, uses `ceil` for material shop deductions so the runtime does not undercharge fractional prices, and uses floor after the documented recycle rate so recycling does not overpay. Revisit if full M3A data or original scripts specify a different integer cast.
+
+## Level-up Fixed Damage and Crit Damage Effect Keys
+
+- Question: Chapter 04 lists level-up rows for fixed `damage` and `crit_damage`, but the current 234-key effect dictionary has no global `stat_damage` or `crit_damage` stat key.
+- Document locations: `game_mechanics_docs/04_商店经济与升级系统.md` §3.4 and `game_mechanics_docs/08_效果系统.md` §1.6.
+- Conservative handling: The M3B level-up fixture pool omits those two rows until the full content import defines their exact effect mapping, rather than inventing keys outside the documented effect dictionary.

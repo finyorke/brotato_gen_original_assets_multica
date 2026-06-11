@@ -1,0 +1,4998 @@
+{
+  "characters": [
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | +5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "stat_speed",
+          "source_text": "速度 | +5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +8",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 8
+        }
+      ],
+      "id": "character_well_rounded",
+      "max_nb": -1,
+      "name": {
+        "en": "Well Rounded",
+        "zh": "均衡者"
+      },
+      "name_key": "CHARACTER_WELL_ROUNDED",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 201,
+        "section": "3.1 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_knife_1",
+        "weapon_stick_1",
+        "weapon_fist_1",
+        "weapon_cactus_mace_1",
+        "weapon_ghost_flint_1",
+        "weapon_wrench_1",
+        "weapon_pistol_1",
+        "weapon_smg_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_slingshot_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "",
+        "condition": "unlocked_by_default = true",
+        "method": "默认解锁",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 144,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": true,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [
+        "stat_melee_damage",
+        "ranged_damage"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_attack_speed",
+          "source_text": "Unarmed(徒手)类武器 | 攻速修正 +50(武器类别加成,set_unarmed 的 attack_speed_mod 字段)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "额外起始武器 | Fist I(weapon_fist_1)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_dodge",
+          "source_text": "闪避 | +15",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 15
+        },
+        {
+          "key": "stat_range",
+          "source_text": "射程 | -50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        },
+        {
+          "key": "stat_ranged_damage",
+          "source_text": "远程伤害 | -50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        }
+      ],
+      "id": "character_brawler",
+      "max_nb": -1,
+      "name": {
+        "en": "Brawler",
+        "zh": "斗士"
+      },
+      "name_key": "CHARACTER_BRAWLER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 212,
+        "section": "3.2 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_hand_1",
+        "weapon_claw_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "",
+        "condition": "unlocked_by_default = true",
+        "method": "默认解锁",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 144,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": true,
+      "value": 1,
+      "wanted_tags": [
+        "stat_melee_damage",
+        "ranged_damage"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "accuracy",
+          "source_text": "Precise(精准)类武器 | 射程(max_range)+100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 100
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "攻速 | +25",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 25
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "额外起始武器 | Knife I",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_dodge",
+          "source_text": "闪避 | -30",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -30
+        },
+        {
+          "key": "stat_engineering",
+          "source_text": "工程 | -10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -10
+        },
+        {
+          "key": "stat_ranged_damage",
+          "source_text": "远程伤害 | -10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -10
+        }
+      ],
+      "id": "character_crazy",
+      "max_nb": -1,
+      "name": {
+        "en": "Crazy",
+        "zh": "疯子"
+      },
+      "name_key": "CHARACTER_CRAZY",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 225,
+        "section": "3.3 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_knife_1",
+        "weapon_dagger_1",
+        "weapon_scissors_1",
+        "weapon_lightning_shiv_1",
+        "weapon_claw_1",
+        "weapon_sharp_tooth_1",
+        "weapon_shuriken_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "",
+        "condition": "unlocked_by_default = true",
+        "method": "默认解锁",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 144,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": true,
+      "value": 1,
+      "wanted_tags": [
+        "stat_crit_chance",
+        "stat_melee_damage"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_ranged_damage",
+        "stat_range",
+        "melee_damage"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_range",
+          "source_text": "射程 | +50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "额外起始武器 | Pistol I",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "远程伤害获取效率 | +50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 50
+        },
+        {
+          "key": "no_melee_weapons",
+          "source_text": "近战武器 | 禁止(no_melee_weapons,商店不出近战武器)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "no_melee_weapons",
+          "source_text": "近战武器 | 禁止(no_melee_weapons,商店不出近战武器)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "gain_stat_max_hp",
+          "source_text": "最大生命获取效率 | -25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -25
+        }
+      ],
+      "id": "character_ranger",
+      "max_nb": -1,
+      "name": {
+        "en": "Ranger",
+        "zh": "游侠"
+      },
+      "name_key": "CHARACTER_RANGER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 239,
+        "section": "3.4 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_pistol_1",
+        "weapon_smg_1",
+        "weapon_revolver_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_laser_gun_1",
+        "weapon_shredder_1",
+        "weapon_crossbow_1",
+        "weapon_slingshot_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "",
+        "condition": "unlocked_by_default = true",
+        "method": "默认解锁",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 144,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": true,
+      "value": 1,
+      "wanted_tags": [
+        "stat_ranged_damage",
+        "stat_range",
+        "melee_damage"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_elemental_damage",
+        "melee_damage",
+        "ranged_damage",
+        "melee_and_ranged_damage"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "元素伤害获取效率 | +25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 25
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品 | Snake(item_snake)、Scared Sausage(item_scared_sausage)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "近战伤害获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "远程伤害获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_engineering",
+          "source_text": "工程获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_mage",
+      "max_nb": -1,
+      "name": {
+        "en": "Mage",
+        "zh": "法师"
+      },
+      "name_key": "CHARACTER_MAGE",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 252,
+        "section": "3.5 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_wand_1",
+        "weapon_torch_1",
+        "weapon_plank_1",
+        "weapon_taser_1",
+        "weapon_lightning_shiv_1",
+        "weapon_icicle_1",
+        "weapon_smg_1",
+        "weapon_double_barrel_shotgun_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "",
+        "condition": "unlocked_by_default = true",
+        "method": "默认解锁",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 144,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": true,
+      "value": 1,
+      "wanted_tags": [
+        "stat_elemental_damage",
+        "melee_damage",
+        "ranged_damage",
+        "melee_and_ranged_damage"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "enemy_speed",
+          "source_text": "敌人速度 | -25%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -25
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "map_size",
+          "source_text": "地图尺寸 | -33%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -33
+        },
+        {
+          "key": "number_of_enemies",
+          "source_text": "敌人数量 | -10%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -10
+        },
+        {
+          "key": "stat_speed",
+          "source_text": "速度 | -10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -10
+        }
+      ],
+      "id": "character_old",
+      "max_nb": -1,
+      "name": {
+        "en": "Old",
+        "zh": "老人"
+      },
+      "name_key": "CHARACTER_OLD",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 265,
+        "section": "3.6 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_scissors_1",
+        "weapon_screwdriver_1",
+        "weapon_wrench_1",
+        "weapon_rock_1",
+        "weapon_plank_1",
+        "weapon_chopper_1",
+        "weapon_pruner_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_revolver_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "survivor_1",
+        "condition": "击杀数 ≥ 300(跨局累计)",
+        "method": "累计击杀 300 敌人",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 151,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "less_enemies",
+        "less_enemy_speed"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "next_level_xp_needed",
+          "source_text": "升级所需经验 | -66%(next_level_xp_needed,最终所需经验乘 0.34)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -66
+        },
+        {
+          "key": "next_level_xp_needed",
+          "source_text": "升级所需经验 | -66%(next_level_xp_needed,最终所需经验乘 0.34)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -66
+        },
+        {
+          "key": "items_price",
+          "source_text": "物品价格 | +50%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        }
+      ],
+      "id": "character_mutant",
+      "max_nb": -1,
+      "name": {
+        "en": "Mutant",
+        "zh": "突变体"
+      },
+      "name_key": "CHARACTER_MUTANT",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 279,
+        "section": "3.7 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_cactus_mace_1",
+        "weapon_ghost_axe_1",
+        "weapon_stick_1",
+        "weapon_fighting_stick_1",
+        "weapon_rock_1",
+        "weapon_plank_1",
+        "weapon_lightning_shiv_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_smg_1",
+        "weapon_revolver_1",
+        "weapon_shredder_1",
+        "weapon_crossbow_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "survivor_2",
+        "condition": "同上 ≥ 2000",
+        "method": "累计击杀 2000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 152,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "xp_gain"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | +30",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 30
+        },
+        {
+          "key": "number_of_enemies",
+          "source_text": "敌人数量 | +50%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "key": "stats_end_of_wave",
+          "source_text": "波次结束 | 收获 -3(每波永久扣,stats_end_of_wave)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -3
+        },
+        {
+          "custom_key": "stats_end_of_wave",
+          "key": "stat_harvesting",
+          "source_text": "波次结束 | 收获 -3(每波永久扣,stats_end_of_wave)",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": -3
+        }
+      ],
+      "id": "character_loud",
+      "max_nb": -1,
+      "name": {
+        "en": "Loud",
+        "zh": "吵闹鬼"
+      },
+      "name_key": "CHARACTER_LOUD",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 290,
+        "section": "3.8 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_cactus_mace_1",
+        "weapon_ghost_axe_1",
+        "weapon_ghost_flint_1",
+        "weapon_lightning_shiv_1",
+        "weapon_dagger_1",
+        "weapon_claw_1",
+        "weapon_spear_1",
+        "weapon_torch_1",
+        "weapon_rock_1",
+        "weapon_hatchet_1",
+        "weapon_plank_1",
+        "weapon_wrench_1",
+        "weapon_jousting_lance_1",
+        "weapon_fighting_stick_1",
+        "weapon_pruner_1",
+        "weapon_screwdriver_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_pistol_1",
+        "weapon_smg_1",
+        "weapon_shredder_1",
+        "weapon_icicle_1",
+        "weapon_shuriken_1",
+        "weapon_slingshot_1",
+        "weapon_crossbow_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "survivor_3",
+        "condition": "同上 ≥ 5000",
+        "method": "累计击杀 5000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 153,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "more_enemies"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_lifesteal",
+          "source_text": "Primitive(原始)类武器 | 吸血 +30(武器类别加成,吸血字段)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 30
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "额外起始武器 | Stick I",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "max_weapon_tier",
+          "source_text": "武器档位上限 | REPLACE 1 → 商店只出 ≤ II 级 武器(max_weapon_tier 钳制)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "max_weapon_tier",
+          "source_text": "武器档位上限 | REPLACE 1 → 商店只出 ≤ II 级 武器(max_weapon_tier 钳制)",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 1
+        }
+      ],
+      "id": "character_wildling",
+      "max_nb": -1,
+      "name": {
+        "en": "Wildling",
+        "zh": "野人"
+      },
+      "name_key": "CHARACTER_WILDLING",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 302,
+        "section": "3.9 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_stick_1",
+        "weapon_spear_1",
+        "weapon_torch_1",
+        "weapon_rock_1",
+        "weapon_cactus_mace_1",
+        "weapon_hatchet_1",
+        "weapon_fighting_stick_1",
+        "weapon_sharp_tooth_1",
+        "weapon_slingshot_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "survivor_4",
+        "condition": "同上 ≥ 10000",
+        "method": "累计击杀 10000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 154,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [
+        "stat_melee_damage",
+        "ranged_damage",
+        "item_seashell"
+      ],
+      "banned_items": [
+        "item_seashell"
+      ],
+      "effects": [
+        {
+          "key": "unique_weapon_effects",
+          "source_text": "每持有 1 种不同武器 | 攻速 +20(unique_weapon_effects)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 20
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_attack_speed",
+          "source_text": "每持有 1 种不同武器 | 攻速 +20(unique_weapon_effects)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 20
+        },
+        {
+          "key": "stat_melee_damage",
+          "source_text": "近战伤害 | +5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "no_ranged_weapons",
+          "source_text": "远程武器 | 禁止(no_ranged_weapons)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "no_ranged_weapons",
+          "source_text": "远程武器 | 禁止(no_ranged_weapons)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "攻速 | -40",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -40
+        },
+        {
+          "key": "stat_luck",
+          "source_text": "幸运 | -30",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -30
+        }
+      ],
+      "id": "character_gladiator",
+      "max_nb": -1,
+      "name": {
+        "en": "Gladiator",
+        "zh": "角斗士"
+      },
+      "name_key": "CHARACTER_GLADIATOR",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 313,
+        "section": "3.10 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_spear_1",
+        "weapon_jousting_lance_1",
+        "weapon_cactus_mace_1",
+        "weapon_torch_1",
+        "weapon_dagger_1",
+        "weapon_knife_1",
+        "weapon_plank_1",
+        "weapon_ghost_axe_1",
+        "weapon_ghost_flint_1",
+        "weapon_sharp_tooth_1",
+        "weapon_fist_1",
+        "weapon_claw_1",
+        "weapon_fighting_stick_1",
+        "weapon_hatchet_1",
+        "weapon_lightning_shiv_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "survivor_5",
+        "condition": "同上 ≥ 20000",
+        "method": "累计击杀 20000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 155,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_melee_damage",
+        "ranged_damage",
+        "item_seashell"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_luck",
+          "source_text": "幸运 | +100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 100
+        },
+        {
+          "key": "gain_stat_luck",
+          "source_text": "幸运获取效率 | +25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 25
+        },
+        {
+          "key": "dmg_when_pickup_gold",
+          "source_text": "拾取材料时 | 75% 概率对随机敌人造成 = 幸运值 x15%(再乘 1+%伤害)的伤害(dmg_when_pickup_gold)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 75
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "拾取材料时 | 75% 概率对随机敌人造成 = 幸运值 x15%(再乘 1+%伤害)的伤害(dmg_when_pickup_gold)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 75
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "攻速 | -60",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -60
+        },
+        {
+          "key": "xp_gain",
+          "source_text": "经验获取 | -50%(xp_gain)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        }
+      ],
+      "id": "character_lucky",
+      "max_nb": -1,
+      "name": {
+        "en": "Lucky",
+        "zh": "幸运儿"
+      },
+      "name_key": "CHARACTER_LUCKY",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 327,
+        "section": "3.11 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_stick_1",
+        "weapon_rock_1",
+        "weapon_fist_1",
+        "weapon_chopper_1",
+        "weapon_plank_1",
+        "weapon_screwdriver_1",
+        "weapon_jousting_lance_1",
+        "weapon_torch_1",
+        "weapon_pruner_1",
+        "weapon_slingshot_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "DAMAGE_DEALT",
+      "unlock": {
+        "challenge_id": "gatherer_1",
+        "condition": "材料采集数 ≥ 300(跨局累计)",
+        "method": "累计采集 300 材料",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 156,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_luck",
+        "pickup",
+        "exploration"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [
+        "item_mastery"
+      ],
+      "effects": [
+        {
+          "custom_key": "stat_links",
+          "key": "stat_melee_damage",
+          "source_text": "每 1 点远程伤害 | 近战伤害 +2(属性联动,非永久限定)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_melee_damage",
+          "source_text": "每 2 点近战伤害 | 远程伤害 +1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "max_melee_weapons",
+          "source_text": "近战武器上限 | REPLACE 3(max_melee_weapons)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 3
+        },
+        {
+          "key": "max_ranged_weapons",
+          "source_text": "远程武器上限 | REPLACE 3(max_ranged_weapons)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 3
+        }
+      ],
+      "id": "character_generalist",
+      "max_nb": -1,
+      "name": {
+        "en": "Generalist",
+        "zh": "多面手"
+      },
+      "name_key": "CHARACTER_GENERALIST",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 341,
+        "section": "3.12 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_cactus_mace_1",
+        "weapon_ghost_axe_1",
+        "weapon_ghost_flint_1",
+        "weapon_lightning_shiv_1",
+        "weapon_knife_1",
+        "weapon_scissors_1",
+        "weapon_spear_1",
+        "weapon_shuriken_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_smg_1",
+        "weapon_shredder_1",
+        "weapon_revolver_1",
+        "weapon_laser_gun_1",
+        "weapon_slingshot_1",
+        "weapon_ghost_scepter_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "gatherer_2",
+        "condition": "≥ 2000",
+        "method": "累计采集 2000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 157,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_melee_damage",
+        "stat_ranged_damage",
+        "item_mastery"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | +20",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "weapon_slot",
+          "source_text": "武器栏位 | REPLACE 12",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 12
+        },
+        {
+          "key": "additional_weapon_effects",
+          "source_text": "每持有 1 把武器(含重复) | % 伤害 -5(additional_weapon_effects;12 把满载 = -60%)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -60
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每持有 1 把武器(含重复) | % 伤害 -5(additional_weapon_effects;12 把满载 = -60%)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": -60
+        }
+      ],
+      "id": "character_multitasker",
+      "max_nb": -1,
+      "name": {
+        "en": "Multitasker",
+        "zh": "多任务者"
+      },
+      "name_key": "CHARACTER_MULTITASKER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 354,
+        "section": "3.13 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_cactus_mace_1",
+        "weapon_fist_1",
+        "weapon_claw_1",
+        "weapon_knife_1",
+        "weapon_spear_1",
+        "weapon_stick_1",
+        "weapon_fighting_stick_1",
+        "weapon_lightning_shiv_1",
+        "weapon_screwdriver_1",
+        "weapon_wrench_1",
+        "weapon_ghost_flint_1",
+        "weapon_ghost_axe_1",
+        "weapon_plank_1",
+        "weapon_chopper_1",
+        "weapon_hatchet_1",
+        "weapon_jousting_lance_1",
+        "weapon_pruner_1",
+        "weapon_rock_1",
+        "weapon_spiky_shield_1",
+        "weapon_sharp_tooth_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_smg_1",
+        "weapon_revolver_1",
+        "weapon_laser_gun_1",
+        "weapon_wand_1",
+        "weapon_icicle_1",
+        "weapon_slingshot_1",
+        "weapon_taser_1",
+        "weapon_shuriken_1",
+        "weapon_crossbow_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "gatherer_3",
+        "condition": "≥ 5000",
+        "method": "累计采集 5000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 158,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [
+        "stat_max_hp",
+        "stat_hp_regeneration",
+        "stat_armor",
+        "engineering"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "pacifist",
+          "source_text": "pacifist 65 | 波次结束：材料和经验 += round(场上存活敌人数 x 0.65);群浪(Horde)波减半",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 65
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品 | Lumberjack Shirt(item_lumberjack_shirt)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "stat_engineering",
+          "source_text": "工程 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        }
+      ],
+      "id": "character_pacifist",
+      "max_nb": -1,
+      "name": {
+        "en": "Pacifist",
+        "zh": "和平主义者"
+      },
+      "name_key": "CHARACTER_PACIFIST",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 365,
+        "section": "3.14 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_hand_1",
+        "weapon_taser_1",
+        "weapon_pruner_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "gatherer_4",
+        "condition": "≥ 10000",
+        "method": "累计采集 10000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 159,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_max_hp",
+        "stat_hp_regeneration",
+        "stat_armor",
+        "engineering"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +15",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 15
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每持有 25 材料 | % 伤害 +1(属性联动,stat_scaled=materials)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品 | Piggy Bank(item_piggy_bank)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "items_price",
+          "source_text": "物品价格 | +50%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        }
+      ],
+      "id": "character_saver",
+      "max_nb": -1,
+      "name": {
+        "en": "Saver",
+        "zh": "存钱罐"
+      },
+      "name_key": "CHARACTER_SAVER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 378,
+        "section": "3.15 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_chopper_1",
+        "weapon_dagger_1",
+        "weapon_ghost_flint_1",
+        "weapon_pruner_1",
+        "weapon_lightning_shiv_1",
+        "weapon_cactus_mace_1",
+        "weapon_spear_1",
+        "weapon_pistol_1",
+        "weapon_revolver_1",
+        "weapon_laser_gun_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "gatherer_5",
+        "condition": "≥ 20000",
+        "method": "累计采集 20000",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 160,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [
+        "stat_max_hp",
+        "consumable",
+        "stat_luck",
+        "lifesteal",
+        "lifesteal_and_hp_regeneration",
+        "speed"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "gain_stat_max_hp",
+          "source_text": "最大生命获取效率 | +25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 25
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_max_hp",
+          "source_text": "每 3 点最大生命(仅永久值) | % 伤害 +1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "consumable_heal",
+          "source_text": "消耗品治疗量 | +3(consumable_heal)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 3
+        },
+        {
+          "key": "stat_lifesteal",
+          "source_text": "吸血 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_hp_regeneration",
+          "source_text": "生命再生获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_dodge",
+          "source_text": "闪避获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_speed",
+          "source_text": "速度获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        }
+      ],
+      "id": "character_chunky",
+      "max_nb": -1,
+      "name": {
+        "en": "Chunky",
+        "zh": "胖子"
+      },
+      "name_key": "CHARACTER_CHUNKY",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 390,
+        "section": "3.16 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_cactus_mace_1",
+        "weapon_rock_1",
+        "weapon_stick_1",
+        "weapon_torch_1",
+        "weapon_plank_1",
+        "weapon_chopper_1",
+        "weapon_pruner_1",
+        "weapon_spiky_shield_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_taser_1",
+        "weapon_ghost_scepter_1",
+        "weapon_shredder_1",
+        "weapon_revolver_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "rookie",
+        "condition": "全员死亡时直接完成",
+        "method": "输掉一局",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 161,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_max_hp",
+        "consumable",
+        "stat_luck",
+        "lifesteal",
+        "lifesteal_and_hp_regeneration",
+        "speed"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_lifesteal",
+        "hp_regeneration",
+        "item_weird_ghost",
+        "item_tardigrade"
+      ],
+      "banned_items": [
+        "item_weird_ghost",
+        "item_tardigrade"
+      ],
+      "effects": [
+        {
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | +12",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 12
+        },
+        {
+          "key": "stat_lifesteal",
+          "source_text": "吸血 | +25",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 25
+        },
+        {
+          "key": "lose_hp_per_second",
+          "source_text": "每秒损失生命 | 1(lose_hp_per_second,按秒结算真实伤害)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "stat_hp_regeneration",
+          "source_text": "生命再生 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        }
+      ],
+      "id": "character_sick",
+      "max_nb": -1,
+      "name": {
+        "en": "Sick",
+        "zh": "病人"
+      },
+      "name_key": "CHARACTER_SICK",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 406,
+        "section": "3.17 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_scissors_1",
+        "weapon_hatchet_1",
+        "weapon_ghost_flint_1",
+        "weapon_cactus_mace_1",
+        "weapon_lightning_shiv_1",
+        "weapon_sharp_tooth_1",
+        "weapon_pruner_1",
+        "weapon_ghost_scepter_1",
+        "weapon_slingshot_1",
+        "weapon_smg_1",
+        "weapon_medical_gun_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "dying",
+        "condition": "属性挑战",
+        "method": "生命再生 ≤ -5",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 162,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_lifesteal",
+        "hp_regeneration",
+        "item_weird_ghost",
+        "item_tardigrade"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +20",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "harvesting_growth",
+          "source_text": "收获增长 | +3(harvesting_growth 默认 5 → 8：每波结束时收获属性自增 ceil(收获 x 8%))",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 3
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获增长 | +3(harvesting_growth 默认 5 → 8：每波结束时收获属性自增 ceil(收获 x 8%))",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 3
+        },
+        {
+          "key": "consumable_stats_while_max",
+          "source_text": "满血时拾取消耗品 | 收获 +1(永久,consumable_stats_while_max)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "满血时拾取消耗品 | 收获 +1(永久,consumable_stats_while_max)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "gold_drops",
+          "source_text": "材料掉落价值 | -50%(gold_drops,影响所有掉落)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -50
+        },
+        {
+          "key": "gold_drops",
+          "source_text": "材料掉落价值 | -50%(gold_drops,影响所有掉落)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        }
+      ],
+      "id": "character_farmer",
+      "max_nb": -1,
+      "name": {
+        "en": "Farmer",
+        "zh": "农夫"
+      },
+      "name_key": "CHARACTER_FARMER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 419,
+        "section": "3.18 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_hand_1",
+        "weapon_spear_1",
+        "weapon_stick_1",
+        "weapon_torch_1",
+        "weapon_fighting_stick_1",
+        "weapon_screwdriver_1",
+        "weapon_pruner_1",
+        "weapon_dagger_1",
+        "weapon_wrench_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_slingshot_1",
+        "weapon_potato_thrower_2"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "agriculture",
+        "condition": "属性挑战",
+        "method": "收获 ≥ 200",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 163,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_harvesting",
+        "consumable"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_dodge",
+        "armor",
+        "item_duct_tape",
+        "item_ghost_outfit"
+      ],
+      "banned_items": [
+        "item_duct_tape",
+        "item_ghost_outfit"
+      ],
+      "effects": [
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "Ethereal(灵体)类武器 | 伤害 +10(flat damage)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_dodge",
+          "source_text": "闪避 | +30",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 30
+        },
+        {
+          "key": "dodge_cap",
+          "source_text": "闪避上限 | REPLACE 90(默认 60)",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 90
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "护甲 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        }
+      ],
+      "id": "character_ghost",
+      "max_nb": -1,
+      "name": {
+        "en": "Ghost",
+        "zh": "幽灵"
+      },
+      "name_key": "CHARACTER_GHOST",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 432,
+        "section": "3.19 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_ghost_flint_1",
+        "weapon_ghost_axe_1",
+        "weapon_ghost_scepter_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "hallucination",
+        "condition": "属性挑战",
+        "method": "闪避 ≥ 60",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 164,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_dodge",
+        "armor",
+        "item_duct_tape",
+        "item_ghost_outfit"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_speed",
+          "source_text": "速度 | +30",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 30
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_melee_damage",
+          "source_text": "每 2 点速度 | 近战伤害 +1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "temp_stats_while_not_moving",
+          "source_text": "静止时 | 护甲 -100(临时,temp_stats_while_not_moving)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -100
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "静止时 | 护甲 -100(临时,temp_stats_while_not_moving)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "护甲 | -3",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -3
+        }
+      ],
+      "id": "character_speedy",
+      "max_nb": -1,
+      "name": {
+        "en": "Speedy",
+        "zh": "飞毛腿"
+      },
+      "name_key": "CHARACTER_SPEEDY",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 445,
+        "section": "3.20 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_claw_1",
+        "weapon_knife_1",
+        "weapon_dagger_1",
+        "weapon_stick_1",
+        "weapon_spear_1",
+        "weapon_fighting_stick_1",
+        "weapon_jousting_lance_1",
+        "weapon_screwdriver_1",
+        "weapon_ghost_flint_1",
+        "weapon_pruner_1",
+        "weapon_shuriken_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "fast",
+        "condition": "属性挑战",
+        "method": "速度 ≥ 50",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 165,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_speed"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "静止时 | 每跳获得当前材料的 3%(每跳上限 25,双值效果 [3,25] + percent_materials,由静止结算计时器驱动)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "移动时 | % 伤害 +40(临时)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 40
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "移动时 | 攻速 +40(临时)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 40
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_armor",
+          "source_text": "每 1 个结构 | 护甲 +2",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "key": "gold_drops",
+          "source_text": "材料掉落价值 | -50%(gold_drops)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每 15 材料 | % 伤害 -1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": -1
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_speed",
+          "source_text": "每 30 材料 | 速度 -1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": -1
+        }
+      ],
+      "id": "character_streamer",
+      "max_nb": -1,
+      "name": {
+        "en": "Streamer",
+        "zh": "主播"
+      },
+      "name_key": "CHARACTER_STREAMER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 458,
+        "section": "3.21 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_stick_1",
+        "weapon_cactus_mace_1",
+        "weapon_ghost_flint_1",
+        "weapon_ghost_axe_1",
+        "weapon_scissors_1",
+        "weapon_screwdriver_1",
+        "weapon_wrench_1",
+        "weapon_spear_1",
+        "weapon_plank_1",
+        "weapon_pruner_1",
+        "weapon_spiky_shield_1",
+        "weapon_crossbow_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_laser_gun_1",
+        "weapon_medical_gun_1",
+        "weapon_pistol_1",
+        "weapon_shredder_1",
+        "weapon_smg_1",
+        "weapon_revolver_1",
+        "weapon_slingshot_1",
+        "weapon_ghost_scepter_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "slow",
+        "condition": "属性挑战",
+        "method": "速度 ≤ -20",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 166,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "structure"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_range",
+        "stat_crit_chance",
+        "harvesting"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_range",
+          "source_text": "射程 | +100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 100
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每 10 点射程 | % 伤害 +1(含临时值)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "gain_stat_crit_chance",
+          "source_text": "暴击率获取效率 | +25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 25
+        },
+        {
+          "key": "gain_stat_harvesting",
+          "source_text": "收获获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_max_hp",
+          "source_text": "最大生命获取效率 | -33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -33
+        }
+      ],
+      "id": "character_hunter",
+      "max_nb": -1,
+      "name": {
+        "en": "Hunter",
+        "zh": "猎人"
+      },
+      "name_key": "CHARACTER_HUNTER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 474,
+        "section": "3.22 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_cactus_mace_1",
+        "weapon_dagger_1",
+        "weapon_spear_1",
+        "weapon_claw_1",
+        "weapon_scissors_1",
+        "weapon_shuriken_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_crossbow_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "perfect_vision",
+        "condition": "属性挑战",
+        "method": "射程 ≥ 300",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 167,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_range",
+        "stat_crit_chance",
+        "harvesting"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_hp_regeneration",
+          "source_text": "生命再生 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "stat_lifesteal",
+          "source_text": "吸血 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "dmg_when_heal",
+          "source_text": "每次受到治疗时 | 100% 概率对 1 名随机敌人造成 = 最大生命 x100%(再乘 1+%伤害)的伤害(dmg_when_heal)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_max_hp",
+          "source_text": "每次受到治疗时 | 100% 概率对 1 名随机敌人造成 = 最大生命 x100%(再乘 1+%伤害)的伤害(dmg_when_heal)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "gain_stat_percent_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_explosion_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_piercing_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_bounce_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_damage_against_bosses",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_lich",
+      "max_nb": -1,
+      "name": {
+        "en": "Lich",
+        "zh": "巫妖"
+      },
+      "name_key": "CHARACTER_LICH",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 488,
+        "section": "3.23 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_scissors_1",
+        "weapon_chopper_1",
+        "weapon_dagger_1",
+        "weapon_stick_1",
+        "weapon_knife_1",
+        "weapon_ghost_flint_1",
+        "weapon_sharp_tooth_1",
+        "weapon_pruner_1",
+        "weapon_hatchet_1",
+        "weapon_rock_1",
+        "weapon_spiky_shield_1",
+        "weapon_lightning_shiv_1",
+        "weapon_ghost_scepter_1",
+        "weapon_medical_gun_1",
+        "weapon_smg_1",
+        "weapon_wand_1",
+        "weapon_icicle_1",
+        "weapon_slingshot_1",
+        "weapon_crossbow_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "DAMAGE_DEALT",
+      "unlock": {
+        "challenge_id": "robust",
+        "condition": "属性挑战",
+        "method": "最大生命 ≥ 100",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 168,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_max_hp",
+        "stat_hp_regeneration",
+        "stat_lifesteal"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_lifesteal",
+        "hp_regeneration",
+        "consumable_heal"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每损失 1% 生命 | % 伤害 +2(perm_stats_only=true)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_lifesteal",
+          "source_text": "每损失 3% 生命 | 吸血 +1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_armor",
+          "source_text": "每损失 5% 生命 | 护甲 +1",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "gain_stat_max_hp",
+          "source_text": "最大生命获取效率 | -25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -25
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | -60",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -60
+        },
+        {
+          "key": "stat_hp_regeneration",
+          "source_text": "生命再生 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "消耗品治疗量 | -100(消耗品不回血)",
+          "type": "raw_effect_text"
+        }
+      ],
+      "id": "character_vampire",
+      "max_nb": -1,
+      "name": {
+        "en": "Vampire",
+        "zh": "吸血鬼"
+      },
+      "name_key": "CHARACTER_VAMPIRE",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 501,
+        "section": "3.24 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_claw_1",
+        "weapon_sharp_tooth_1",
+        "weapon_ghost_flint_1",
+        "weapon_hatchet_1",
+        "weapon_knife_1",
+        "weapon_dagger_1",
+        "weapon_lightning_shiv_1",
+        "weapon_scissors_1",
+        "weapon_spiky_shield_1",
+        "weapon_stick_1",
+        "weapon_torch_1",
+        "weapon_screwdriver_1",
+        "weapon_wrench_1",
+        "weapon_shuriken_1",
+        "weapon_pistol_1",
+        "weapon_smg_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_medical_gun_1",
+        "weapon_revolver_1",
+        "weapon_shredder_1",
+        "weapon_crossbow_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "blood_drinker",
+        "condition": "属性挑战",
+        "method": "吸血 ≥ 40",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 169,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_lifesteal",
+        "hp_regeneration",
+        "consumable_heal"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "structure",
+        "stat_ranged_damage",
+        "melee_damage",
+        "elemental_damage",
+        "item_charcoal",
+        "item_gnome"
+      ],
+      "banned_items": [
+        "item_charcoal",
+        "item_gnome"
+      ],
+      "effects": [
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "额外起始武器 | Minigun III(weapon_minigun_3)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "远程伤害获取效率 | +200%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 200
+        },
+        {
+          "key": "convert_stats_half_wave",
+          "source_text": "波次过半时 | 100% 的远程伤害临时转换：每 1 点远程伤害 → 2 点工程(convert_stats_half_wave,写入临时属性层,当波有效)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 100
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_ranged_damage",
+          "source_text": "波次过半时 | 100% 的远程伤害临时转换：每 1 点远程伤害 → 2 点工程(convert_stats_half_wave,写入临时属性层,当波有效)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 100
+        },
+        {
+          "key": "gain_stat_engineering",
+          "source_text": "工程获取效率 | -75%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -75
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "近战伤害获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "元素伤害获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        }
+      ],
+      "id": "character_cyborg",
+      "max_nb": -1,
+      "name": {
+        "en": "Cyborg",
+        "zh": "赛博格"
+      },
+      "name_key": "CHARACTER_CYBORG",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 517,
+        "section": "3.25 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_wrench_1",
+        "weapon_screwdriver_1",
+        "weapon_plank_1",
+        "weapon_pistol_1",
+        "weapon_smg_1",
+        "weapon_revolver_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_crossbow_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "advanced_technology(参数 [3])",
+        "condition": "复合属性+计数挑战",
+        "method": "远程伤害 ≥ 10 且同时拥有 ≥ 3 个结构",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 170,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "structure",
+        "stat_ranged_damage",
+        "melee_damage",
+        "elemental_damage",
+        "item_charcoal",
+        "item_gnome"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_elemental_damage",
+        "stat_engineering",
+        "structure",
+        "melee_damage",
+        "ranged_damage",
+        "melee_and_ranged_damage"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品 | Turret(item_turret)x 2",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "structure_attack_speed",
+          "source_text": "每 1 点元素伤害(仅永久) | 结构攻速 +5%(structure_attack_speed)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 5
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "structure_attack_speed",
+          "source_text": "每 1 点元素伤害(仅永久) | 结构攻速 +5%(structure_attack_speed)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 5
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_elemental_damage",
+          "source_text": "每 1 个结构 | 元素伤害 +2",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "key": "next_level_xp_needed",
+          "source_text": "升级所需经验 | +75%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 75
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "近战伤害获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "远程伤害获取效率 | -100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -100
+        }
+      ],
+      "id": "character_technomage",
+      "max_nb": -1,
+      "name": {
+        "en": "Technomage",
+        "zh": "科技法师"
+      },
+      "name_key": "CHARACTER_TECHNOMAGE",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 532,
+        "section": "3.26 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_wrench_1",
+        "weapon_screwdriver_1",
+        "weapon_plank_1",
+        "weapon_torch_1",
+        "weapon_lightning_shiv_1",
+        "weapon_pruner_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "magic_and_machinery",
+        "condition": "同上",
+        "method": "元素伤害 ≥ 10 且 ≥ 3 个结构",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 171,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_elemental_damage",
+        "stat_engineering",
+        "structure",
+        "melee_damage",
+        "ranged_damage",
+        "melee_and_ranged_damage"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "items_price",
+          "source_text": "物品价格 | -25%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -25
+        },
+        {
+          "key": "gain_stat_harvesting",
+          "source_text": "收获获取效率 | +50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 50
+        },
+        {
+          "key": "recycling_gains",
+          "source_text": "回收返还 | +25(返还比例 25%+25% = 50% 物品现价)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 25
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "开波时 | 失去 100% 当前材料(gain_pct_gold_start_wave = -100)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "gain_stat_percent_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_explosion_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_piercing_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_bounce_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_damage_against_bosses",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_entrepreneur",
+      "max_nb": -1,
+      "name": {
+        "en": "Entrepreneur",
+        "zh": "企业家"
+      },
+      "name_key": "CHARACTER_ENTREPRENEUR",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 547,
+        "section": "3.27 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_claw_1",
+        "weapon_hand_1",
+        "weapon_knife_1",
+        "weapon_dagger_1",
+        "weapon_pruner_1",
+        "weapon_fighting_stick_1",
+        "weapon_hatchet_1",
+        "weapon_ghost_flint_1",
+        "weapon_wrench_1",
+        "weapon_plank_1",
+        "weapon_pistol_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_taser_1",
+        "weapon_shuriken_1",
+        "weapon_crossbow_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "hoarder",
+        "condition": "材料入账时检查",
+        "method": "同时持有 3000 材料",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 172,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_harvesting",
+        "economy"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_engineering",
+          "source_text": "工程 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "gain_stat_engineering",
+          "source_text": "工程获取效率 | +25%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 25
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "额外起始武器 | Wrench I",
+          "type": "raw_effect_text"
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "结构集中生成 | group_structures = 1：结构在彼此附近成组刷出",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "gain_stat_percent_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_explosion_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_piercing_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_bounce_damage",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_damage_against_bosses",
+          "source_text": "全部 8 项伤害获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_engineer",
+      "max_nb": -1,
+      "name": {
+        "en": "Engineer",
+        "zh": "工程师"
+      },
+      "name_key": "CHARACTER_ENGINEER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 561,
+        "section": "3.28 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_wrench_1",
+        "weapon_screwdriver_1",
+        "weapon_plank_1",
+        "weapon_hammer_2"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "turrets",
+        "condition": "结构生成时检查",
+        "method": "同时拥有 5 个炮塔",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 173,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_engineering",
+        "structure"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "trees",
+          "source_text": "树木 | 每波 +12 棵(trees)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 12
+        },
+        {
+          "key": "trees",
+          "source_text": "树木 | 每波 +12 棵(trees)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 12
+        },
+        {
+          "key": "trees_start_wave",
+          "source_text": "树木生成时机 | 开波 5 秒内全部刷出(trees_start_wave)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 5
+        },
+        {
+          "key": "trees_start_wave",
+          "source_text": "树木生成时机 | 开波 5 秒内全部刷出(trees_start_wave)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品 | Lumberjack Shirt",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_speed",
+          "source_text": "速度 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "pickup_range",
+          "source_text": "拾取范围 | +50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "key": "map_size",
+          "source_text": "地图尺寸 | +33%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 33
+        },
+        {
+          "key": "number_of_enemies",
+          "source_text": "敌人数量 | +25%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 25
+        },
+        {
+          "key": "enemy_gold_drops",
+          "source_text": "敌人掉落材料价值 | -50%(enemy_gold_drops)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        },
+        {
+          "key": "enemy_speed",
+          "source_text": "敌人速度 | +10%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | -40",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -40
+        }
+      ],
+      "id": "character_explorer",
+      "max_nb": -1,
+      "name": {
+        "en": "Explorer",
+        "zh": "探险家"
+      },
+      "name_key": "CHARACTER_EXPLORER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 575,
+        "section": "3.29 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_hand_1",
+        "weapon_cactus_mace_1",
+        "weapon_screwdriver_1",
+        "weapon_dagger_1",
+        "weapon_wrench_1",
+        "weapon_stick_1",
+        "weapon_torch_1",
+        "weapon_chopper_1",
+        "weapon_plank_1",
+        "weapon_hatchet_1",
+        "weapon_jousting_lance_1",
+        "weapon_ghost_axe_1",
+        "weapon_crossbow_1",
+        "weapon_shredder_1",
+        "weapon_taser_1",
+        "weapon_wand_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "lumberjack",
+        "condition": "伐树数 ≥ 50(跨局累计)",
+        "method": "累计摧毁 50 棵树",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 174,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_speed",
+        "exploration",
+        "consumable"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_attack_speed",
+          "source_text": "Medical(医疗)类武器 | 攻速修正 +200",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 200
+        },
+        {
+          "key": "stat_hp_regeneration",
+          "source_text": "生命再生 | +5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "gain_stat_hp_regeneration",
+          "source_text": "生命再生获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "攻速 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_armor",
+          "source_text": "护甲获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_doctor",
+      "max_nb": -1,
+      "name": {
+        "en": "Doctor",
+        "zh": "医生"
+      },
+      "name_key": "CHARACTER_DOCTOR",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 594,
+        "section": "3.30 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_scissors_1",
+        "weapon_medical_gun_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "medicine",
+        "condition": "单波治疗量累计达标",
+        "method": "单波内治疗 200 生命",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 175,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_hp_regeneration"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "explosion_damage",
+          "source_text": "爆炸伤害 | +175%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 175
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "explosion_size",
+          "source_text": "每 1 点元素伤害 | 爆炸范围(explosion_size)+4",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 4
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "Tool(工具)类武器 | % 伤害 +100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 100
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "gain_stat_armor",
+          "source_text": "护甲获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_artificer",
+      "max_nb": -1,
+      "name": {
+        "en": "Artificer",
+        "zh": "火法工匠"
+      },
+      "name_key": "CHARACTER_ARTIFICER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 609,
+        "section": "3.31 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_plank_1",
+        "weapon_screwdriver_1",
+        "weapon_wrench_1",
+        "weapon_shredder_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "fireworks",
+        "condition": "单次爆炸击杀计数达标",
+        "method": "一次(玩家)爆炸击杀 15 个敌人",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 176,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "explosive"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "weapons_price",
+          "source_text": "武器价格 | -95%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -95
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +30",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 30
+        },
+        {
+          "key": "gain_stat_percent_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_explosion_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_piercing_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_bounce_damage",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_damage_against_bosses",
+          "source_text": "全部 8 项伤害获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品 | Dangerous Bunny(item_dangerous_bunny)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "minimum_weapons_in_shop",
+          "source_text": "商店保底武器数 | REPLACE 1(每次刷新至少 1 把武器)",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "destroy_weapons",
+          "source_text": "销毁武器 | destroy_weapons = 1：每次进入商店时摧毁玩家全部武器",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        }
+      ],
+      "id": "character_arms_dealer",
+      "max_nb": -1,
+      "name": {
+        "en": "Arms Dealer",
+        "zh": "军火商"
+      },
+      "name_key": "CHARACTER_ARMS_DEALER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 623,
+        "section": "3.32 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_pistol_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "recycling",
+        "condition": "仅商店丢弃武器时计数",
+        "method": "单局回收 12 把武器",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 177,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_luck",
+          "source_text": "幸运 | +50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "key": "explosion_damage",
+          "source_text": "满血时拾取消耗品 | 爆炸伤害 +1(永久)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "explode_on_consumable",
+          "source_text": "拾取消耗品时 | 在其位置产生爆炸：基础伤害 10、缩放 +500% 近战伤害、范围 150x2.0 倍、暴击率 3%、100% 触发(explode_on_consumable + 专属爆炸参数)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 500
+        },
+        {
+          "key": "stat_melee_damage",
+          "source_text": "拾取消耗品时 | 在其位置产生爆炸：基础伤害 10、缩放 +500% 近战伤害、范围 150x2.0 倍、暴击率 3%、100% 触发(explode_on_consumable + 专属爆炸参数)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 500
+        },
+        {
+          "key": "items_price",
+          "source_text": "物品价格 | +25%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 25
+        },
+        {
+          "key": "xp_gain",
+          "source_text": "经验获取 | -25%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -25
+        }
+      ],
+      "id": "character_glutton",
+      "max_nb": -1,
+      "name": {
+        "en": "Glutton",
+        "zh": "暴食者"
+      },
+      "name_key": "CHARACTER_GLUTTON",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 637,
+        "section": "3.33 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_pruner_1",
+        "weapon_chopper_1",
+        "weapon_dagger_1",
+        "weapon_fist_1",
+        "weapon_jousting_lance_1",
+        "weapon_screwdriver_1",
+        "weapon_plank_1",
+        "weapon_shredder_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "DAMAGE_DEALT",
+      "unlock": {
+        "challenge_id": "hungry",
+        "condition": "拾取消耗品时计数",
+        "method": "单局拾取 20 个消耗品",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 178,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "explosive",
+        "stat_melee_damage",
+        "consumable"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "damage_against_bosses",
+          "source_text": "对 Boss/精英伤害 | +125%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 125
+        },
+        {
+          "key": "gold_drops",
+          "source_text": "材料掉落价值 | +200%(gold_drops)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 200
+        },
+        {
+          "key": "number_of_enemies",
+          "source_text": "敌人数量 | -70%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -70
+        },
+        {
+          "key": "enemy_health",
+          "source_text": "敌人生命 | +175%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 175
+        },
+        {
+          "key": "enemy_damage",
+          "source_text": "敌人伤害 | +35%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 35
+        }
+      ],
+      "id": "character_jack",
+      "max_nb": -1,
+      "name": {
+        "en": "Jack",
+        "zh": "杰克"
+      },
+      "name_key": "CHARACTER_JACK",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 651,
+        "section": "3.34 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_knife_1",
+        "weapon_jousting_lance_1",
+        "weapon_wrench_1",
+        "weapon_torch_1",
+        "weapon_hatchet_1",
+        "weapon_stick_1",
+        "weapon_spear_1",
+        "weapon_spiky_shield_1",
+        "weapon_shuriken_1",
+        "weapon_laser_gun_1",
+        "weapon_revolver_1",
+        "weapon_crossbow_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "giant_slayer",
+        "condition": "头目与精英共用同一计时判定",
+        "method": "在 Boss/精英出现后 15 秒内击杀它",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 179,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "custom_key": "stats_on_level_up",
+          "key": "stat_melee_damage",
+          "source_text": "近战伤害 | 每级 +2",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": 2
+        },
+        {
+          "custom_key": "stats_on_level_up",
+          "key": "stat_ranged_damage",
+          "source_text": "远程伤害 | 每级 +1",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": 1
+        },
+        {
+          "custom_key": "stats_on_level_up",
+          "key": "stat_elemental_damage",
+          "source_text": "元素伤害 | 每级 +1",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": 1
+        },
+        {
+          "custom_key": "stats_on_level_up",
+          "key": "stat_engineering",
+          "source_text": "工程 | 每级 +1",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": 1
+        },
+        {
+          "custom_key": "stats_on_level_up",
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | 每级 -2",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": -2
+        }
+      ],
+      "id": "character_apprentice",
+      "max_nb": -1,
+      "name": {
+        "en": "Apprentice",
+        "zh": "学徒"
+      },
+      "name_key": "CHARACTER_APPRENTICE",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 664,
+        "section": "3.35 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_knife_1",
+        "weapon_lightning_shiv_1",
+        "weapon_cactus_mace_1",
+        "weapon_fighting_stick_1",
+        "weapon_ghost_flint_1",
+        "weapon_ghost_axe_1",
+        "weapon_hatchet_1",
+        "weapon_torch_1",
+        "weapon_plank_1",
+        "weapon_pruner_1",
+        "weapon_screwdriver_1",
+        "weapon_wrench_1",
+        "weapon_medical_gun_1",
+        "weapon_smg_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_shredder_1",
+        "weapon_slingshot_1",
+        "weapon_taser_1",
+        "weapon_icicle_1",
+        "weapon_shuriken_1",
+        "weapon_ghost_scepter_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "student",
+        "condition": "升级时检查",
+        "method": "单局达到 20 级",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 180,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "xp_gain"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [
+        "item_barnacle"
+      ],
+      "effects": [
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +12",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 12
+        },
+        {
+          "key": "items_price",
+          "source_text": "物品价格 | -20%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -20
+        },
+        {
+          "key": "weapon_slot_upgrades",
+          "source_text": "武器栏升级 | weapon_slot_upgrades = 24：只要武器栏 < 24,每次升级的奖励强制为\"+1 武器栏\"",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "weapon_slot",
+          "source_text": "武器栏位 | -5(初始仅 1 格)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -5
+        },
+        {
+          "key": "minimum_weapons_in_shop",
+          "source_text": "商店保底武器数 | REPLACE 1",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "next_level_xp_needed",
+          "source_text": "升级所需经验 | +130%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 130
+        }
+      ],
+      "id": "character_baby",
+      "max_nb": -1,
+      "name": {
+        "en": "Baby",
+        "zh": "宝宝"
+      },
+      "name_key": "CHARACTER_BABY",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 678,
+        "section": "3.36 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_scissors_1",
+        "weapon_screwdriver_1",
+        "weapon_pruner_1",
+        "weapon_sharp_tooth_1",
+        "weapon_fighting_stick_1",
+        "weapon_knife_1",
+        "weapon_stick_1",
+        "weapon_plank_1",
+        "weapon_rock_1",
+        "weapon_wrench_1",
+        "weapon_shuriken_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1",
+        "weapon_slingshot_1",
+        "weapon_pistol_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "fast_learner(参数 [6])",
+        "condition": "升级时检查",
+        "method": "在第 6 波前达到 10 级",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 181,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "xp_gain",
+        "item_barnacle"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "exploration",
+        "stat_dodge",
+        "lifesteal"
+      ],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "trees",
+          "source_text": "树木 | 每波 +6",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 6
+        },
+        {
+          "key": "cryptid",
+          "source_text": "cryptid 12 | 波次结束：材料&经验 += 存活树木数 x 12",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 12
+        },
+        {
+          "custom_key": "stats_end_of_wave",
+          "key": "trees",
+          "source_text": "cryptid 12 | 波次结束：材料&经验 += 存活树木数 x 12",
+          "storage_method": "KEY_VALUE",
+          "type": "timed_stat",
+          "value": 12
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_hp_regeneration",
+          "source_text": "每棵存活树 | 生命再生 +3(实时联动,living_tree)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 3
+        },
+        {
+          "key": "dodge_cap",
+          "source_text": "闪避上限 | REPLACE 70",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 70
+        },
+        {
+          "key": "temp_stats_on_dodge",
+          "source_text": "闪避成功时 | 攻速 +3(当波临时,temp_stats_on_dodge)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 3
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "闪避成功时 | 攻速 +3(当波临时,temp_stats_on_dodge)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 3
+        },
+        {
+          "key": "stat_lifesteal",
+          "source_text": "吸血 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "stat_range",
+          "source_text": "射程 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        },
+        {
+          "key": "enemy_gold_drops",
+          "source_text": "敌人掉落材料价值 | -50%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        }
+      ],
+      "id": "character_cryptid",
+      "max_nb": -1,
+      "name": {
+        "en": "Cryptid",
+        "zh": "未知生物"
+      },
+      "name_key": "CHARACTER_CRYPTID",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 693,
+        "section": "3.37 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_1",
+        "weapon_hand_1",
+        "weapon_claw_1",
+        "weapon_knife_1",
+        "weapon_cactus_mace_1",
+        "weapon_pruner_1",
+        "weapon_chopper_1",
+        "weapon_ghost_axe_1",
+        "weapon_dagger_1",
+        "weapon_lightning_shiv_1",
+        "weapon_ghost_flint_1",
+        "weapon_rock_1",
+        "weapon_stick_1",
+        "weapon_hatchet_1",
+        "weapon_jousting_lance_1",
+        "weapon_screwdriver_1",
+        "weapon_plank_1",
+        "weapon_ghost_scepter_1",
+        "weapon_shredder_1",
+        "weapon_pistol_1",
+        "weapon_smg_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "forest",
+        "condition": "波次结束检查",
+        "method": "场上同时存活 ≥ 10 棵树",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 182,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "exploration",
+        "stat_dodge",
+        "lifesteal"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_max_hp",
+        "stat_armor",
+        "hp_regeneration",
+        "lifesteal",
+        "lifesteal_and_hp_regeneration",
+        "consumable_heal",
+        "item_tentacle",
+        "item_goblet",
+        "item_cute_monkey",
+        "item_turret_healing",
+        "item_garden",
+        "item_extra_stomach",
+        "item_adrenaline",
+        "item_weird_ghost"
+      ],
+      "banned_items": [
+        "item_tentacle",
+        "item_goblet",
+        "item_cute_monkey",
+        "item_turret_healing",
+        "item_garden",
+        "item_extra_stomach",
+        "item_adrenaline",
+        "item_weird_ghost"
+      ],
+      "effects": [
+        {
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | +20",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "gain_stat_max_hp",
+          "source_text": "最大生命获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "gain_stat_armor",
+          "source_text": "护甲获取效率 | +33%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 33
+        },
+        {
+          "key": "stats_below_half_health",
+          "source_text": "生命 < 50% 时 | 攻速 +40(临时,stats_below_half_health)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 40
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "生命 < 50% 时 | 攻速 +40(临时,stats_below_half_health)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 40
+        },
+        {
+          "key": "stat_speed",
+          "source_text": "生命 < 50% 时 | 速度 +20(临时)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "no_heal",
+          "source_text": "无法治疗 | no_heal = 1(任何治疗无效)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        }
+      ],
+      "id": "character_golem",
+      "max_nb": -1,
+      "name": {
+        "en": "Golem",
+        "zh": "魔像"
+      },
+      "name_key": "CHARACTER_GOLEM",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 710,
+        "section": "3.38 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_cactus_mace_1",
+        "weapon_chopper_1",
+        "weapon_fist_1",
+        "weapon_ghost_axe_1",
+        "weapon_hatchet_1",
+        "weapon_knife_1",
+        "weapon_plank_1",
+        "weapon_rock_1",
+        "weapon_spiky_shield_1",
+        "weapon_stick_1",
+        "weapon_torch_1",
+        "weapon_pistol_1",
+        "weapon_revolver_1",
+        "weapon_slingshot_1",
+        "weapon_crossbow_1",
+        "weapon_ghost_scepter_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "reckless",
+        "condition": "波次结束时生命 == 1",
+        "method": "以恰好 1 点生命结束一波",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 183,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_max_hp",
+        "stat_armor",
+        "hp_regeneration",
+        "lifesteal",
+        "lifesteal_and_hp_regeneration",
+        "consumable_heal",
+        "item_tentacle",
+        "item_goblet",
+        "item_cute_monkey",
+        "item_turret_healing",
+        "item_garden",
+        "item_extra_stomach",
+        "item_adrenaline",
+        "item_weird_ghost"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "projectiles",
+          "source_text": "投射物 | +2(所有远程武器投射物数 +2)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 2
+        },
+        {
+          "key": "piercing",
+          "source_text": "穿透 | +1",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每件不同的 I 级(白色)物品 | % 伤害 +10(common_item 联动)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 10
+        },
+        {
+          "key": "no_melee_weapons",
+          "source_text": "近战武器 | 禁止",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | -400",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -400
+        },
+        {
+          "key": "accuracy",
+          "source_text": "精准 | -50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        },
+        {
+          "key": "gain_explosion_damage",
+          "source_text": "%伤害 + 爆炸伤害获取效率 | -80%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -80
+        }
+      ],
+      "id": "character_renegade",
+      "max_nb": -1,
+      "name": {
+        "en": "Renegade",
+        "zh": "叛徒"
+      },
+      "name_key": "CHARACTER_RENEGADE",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 725,
+        "section": "3.39 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_pistol_1",
+        "weapon_revolver_1",
+        "weapon_shredder_1",
+        "weapon_smg_1",
+        "weapon_laser_gun_1",
+        "weapon_medical_gun_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1",
+        "weapon_ghost_scepter_1",
+        "weapon_crossbow_1",
+        "weapon_shuriken_1",
+        "weapon_slingshot_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "scavenger",
+        "condition": "物品变动时检查",
+        "method": "拥有 10 件不同的 I 级(白色)物品",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 184,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_luck",
+          "source_text": "幸运 | +50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "key": "tier_iv_weapon_effects",
+          "source_text": "每把 IV 级武器 | % 伤害 +25(tier_iv_weapon_effects)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 25
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每把 IV 级武器 | % 伤害 +25(tier_iv_weapon_effects)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 25
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_attack_speed",
+          "source_text": "每把 IV 级武器 | 攻速 +25",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 25
+        },
+        {
+          "key": "tier_i_weapon_effects",
+          "source_text": "每把 I 级武器 | % 伤害 -15(tier_i_weapon_effects)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -15
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_percent_damage",
+          "source_text": "每把 I 级武器 | % 伤害 -15(tier_i_weapon_effects)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": -15
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_attack_speed",
+          "source_text": "每把 I 级武器 | 攻速 -15",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": -15
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_max_hp",
+          "source_text": "每件不同的 IV 级(红色)物品 | 最大生命 +5(legendary_item)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 5
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_max_hp",
+          "source_text": "每件不同的 I 级(白色)物品 | 最大生命 -2(common_item)",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": -2
+        }
+      ],
+      "id": "character_king",
+      "max_nb": -1,
+      "name": {
+        "en": "King",
+        "zh": "国王"
+      },
+      "name_key": "CHARACTER_KING",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 740,
+        "section": "3.40 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_fist_2",
+        "weapon_circular_saw_2",
+        "weapon_knife_2",
+        "weapon_hatchet_2",
+        "weapon_ghost_axe_2",
+        "weapon_lightning_shiv_2",
+        "weapon_torch_2",
+        "weapon_plank_2",
+        "weapon_spear_2",
+        "weapon_jousting_lance_2",
+        "weapon_sword_2",
+        "weapon_hammer_2",
+        "weapon_spiky_shield_2",
+        "weapon_vorpal_sword_2",
+        "weapon_pistol_2",
+        "weapon_smg_2",
+        "weapon_crossbow_2",
+        "weapon_double_barrel_shotgun_2",
+        "weapon_rocket_launcher_2",
+        "weapon_taser_2",
+        "weapon_fireball_2"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "bourgeoisie",
+        "condition": "武器变动时检查",
+        "method": "同时持有 3 把 IV 级(红色)武器",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 185,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "all_weapons_count_for_sets",
+          "source_text": "套装计数 | all_weapons_count_for_sets = 1：你拥有的每个套装的计数 = 武器总数(即任意 2 把武器即可激活所有已持有套装的最高层级加成)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "no_duplicate_weapons",
+          "source_text": "武器去重 | no_duplicate_weapons = 1：商店不再出现与已持有武器同名(或低于已持档位)的武器",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "护甲 | -5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -5
+        },
+        {
+          "key": "stat_dodge",
+          "source_text": "闪避 | -5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -5
+        },
+        {
+          "key": "gain_stat_luck",
+          "source_text": "幸运获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_harvesting",
+          "source_text": "收获获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        }
+      ],
+      "id": "character_vagabond",
+      "max_nb": -1,
+      "name": {
+        "en": "Vagabond",
+        "zh": "流浪者"
+      },
+      "name_key": "CHARACTER_VAGABOND",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 755,
+        "section": "3.41 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_cactus_mace_1",
+        "weapon_chopper_1",
+        "weapon_dagger_1",
+        "weapon_spear_1",
+        "weapon_sharp_tooth_1",
+        "weapon_hand_1",
+        "weapon_claw_1",
+        "weapon_fighting_stick_1",
+        "weapon_hatchet_1",
+        "weapon_plank_1",
+        "weapon_ghost_flint_1",
+        "weapon_spiky_shield_1",
+        "weapon_lightning_shiv_1",
+        "weapon_torch_1",
+        "weapon_shuriken_1",
+        "weapon_crossbow_1",
+        "weapon_revolver_1",
+        "weapon_laser_gun_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "experimentation",
+        "condition": "武器变动时检查",
+        "method": "同时持有 6 把互不相同的武器",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 186,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | +5",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "stat_harvesting",
+          "source_text": "收获 | +20",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "guaranteed_shop_items",
+          "source_text": "商店必出 | Bait(item_bait)每次刷新保底出现(guaranteed_shop_items)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "specific_items_price",
+          "source_text": "鱼饵价格 | -100%(specific_items_price;实际按价格公式下限 = 1 材料)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": -100
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_harvesting",
+          "source_text": "每持有 1 个鱼饵 | 收获 +2",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "upgraded_baits",
+          "source_text": "强化鱼饵 | upgraded_baits = 1：鱼饵会招来额外敌人波组——每 10 个鱼饵 +1 组、每 15 个鱼饵每组 +1 敌人,最早 15 秒后出现",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 1
+        },
+        {
+          "key": "enemy_gold_drops",
+          "source_text": "敌人掉落材料价值 | -50%",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -50
+        }
+      ],
+      "id": "character_fisherman",
+      "max_nb": -1,
+      "name": {
+        "en": "Fisherman",
+        "zh": "渔夫"
+      },
+      "name_key": "CHARACTER_FISHERMAN",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 769,
+        "section": "3.42 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_knife_1",
+        "weapon_rock_1",
+        "weapon_spear_1",
+        "weapon_fighting_stick_1",
+        "weapon_spiky_shield_1",
+        "weapon_torch_1",
+        "weapon_stick_1",
+        "weapon_sharp_tooth_1",
+        "weapon_plank_1",
+        "weapon_pruner_1",
+        "weapon_scissors_1",
+        "weapon_pistol_1",
+        "weapon_smg_1",
+        "weapon_crossbow_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_laser_gun_1",
+        "weapon_revolver_1",
+        "weapon_shredder_1",
+        "weapon_slingshot_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "baited",
+        "condition": "物品变动时检查",
+        "method": "同时持有 2 个鱼饵(item_bait)",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 187,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [
+        "item_jelly",
+        "item_glasses"
+      ],
+      "effects": [
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品(starting_items 字段) | Bonk Dog、Catling Gun、Blazemander、Bot-o-Mine(4 只宠物)",
+          "type": "raw_effect_text"
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "起始物品(effect) | Lootworm(item_lootworm)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "weapon_slot",
+          "source_text": "武器栏位 | REPLACE 0(不能持有任何武器)",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 0
+        },
+        {
+          "custom_key": "stat_links",
+          "key": "stat_speed",
+          "source_text": "每 1 只宠物 | 速度 +2",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "beast_master_effect = 1 | 宠物攻击属性缩放扩展：宠物武器的 scaling_stats 若缺少 melee/ranged/elemental/engineering 中任意一项,按其第一个缩放系数补全(即宠物吃所有四系伤害加成)",
+          "type": "raw_effect_text"
+        },
+        {
+          "key": "stat_luck",
+          "source_text": "幸运 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "payload": {
+            "parse_status": "raw_unmapped"
+          },
+          "source_text": "boosted_wanted_item_tag = 1 | 商店 wanted_tags 触发率 5% → 10%",
+          "type": "raw_effect_text"
+        }
+      ],
+      "id": "character_beast_master",
+      "max_nb": -1,
+      "name": {
+        "en": "Beast Master",
+        "zh": "驯兽师"
+      },
+      "name_key": "CHARACTER_BEAST_MASTER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 784,
+        "section": "3.43 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [],
+      "tags": [
+        "[\"pet\"]",
+        "pet",
+        "item_jelly",
+        "item_glasses"
+      ],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "paws_n_claws",
+        "condition": "宠物挑战全部完成时检查",
+        "method": "完成全部 5 个宠物挑战(bonk_dog / catling_gun / bot_o_mine / blazemander / lootworm)",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 188,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "[\"pet\"]",
+        "pet",
+        "item_jelly",
+        "item_glasses"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_armor",
+        "stat_hp_regeneration",
+        "explosive",
+        "lifesteal",
+        "item_jelly",
+        "item_nail",
+        "item_crystal",
+        "item_coffee",
+        "item_seashell",
+        "item_glasses",
+        "item_community_support",
+        "item_tardigrade"
+      ],
+      "banned_items": [
+        "item_jelly",
+        "item_nail",
+        "item_crystal",
+        "item_coffee",
+        "item_seashell",
+        "item_glasses",
+        "item_community_support",
+        "item_tardigrade"
+      ],
+      "effects": [
+        {
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | +20",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "stat_hp_regeneration",
+          "source_text": "生命再生 | +15",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 15
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "护甲 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "gain_stat_hp_regeneration",
+          "source_text": "生命再生获取效率 | +50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 50
+        },
+        {
+          "key": "explode_on_hit",
+          "source_text": "受击时爆炸 | 100% 触发,基础伤害 30,缩放 +300% 近战 +300% 远程 +300% 元素,范围 150,暴击率 3%(explode_on_hit + 专属爆炸参数)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 300
+        },
+        {
+          "key": "stat_crit_chance",
+          "source_text": "受击时爆炸 | 100% 触发,基础伤害 30,缩放 +300% 近战 +300% 远程 +300% 元素,范围 150,暴击率 3%(explode_on_hit + 专属爆炸参数)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 300
+        },
+        {
+          "key": "weapon_slot",
+          "source_text": "武器栏位 | REPLACE 0(无武器)",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 0
+        }
+      ],
+      "id": "character_bull",
+      "max_nb": -1,
+      "name": {
+        "en": "Bull",
+        "zh": "公牛"
+      },
+      "name_key": "CHARACTER_BULL",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 800,
+        "section": "3.44 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "DAMAGE_DEALT",
+      "unlock": {
+        "challenge_id": "chal_difficulty_1",
+        "condition": "同上",
+        "method": "赢下危险 1",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 146,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_armor",
+        "stat_hp_regeneration",
+        "explosive",
+        "lifesteal",
+        "item_jelly",
+        "item_nail",
+        "item_crystal",
+        "item_coffee",
+        "item_seashell",
+        "item_glasses",
+        "item_community_support",
+        "item_tardigrade"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | +50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "key": "stat_attack_speed",
+          "source_text": "攻速 | +50",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 50
+        },
+        {
+          "key": "stat_speed",
+          "source_text": "速度 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "pickup_range",
+          "source_text": "拾取范围 | +200",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 200
+        },
+        {
+          "key": "knockback",
+          "source_text": "击退 | +15",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 15
+        },
+        {
+          "key": "can_attack_while_moving",
+          "source_text": "移动时无法攻击 | can_attack_while_moving REPLACE 0",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 0
+        },
+        {
+          "key": "can_attack_while_moving",
+          "source_text": "移动时无法攻击 | can_attack_while_moving REPLACE 0",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 0
+        }
+      ],
+      "id": "character_soldier",
+      "max_nb": -1,
+      "name": {
+        "en": "Soldier",
+        "zh": "士兵"
+      },
+      "name_key": "CHARACTER_SOLDIER",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 815,
+        "section": "3.45 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_knife_1",
+        "weapon_lightning_shiv_1",
+        "weapon_crossbow_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_laser_gun_1",
+        "weapon_pistol_1",
+        "weapon_shredder_1",
+        "weapon_revolver_1",
+        "weapon_smg_1",
+        "weapon_taser_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "chal_difficulty_2",
+        "condition": "同上",
+        "method": "赢下危险 2",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 147,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stand_still"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "temp_stats_on_hit",
+          "source_text": "受到伤害时 | % 伤害 +5(当波临时,temp_stats_on_hit)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 5
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "受到伤害时 | % 伤害 +5(当波临时,temp_stats_on_hit)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 5
+        },
+        {
+          "key": "stat_max_hp",
+          "source_text": "最大生命 | +10",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 10
+        },
+        {
+          "key": "stat_hp_regeneration",
+          "source_text": "生命再生 | +20",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 20
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "护甲 | +8",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 8
+        },
+        {
+          "key": "stat_percent_damage",
+          "source_text": "% 伤害 | -100",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -100
+        }
+      ],
+      "id": "character_masochist",
+      "max_nb": -1,
+      "name": {
+        "en": "Masochist",
+        "zh": "受虐狂"
+      },
+      "name_key": "CHARACTER_MASOCHIST",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 830,
+        "section": "3.46 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_rock_1",
+        "weapon_scissors_1",
+        "weapon_cactus_mace_1",
+        "weapon_ghost_axe_1",
+        "weapon_spiky_shield_1",
+        "weapon_sharp_tooth_1",
+        "weapon_torch_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_medical_gun_1",
+        "weapon_wand_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "chal_difficulty_3",
+        "condition": "同上",
+        "method": "赢下危险 3",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 148,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_max_hp",
+        "stat_armor",
+        "stat_hp_regeneration",
+        "stat_lifesteal"
+      ]
+    },
+    {
+      "banned_item_groups": [
+        "stat_armor",
+        "harvesting",
+        "ranged_damage",
+        "item_seashell"
+      ],
+      "banned_items": [
+        "item_seashell"
+      ],
+      "effects": [
+        {
+          "custom_key": "stat_links",
+          "key": "stat_melee_damage",
+          "source_text": "每 1 点护甲 | 近战伤害 +2",
+          "storage_method": "APPEND_KEY_VALUE",
+          "type": "stat_link_or_counted_bonus",
+          "value": 2
+        },
+        {
+          "key": "stat_armor",
+          "source_text": "护甲 | +3",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 3
+        },
+        {
+          "key": "no_ranged_weapons",
+          "source_text": "远程武器 | 禁止",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "min_weapon_tier",
+          "source_text": "武器档位下限 | REPLACE 1 → 商店只出 ≥ II 级武器(min_weapon_tier)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "min_weapon_tier",
+          "source_text": "武器档位下限 | REPLACE 1 → 商店只出 ≥ II 级武器(min_weapon_tier)",
+          "storage_method": "REPLACE",
+          "type": "effect",
+          "value": 1
+        },
+        {
+          "key": "gain_stat_attack_speed",
+          "source_text": "攻速获取效率 | -50%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -50
+        },
+        {
+          "key": "gain_stat_harvesting",
+          "source_text": "收获获取效率 | -80%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": -80
+        }
+      ],
+      "id": "character_knight",
+      "max_nb": -1,
+      "name": {
+        "en": "Knight",
+        "zh": "骑士"
+      },
+      "name_key": "CHARACTER_KNIGHT",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 844,
+        "section": "3.47 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_sword_2",
+        "weapon_hammer_2",
+        "weapon_spear_2",
+        "weapon_torch_2",
+        "weapon_jousting_lance_2",
+        "weapon_fighting_stick_2",
+        "weapon_plank_2",
+        "weapon_rock_2",
+        "weapon_fist_2",
+        "weapon_knife_2",
+        "weapon_scissors_2",
+        "weapon_cactus_mace_2",
+        "weapon_vorpal_sword_2"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "chal_difficulty_4",
+        "condition": "同上",
+        "method": "赢下危险 4",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 149,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "stat_armor",
+        "harvesting",
+        "ranged_damage",
+        "item_seashell"
+      ]
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [],
+      "effects": [
+        {
+          "key": "convert_stats_end_of_wave",
+          "source_text": "波次结束 | 将 50% 的当前材料转换为最大生命：每 13 材料 → +1 最大生命(convert_stats_end_of_wave,按属性转换规则执行,受双方属性获取效率换算)",
+          "storage_method": "REFERENCE",
+          "type": "source_key_reference",
+          "value": 1
+        },
+        {
+          "key": "gain_stat_max_hp",
+          "source_text": "波次结束 | 将 50% 的当前材料转换为最大生命：每 13 材料 → +1 最大生命(convert_stats_end_of_wave,按属性转换规则执行,受双方属性获取效率换算)",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 1
+        },
+        {
+          "key": "hp_shop",
+          "source_text": "商店货币 | hp_shop = 1：购买物品消耗最大生命值而非材料",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 1
+        }
+      ],
+      "id": "character_demon",
+      "max_nb": -1,
+      "name": {
+        "en": "Demon",
+        "zh": "恶魔"
+      },
+      "name_key": "CHARACTER_DEMON",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 859,
+        "section": "3.48 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_dagger_1",
+        "weapon_lightning_shiv_1",
+        "weapon_ghost_axe_1",
+        "weapon_ghost_flint_1",
+        "weapon_torch_1",
+        "weapon_chopper_1",
+        "weapon_sharp_tooth_1",
+        "weapon_wrench_1",
+        "weapon_ghost_scepter_1",
+        "weapon_wand_1",
+        "weapon_taser_1",
+        "weapon_icicle_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "chal_difficulty_5",
+        "condition": "同上",
+        "method": "赢下危险 5",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 150,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": []
+    },
+    {
+      "banned_item_groups": [],
+      "banned_items": [
+        "item_jelly"
+      ],
+      "effects": [
+        {
+          "key": "stat_attack_speed",
+          "source_text": "攻速 | +200",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": 200
+        },
+        {
+          "key": "gain_stat_percent_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_stat_ranged_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_stat_melee_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_stat_elemental_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_explosion_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_piercing_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_bounce_damage",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "gain_damage_against_bosses",
+          "source_text": "全部 8 项伤害获取效率 | +100%",
+          "storage_method": "SUM",
+          "type": "stat_gain_mod",
+          "value": 100
+        },
+        {
+          "key": "weapon_slot",
+          "source_text": "武器栏位 | -5(仅 1 格)",
+          "storage_method": "SUM",
+          "type": "effect",
+          "value": -5
+        }
+      ],
+      "id": "character_one_arm",
+      "max_nb": -1,
+      "name": {
+        "en": "One Arm",
+        "zh": "独臂"
+      },
+      "name_key": "CHARACTER_ONE_ARM",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 869,
+        "section": "3.49 character"
+      },
+      "starting_items": [],
+      "starting_weapons": [
+        "weapon_claw_1",
+        "weapon_dagger_1",
+        "weapon_ghost_axe_1",
+        "weapon_lightning_shiv_1",
+        "weapon_scissors_1",
+        "weapon_cactus_mace_1",
+        "weapon_torch_1",
+        "weapon_plank_1",
+        "weapon_hatchet_1",
+        "weapon_pruner_1",
+        "weapon_jousting_lance_1",
+        "weapon_double_barrel_shotgun_1",
+        "weapon_shredder_1",
+        "weapon_smg_1",
+        "weapon_taser_1",
+        "weapon_revolver_1",
+        "weapon_icicle_1",
+        "weapon_shuriken_1"
+      ],
+      "tags": [],
+      "tier": 0,
+      "tracking_text": "",
+      "unlock": {
+        "challenge_id": "chal_difficulty_0",
+        "condition": "胜局结算时自动完成",
+        "method": "赢下危险 0",
+        "source_ref": {
+          "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+          "line": 145,
+          "section": "2 unlock table"
+        }
+      },
+      "unlocked_by_default": false,
+      "value": 1,
+      "wanted_tags": [
+        "wanted_tags",
+        "boosted_wanted_item_tag"
+      ]
+    }
+  ],
+  "source": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md"
+}

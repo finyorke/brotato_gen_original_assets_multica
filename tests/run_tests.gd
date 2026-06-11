@@ -9,6 +9,11 @@ const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
+const CombatRuntimeScript = preload("res://src/combat/combat_runtime.gd")
+const EconomyCatalogScript = preload("res://src/economy/economy_catalog.gd")
+const ShopStateScript = preload("res://src/economy/shop_state.gd")
+const LevelUpPoolScript = preload("res://src/economy/level_up_pool.gd")
+const RewardResolverScript = preload("res://src/economy/reward_resolver.gd")
 
 var failures: Array = []
 var assertions_run: int = 0
@@ -23,7 +28,7 @@ func _initialize() -> void:
 	else:
 		for failure in failures:
 			push_error(failure)
-		print("M1 tests failed: %d" % failures.size())
+		print("Tests failed: %d" % failures.size())
 		quit(1)
 
 func _run_all() -> void:
@@ -33,6 +38,9 @@ func _run_all() -> void:
 	_formula_tests()
 	_burn_tests()
 	_combat_m2_tests()
+	_content_m3_tests()
+	_combat_m2c_tests()
+	_economy_m3b_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -312,6 +320,368 @@ func _combat_m2_tests() -> void:
 
 	_assert_danger0_wave_schedule_simulates(wave_json, enemy_json)
 
+func _content_m3_tests() -> void:
+	var characters_json := _load_json("res://data/m3/characters.json")
+	var weapons_json := _load_json("res://data/m3/weapons.json")
+	var items_json := _load_json("res://data/m3/items.json")
+	var tags_sets_json := _load_json("res://data/m3/tags_sets_unlocks.json")
+	var effect_reference_json := _load_json("res://data/m3/effect_reference.json")
+	var summary_json := _load_json("res://data/m3/generation_summary.json")
+
+	var characters: Array = characters_json.get("characters", [])
+	var weapon_families: Array = weapons_json.get("families", [])
+	var weapon_variants: Array = weapons_json.get("variants", [])
+	var items: Array = items_json.get("items", [])
+	var effect_defaults: Dictionary = effect_reference_json.get("effect_defaults", {})
+
+	_assert_equal(characters.size(), 49, "M3 character row count")
+	_assert_equal(weapon_families.size(), 61, "M3 weapon family count")
+	_assert_equal(int(weapons_json.get("summary", {}).get("quality_slot_count", 0)), 244, "M3 weapon family x quality slots")
+	_assert_equal(weapon_variants.size(), 201, "M3 documented weapon variant rows")
+	_assert_equal(items.size(), 209, "M3 item data row count")
+	_assert_equal(int(summary_json.get("weapon_undocumented_quality_slots", 0)), 43, "M3 explicitly tracks undocumented weapon slots")
+
+	_assert_equal(effect_defaults.size(), EffectKeysScript.key_count(), "M3 effect defaults mirror EffectKeys")
+	_assert_equal(effect_defaults["stat_max_hp"], 10, "M3 effect default max hp")
+	_assert_equal(effect_defaults["dodge_cap"], 60, "M3 effect default dodge cap")
+	_assert_equal(effect_defaults["weapon_slot"], 6, "M3 effect default weapon slots")
+	_assert_equal(effect_defaults["harvesting_growth"], 5, "M3 effect default harvesting growth")
+	_assert_equal(effect_defaults["hp_cap"], EffectKeysScript.INF_CAP, "M3 effect default hp cap")
+
+	var character_ids := {}
+	for character in characters:
+		var character_id := String(character.get("id", ""))
+		_assert_true(not character_ids.has(character_id), "unique character id %s" % character_id)
+		character_ids[character_id] = true
+		_validate_source_ref(character, "character %s" % character_id)
+		_assert_true(character.get("effects", []).size() > 0, "character %s has effect payloads" % character_id)
+		if not ["character_beast_master", "character_bull"].has(character_id):
+			_assert_true(character.get("starting_weapons", []).size() > 0, "character %s has starting weapon choices" % character_id)
+		for effect in character.get("effects", []):
+			_validate_effect_reference(effect, "character %s" % character_id)
+
+	var family_ids := {}
+	for family in weapon_families:
+		var family_id := String(family.get("id", ""))
+		_assert_true(not family_ids.has(family_id), "unique weapon family id %s" % family_id)
+		family_ids[family_id] = true
+		_validate_source_ref(family, "weapon family %s" % family_id)
+		_assert_equal(family.get("quality_slots", []).size(), 4, "weapon family %s has four quality slots" % family_id)
+		_assert_resource_exists(String(family.get("asset_refs", {}).get("icon", "")), "weapon family %s icon" % family_id)
+
+	for variant in weapon_variants:
+		var variant_id := String(variant.get("id", ""))
+		_validate_source_ref(variant, "weapon variant %s" % variant_id)
+		_assert_true(family_ids.has(String(variant.get("family_id", ""))), "weapon variant %s references a known family" % variant_id)
+		_assert_resource_exists(String(variant.get("asset_refs", {}).get("icon", "")), "weapon variant %s icon" % variant_id)
+		_assert_resource_exists(String(variant.get("asset_refs", {}).get("texture", "")), "weapon variant %s texture" % variant_id)
+		for scaling_key in variant.get("scaling_stats", {}).keys():
+			_assert_true(EffectKeysScript.has_key(String(scaling_key)) or String(scaling_key) == "stat_levels", "weapon variant %s scaling key %s exists" % [variant_id, scaling_key])
+		for effect in variant.get("effects", []):
+			_validate_effect_reference(effect, "weapon variant %s" % variant_id)
+
+	var item_ids := {}
+	for item in items:
+		var item_id := String(item.get("id", ""))
+		_assert_true(not item_ids.has(item_id), "unique item id %s" % item_id)
+		item_ids[item_id] = true
+		_validate_source_ref(item, "item %s" % item_id)
+		_assert_resource_exists(String(item.get("asset_refs", {}).get("icon", "")), "item %s icon" % item_id)
+		_assert_true(item.get("effects", []).size() > 0, "item %s has effect payloads" % item_id)
+		for effect in item.get("effects", []):
+			_validate_effect_reference(effect, "item %s" % item_id)
+
+	var weapon_sets: Array = tags_sets_json.get("weapon_sets", [])
+	var item_tags: Dictionary = tags_sets_json.get("item_tags", {})
+	var unlock_metadata: Dictionary = tags_sets_json.get("unlock_metadata", {})
+	var banned_item_groups: Dictionary = tags_sets_json.get("banned_item_groups", {})
+	_assert_equal(weapon_sets.size(), 15, "M3 weapon set count")
+	_assert_true(item_tags.has("stat_max_hp"), "M3 item tag index contains stat_max_hp")
+	_assert_true(item_tags.has("pet"), "M3 item tag index contains pet")
+	_assert_equal(unlock_metadata.size(), 49, "M3 unlock metadata covers all characters")
+	_assert_true(banned_item_groups.has("harvesting"), "M3 banned item groups include harvesting")
+
+	var self_test := _load_text("res://SELF_TEST_M3.md")
+	for sample_id in [
+		"character_well_rounded",
+		"character_mage",
+		"weapon_pistol_1",
+		"weapon_wrench_4",
+		"item_alien_tongue",
+		"item_hourglass",
+	]:
+		_assert_true(self_test.contains(sample_id), "SELF_TEST_M3 includes sample %s" % sample_id)
+
+func _combat_m2c_tests() -> void:
+	var player: Variant = PlayerDataScript.new()
+	var runtime: Variant = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 2, 0)
+	player.add_permanent_stat("stat_armor", 15)
+	var hit: Dictionary = runtime.resolve_player_damage(4, false)
+	_assert_equal(hit["damage"], 2, "player contact damage uses armor coefficient")
+	_assert_equal(player.current_health, 8, "player damage subtracts health")
+	_assert_approx(runtime.iframe_seconds_remaining, 0.4, "player hit grants iframe clamp")
+	var iframe_block: Dictionary = runtime.resolve_player_damage(4, false)
+	_assert_true(not bool(iframe_block["accepted"]), "iframes block repeated contact damage")
+	runtime.advance(0.4)
+	player.add_permanent_stat("stat_dodge", 60)
+	var dodge: Dictionary = runtime.resolve_player_damage(4, true, false, false, 0.0)
+	_assert_true(bool(dodge["dodged"]), "dodge can prevent player damage")
+	_assert_equal(player.current_health, 8, "dodged damage leaves health unchanged")
+	_assert_approx(runtime.iframe_seconds_remaining, 0.2, "dodged hit grants minimum iframes")
+	runtime.advance(0.2)
+	var death: Dictionary = runtime.resolve_player_damage(99, false, true)
+	_assert_equal(death["state"], CombatRuntimeScript.STATE_LOST, "lethal player damage sets loss state")
+	_assert_equal(player.current_health, 0, "lethal player damage clamps health to zero")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 2, 0)
+	var enemy := {
+		"position": Vector2(20, 0),
+		"hp": 2,
+		"max_hp": 2,
+		"speed": 250.0,
+		"damage": 1,
+		"knockback_resistance": 0.5,
+		"value": 1,
+	}
+	var enemy_hit: Dictionary = runtime.apply_enemy_damage(enemy, 3, Vector2.ZERO, 15.0)
+	_assert_true(bool(enemy_hit["dead"]), "enemy lethal hit marks death")
+	_assert_approx(Vector2(enemy_hit["knockback_vector"]).length(), 15.0, "enemy death knockback keeps minimum amount")
+	_assert_approx(runtime.enemy_knockback_velocity(enemy).length(), 750.0, "enemy knockback velocity applies resistance")
+	_assert_true(not runtime.enemy_can_contact_damage(enemy), "strong knockback disables contact damage")
+	runtime.decay_enemy_knockback(enemy)
+	_assert_approx(Vector2(enemy["knockback_vector"]).length(), 13.5, "enemy knockback decays by 10 percent per tick")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 5, 5, 0)
+	player.add_permanent_stat("gold_drops", 100)
+	enemy = {"position": Vector2(12, 20), "value": 1, "can_drop_material": true}
+	var materials: Array = []
+	_assert_true(runtime.spawn_material_from_enemy(enemy, materials, 5, false, 0.0, 0.0), "enemy material drop can spawn")
+	_assert_equal(materials.size(), 1, "material drop appends an entity")
+	_assert_equal(materials[0]["value"], 2, "material value includes gold_drops scaling")
+	for i in CombatRuntimeScript.MATERIAL_ENTITY_LIMIT - materials.size():
+		runtime.add_material_drop(materials, Vector2.ZERO, 1)
+	var merged: Dictionary = runtime.add_material_drop(materials, Vector2.ZERO, 3, 0)
+	_assert_equal(materials.size(), CombatRuntimeScript.MATERIAL_ENTITY_LIMIT, "material cap merges excess drops")
+	_assert_equal(merged["value"], 5, "merged material accumulates value")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 1, 0)
+	player.add_permanent_stat("chance_double_gold", 100)
+	player.add_permanent_stat("heal_when_pickup_gold", 100)
+	player.current_health = 5
+	var pickup_material: Dictionary = runtime.make_material(Vector2(10, 0), 2)
+	var pickup: Dictionary = runtime.update_material_attraction(pickup_material, Vector2.ZERO, 1.0 / 60.0, 0.0, 0.0)
+	_assert_true(bool(pickup["collected"]), "material inside pickup radius collects immediately")
+	_assert_equal(pickup["value"], 4, "material pickup can double value")
+	_assert_equal(player.materials, 4, "material pickup adds money")
+	_assert_equal(player.current_xp, 4.0, "material pickup adds equal xp")
+	_assert_equal(player.current_health, 6, "heal_when_pickup_gold heals one hp")
+	var flying_material: Dictionary = runtime.make_material(Vector2(140, 0), 1)
+	runtime.update_material_attraction(flying_material, Vector2.ZERO, 1.0 / 60.0)
+	_assert_true(Vector2(flying_material["position"]).x < 140.0, "material inside pickup range attracts toward player")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 2, 0)
+	player.add_permanent_stat("stat_harvesting", 10)
+	materials = [runtime.make_material(Vector2.ZERO, 2), runtime.make_material(Vector2.ZERO, 3)]
+	var live_enemies := [{"id": "a"}, {"id": "b"}]
+	var settlement: Dictionary = runtime.complete_wave(live_enemies, materials)
+	_assert_equal(settlement["state"], CombatRuntimeScript.STATE_RUNNING, "non-final wave keeps run active")
+	_assert_equal(runtime.current_wave, 2, "wave completion advances to next wave")
+	_assert_equal(live_enemies.size(), 0, "wave completion clears living enemies")
+	_assert_equal(materials.size(), 0, "wave completion clears ground materials")
+	_assert_equal(runtime.bonus_gold, 5, "wave completion recovers ground materials into bonus gold")
+	_assert_equal(player.materials, 10, "harvesting grants materials")
+	_assert_equal(player.current_xp, 10.0, "harvesting grants xp")
+	_assert_equal(player.effects["stat_harvesting"], 11, "harvesting grows at wave end")
+	runtime.start_wave(2)
+	runtime.complete_wave([], [])
+	_assert_equal(runtime.state, CombatRuntimeScript.STATE_WON, "final starter wave completion sets win state")
+
+func _economy_m3b_tests() -> void:
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.001), 3, "shop tier roll hits tier IV first")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.05), 2, "shop tier roll hits tier III")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.30), 1, "shop tier roll hits tier II")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.80), 0, "shop tier roll falls back to tier I")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.80, 1, 3, 1), 1, "shop tier increase clamps after result")
+	_assert_equal(formulas.shop_price(20, 5), 35, "shop item price formula")
+	_assert_equal(formulas.shop_price(20, 5, -20), 28, "shop item price discount")
+	_assert_equal(formulas.shop_price(10, 5, 0, 0, 100, true), 35, "weapon price modifies base value before wave formula")
+	_assert_equal(formulas.shop_price(10, 5, 0, 0, 100, true, true), 2, "hp shop price uses ceil original over 20")
+	_assert_equal(formulas.reroll_price_breakdown(10, 2, -50)["paid"], 10, "reroll price discount applies to paid amount")
+	_assert_equal(formulas.recycle_value(40, 20, 0), 10, "default recycle value is 25 percent")
+	_assert_equal(formulas.recycle_value(40, 20, 35), 24, "recycling machine raises recycle value to 60 percent")
+	_assert_equal(formulas.recycle_value(40, 1, 35), 1, "base value one always recycles for one")
+	_assert_equal(formulas.material_drop_amount(3.0, 50, 0, 0, 1, 1.0, 1.0), 4, "material drop floors boosted value without fractional bonus")
+	_assert_equal(formulas.material_drop_amount(3.0, 50, 0, 0, 1, 1.0, 0.0), 5, "material drop fractional part can add one")
+	_assert_equal(formulas.consumable_heal(2), 5, "fruit heal uses consumable_heal")
+	_assert_approx(formulas.consumable_drop_chance(0.2, 50, 0.5), 0.2, "consumable drop chance luck and endless")
+	_assert_approx(formulas.crate_drop_chance(0.2, 50, 2, 25), 0.125, "crate drop chance divides by previous crates and applies crate chance")
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 99173
+	var counts := [0, 0, 0, 0]
+	var samples := 20000
+	for i in samples:
+		counts[formulas.roll_shop_tier(10, 0, rng.randf())] += 1
+	_assert_approx(float(counts[3]) / float(samples), formulas.shop_tier_chance(3, 10), "statistical tier IV shop rate", 0.01)
+	_assert_approx(float(counts[2]) / float(samples), formulas.shop_tier_chance(2, 10) - formulas.shop_tier_chance(3, 10), "statistical tier III shop rate", 0.015)
+	_assert_approx(float(counts[1]) / float(samples), formulas.shop_tier_chance(1, 10) - formulas.shop_tier_chance(2, 10), "statistical tier II shop rate", 0.02)
+
+	var catalog: Variant = EconomyCatalogScript.from_json()
+	_assert_true(catalog.get_entry("item_coupon").size() > 0, "economy fixture catalog loads items")
+	var max_player: Variant = PlayerDataScript.new()
+	max_player.add_item(catalog.get_entry("item_recycling_machine"))
+	_assert_equal(catalog.pool("item", 1, max_player).size(), 1, "max_nb filters owned shop items")
+
+	var shop_player: Variant = PlayerDataScript.new()
+	shop_player.materials = 999
+	var shop: Variant = ShopStateScript.open(shop_player, catalog, 1, true, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.2, 0.0, 0.5],
+		"tag_rolls": [1.0, 1.0],
+	})
+	var weapon_slots := 0
+	for slot in shop.slots:
+		var slot_data: Dictionary = slot
+		if String(slot_data.get("kind", "")) == "weapon":
+			weapon_slots += 1
+	_assert_equal(weapon_slots, 2, "wave one shop guarantees two weapons")
+	var locked_price: int = shop.slot_price(0, shop_player)
+	var locked_id := String(shop.slots[0].get("id", ""))
+	_assert_true(shop.toggle_lock(0, shop_player), "shop slot can be locked")
+	var next_shop: Variant = ShopStateScript.open(shop_player, catalog, 2, true, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0],
+	})
+	_assert_equal(String(next_shop.slots[0].get("id", "")), locked_id, "locked shop item carries into next shop")
+	_assert_equal(next_shop.slot_price(0, shop_player), locked_price, "locked shop item keeps old wave price")
+	var materials_before_reroll: int = shop_player.materials
+	var reroll_result: Dictionary = next_shop.reroll(shop_player, catalog, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0],
+	})
+	_assert_true(reroll_result["ok"], "paid reroll succeeds")
+	_assert_equal(reroll_result["cost"], 2, "wave two paid reroll price")
+	_assert_equal(shop_player.materials, materials_before_reroll - 2, "paid reroll deducts materials")
+	_assert_equal(String(next_shop.slots[0].get("id", "")), locked_id, "reroll preserves locked slot")
+
+	var free_player: Variant = PlayerDataScript.new()
+	free_player.materials = 100
+	free_player.apply_effect(EffectEntryScript.make("free_rerolls", 1))
+	var free_shop: Variant = ShopStateScript.open(free_player, catalog, 3, true, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0, 1.0],
+	})
+	var free_result: Dictionary = free_shop.reroll(free_player, catalog, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0, 1.0],
+	})
+	_assert_true(free_result["free"], "free_rerolls makes first reroll free")
+	_assert_equal(free_result["cost"], 0, "free reroll has zero cost")
+	_assert_equal(free_shop.paid_rerolls, 0, "free reroll does not increment paid count")
+
+	var buy_player: Variant = PlayerDataScript.new()
+	buy_player.materials = 100
+	var buy_shop: Variant = ShopStateScript.new()
+	buy_shop.wave = 1
+	var coupon: Dictionary = catalog.get_entry("item_coupon")
+	coupon["wave_value"] = 1
+	buy_shop.slots = [coupon]
+	var buy_result: Dictionary = buy_shop.buy_slot(0, buy_player, catalog)
+	_assert_true(buy_result["ok"], "buying an item succeeds")
+	_assert_equal(buy_player.materials, 82, "buying coupon deducts documented price")
+	_assert_equal(buy_player.get_stat("items_price"), -5.0, "buying item applies effects")
+
+	var combine_player: Variant = PlayerDataScript.new()
+	combine_player.materials = 100
+	combine_player.add_permanent_stat("weapon_slot", -5)
+	combine_player.add_weapon(catalog.get_entry("weapon_pistol_t1"))
+	var combine_shop: Variant = ShopStateScript.new()
+	combine_shop.wave = 1
+	var pistol: Dictionary = catalog.get_entry("weapon_pistol_t1")
+	pistol["wave_value"] = 1
+	combine_shop.slots = [pistol]
+	var combine_result: Dictionary = combine_shop.buy_slot(0, combine_player, catalog)
+	_assert_true(combine_result["ok"], "full weapon slots can buy-combine same weapon")
+	_assert_equal(combine_result["upgraded_to"], "weapon_pistol_t2", "buy-combine upgrades to next tier")
+	_assert_equal(combine_player.weapons.size(), 1, "buy-combine keeps slot count stable")
+	_assert_equal(String(combine_player.weapons[0].get("id", "")), "weapon_pistol_t2", "inventory contains upgraded weapon")
+
+	var recycle_player: Variant = PlayerDataScript.new()
+	recycle_player.apply_effect(EffectEntryScript.make("recycling_gains", 35))
+	recycle_player.add_weapon(catalog.get_entry("weapon_smg_t1"))
+	var recycle_shop: Variant = ShopStateScript.new()
+	recycle_shop.wave = 5
+	var recycle_result: Dictionary = recycle_shop.recycle_weapon(0, recycle_player)
+	_assert_true(recycle_result["ok"], "weapon recycling succeeds")
+	_assert_equal(recycle_result["value"], 21, "weapon recycling uses current shop price and recycling gains")
+	_assert_equal(recycle_player.materials, 21, "weapon recycling pays materials")
+
+	var level_pool: Variant = LevelUpPoolScript.new()
+	var level_player: Variant = PlayerDataScript.new()
+	var level_options: Array = level_pool.generate_options(5, level_player, [], {
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0, 0.0],
+	})
+	_assert_equal(level_options.size(), 4, "level up generates four options")
+	_assert_equal(level_options[0]["tier"], 1, "level five forces tier II upgrades")
+	_assert_equal(level_options[0]["value"], 6, "tier II max hp upgrade value")
+	level_pool.apply_option(level_player, level_options[0])
+	_assert_equal(level_player.get_max_health(), 16, "applying max hp level option changes stat")
+	_assert_equal(level_player.current_health, 16, "max hp level option heals by increase")
+	var forced_slot_player: Variant = PlayerDataScript.new()
+	forced_slot_player.add_permanent_stat("weapon_slot", -4)
+	forced_slot_player.apply_effect(EffectEntryScript.make("weapon_slot_upgrades", 6))
+	var forced_options: Array = level_pool.generate_options(2, forced_slot_player)
+	_assert_equal(forced_options.size(), 1, "weapon slot upgrades force slot option")
+	_assert_equal(forced_options[0]["key"], "weapon_slot", "forced level option is weapon slot")
+
+	var reward: Variant = RewardResolverScript.new()
+	var reward_player: Variant = PlayerDataScript.new()
+	reward_player.apply_effect(EffectEntryScript.make("chance_double_gold", 100))
+	var pickup_result: Dictionary = reward.pickup_material(reward_player, 5, 0.0)
+	_assert_equal(pickup_result["materials"], 10, "material pickup can double gold")
+	_assert_equal(reward_player.materials, 10, "material pickup adds money")
+	var harvest_player: Variant = PlayerDataScript.new()
+	harvest_player.add_permanent_stat("stat_harvesting", 10)
+	var harvest_result: Dictionary = reward.settle_harvesting(harvest_player, 1)
+	_assert_equal(harvest_result["value"], 10, "harvesting grants materials")
+	_assert_equal(harvest_result["growth"], 1, "harvesting grows by default five percent rounded up")
+	_assert_equal(harvest_player.materials, 10, "harvesting settlement adds money")
+	_assert_equal(harvest_player.get_stat("stat_harvesting"), 11.0, "harvesting growth is permanent")
+	var negative_harvest_player: Variant = PlayerDataScript.new()
+	negative_harvest_player.materials = 10
+	negative_harvest_player.add_permanent_stat("stat_harvesting", -5)
+	var negative_result: Dictionary = reward.settle_harvesting(negative_harvest_player, 1)
+	_assert_equal(negative_result["value"], -5, "negative harvesting computes negative value")
+	_assert_equal(negative_harvest_player.materials, 5, "negative harvesting deducts only money")
+	_assert_equal(reward.collect_bonus_gold([{"value": 2}, {"value": 3}]), 5, "ground materials collect into bonus gold")
+	var repayment: Dictionary = reward.repay_bonus_gold(3, 5)
+	_assert_equal(repayment["value"], 6, "bonus gold doubles next material up to its value")
+	_assert_equal(repayment["remaining_bonus_gold"], 2, "bonus gold repayment decrements pool")
+
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
 	if actual != expected:
@@ -326,6 +696,30 @@ func _assert_true(value: bool, label: String) -> void:
 	assertions_run += 1
 	if not value:
 		failures.append("%s: expected true" % label)
+
+func _assert_resource_exists(path: String, label: String) -> void:
+	assertions_run += 1
+	if path == "" or not FileAccess.file_exists(path):
+		failures.append("%s: missing resource %s" % [label, path])
+
+func _validate_source_ref(record: Dictionary, label: String) -> void:
+	_assert_true(record.has("source_ref"), "%s has source_ref" % label)
+	var ref: Dictionary = record.get("source_ref", {})
+	_assert_true(String(ref.get("doc", "")).ends_with(".md"), "%s source_ref doc is markdown" % label)
+	_assert_true(int(ref.get("line", 0)) > 0, "%s source_ref has positive line" % label)
+
+func _validate_effect_reference(effect: Dictionary, label: String) -> void:
+	if not effect.has("key"):
+		_assert_true(effect.has("source_text"), "%s raw effect keeps source text" % label)
+		return
+	var key := String(effect.get("key", ""))
+	var custom_key := String(effect.get("custom_key", ""))
+	if custom_key != "":
+		_assert_true(EffectKeysScript.has_key(custom_key), "%s custom effect key %s exists" % [label, custom_key])
+	elif key.begins_with("item_") or key.begins_with("weapon_"):
+		_assert_true(key != "", "%s item/weapon append key is present" % label)
+	else:
+		_assert_true(EffectKeysScript.has_key(key), "%s effect key %s exists" % [label, key])
 
 func _load_json(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)
@@ -375,3 +769,9 @@ func _request_enemy_ids(request: Dictionary) -> Array:
 	for enemy_id in request.get("enemy_pool", []):
 		ids.append(String(enemy_id))
 	return ids
+
+func _load_text(path: String) -> String:
+	if not FileAccess.file_exists(path):
+		failures.append("missing text file: %s" % path)
+		return ""
+	return FileAccess.get_file_as_string(path)

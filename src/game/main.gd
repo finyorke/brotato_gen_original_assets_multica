@@ -6,14 +6,16 @@ const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
-const PLAYER_TEXTURE := preload("res://devkit/brotato_original_devkit/asset_pack/assets/player/potato.png")
-const MATERIAL_TEXTURE := preload("res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0000.png")
+const CombatRuntimeScript = preload("res://src/combat/combat_runtime.gd")
+const PLAYER_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/player/potato.png"
+const MATERIAL_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0000.png"
 const WEAPON_DATA_PATH := "res://data/m2/starter_weapons.json"
 const ENEMY_DATA_PATH := "res://data/m2/area1_enemies.json"
 const WAVE_DATA_PATH := "res://data/m2/area1_waves.json"
 
 var player_data: Variant
 var formulas: Variant = FormulasScript.new()
+var combat_runtime: Variant
 var weapon_stats: Variant
 var wave_scheduler: Variant
 var player_position := Vector2.ZERO
@@ -26,20 +28,34 @@ var enemy_stats_by_id: Dictionary = {}
 var enemy_textures: Dictionary = {}
 var waves_by_number: Dictionary = {}
 var common_wave_groups: Array = []
+var player_texture: Texture2D
+var material_texture: Texture2D
 var weapon_texture: Texture2D
 var performance_clears: int = 0
 
 func _ready() -> void:
 	Engine.physics_ticks_per_second = 60
 	_load_m2_data()
+	player_texture = _load_texture(PLAYER_TEXTURE_PATH)
+	material_texture = _load_texture(MATERIAL_TEXTURE_PATH)
 	player_data = PlayerDataScript.new()
 	player_data.add_permanent_stat("stat_ranged_damage", 4)
 	player_data.add_permanent_stat("stat_attack_speed", 20)
 	player_position = get_viewport_rect().size * 0.5
+	combat_runtime = CombatRuntimeScript.new()
+	combat_runtime.start_run(player_data, current_wave, _highest_wave_number(), current_danger)
 
 func _physics_process(delta: float) -> void:
+	if combat_runtime.state != CombatRuntimeScript.STATE_RUNNING:
+		queue_redraw()
+		return
+	combat_runtime.advance(delta)
 	_update_player(delta)
 	_update_enemies(delta)
+	_update_contact_damage()
+	if combat_runtime.state != CombatRuntimeScript.STATE_RUNNING:
+		queue_redraw()
+		return
 	_update_weapon(delta)
 	_update_materials(delta)
 	_update_wave(delta)
@@ -55,7 +71,11 @@ func _draw() -> void:
 	for material in materials:
 		var material_data: Dictionary = material
 		var material_pos: Vector2 = material_data["position"]
-		draw_texture_rect(MATERIAL_TEXTURE, Rect2(material_pos - Vector2(12, 12), Vector2(24, 24)), false)
+		var material_size := Vector2(24, 24) * float(material_data.get("scale", 1.0))
+		if material_texture != null:
+			draw_texture_rect(material_texture, Rect2(material_pos - material_size * 0.5, material_size), false)
+		else:
+			draw_circle(material_pos, material_size.x * 0.35, Color(0.9, 0.8, 0.22), true)
 	for warning in wave_scheduler.warning_queue:
 		var warning_data: Dictionary = warning
 		var warning_pos: Vector2 = warning_data["position"]
@@ -74,11 +94,22 @@ func _draw() -> void:
 		draw_rect(Rect2(enemy_pos + Vector2(-24, -44), Vector2(48, 5)), Color.BLACK, true)
 		draw_rect(Rect2(enemy_pos + Vector2(-24, -44), Vector2(48 * hp_ratio, 5)), Color(0.9, 0.14, 0.12), true)
 	draw_ellipse(player_position + Vector2(0, 30), 84.0, 24.0, Color(0, 0, 0, 0.35), true)
-	draw_texture_rect(PLAYER_TEXTURE, Rect2(player_position - Vector2(48, 48), Vector2(96, 96)), false)
+	var player_color := Color.WHITE
+	if combat_runtime != null and combat_runtime.iframe_seconds_remaining > 0.0:
+		player_color = Color(1.0, 1.0, 1.0, 0.55 + 0.35 * sin(combat_runtime.iframe_seconds_remaining * 80.0))
+	if player_texture != null:
+		draw_texture_rect(player_texture, Rect2(player_position - Vector2(48, 48), Vector2(96, 96)), false, player_color)
+	else:
+		draw_circle(player_position, 30.0, Color(0.84, 0.66, 0.34, player_color.a), true)
 	if weapon_texture != null:
 		draw_texture_rect(weapon_texture, Rect2(player_position + Vector2(32, -14), Vector2(56, 28)), false)
-	draw_string(ThemeDB.fallback_font, Vector2(24, 32), "M2 combat slice | Wave %d %.1fs/%ds | Materials %d | Enemies %d | Perf clears %d" % [current_wave, wave_scheduler.elapsed_seconds, int(wave_scheduler.duration_seconds), player_data.materials, enemies.size(), performance_clears], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
+	var ui_state: Dictionary = combat_runtime.get_ui_state(enemies.size(), materials.size())
+	draw_string(ThemeDB.fallback_font, Vector2(24, 32), "M2C loop | %s | Wave %d %.1fs/%ds | HP %d/%d | Materials %d | Bonus %d | Enemies %d | Perf clears %d" % [String(ui_state["state"]).to_upper(), current_wave, wave_scheduler.elapsed_seconds, int(wave_scheduler.duration_seconds), int(ui_state["health"]), int(ui_state["max_health"]), int(ui_state["materials"]), int(ui_state["bonus_gold"]), enemies.size(), performance_clears], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
 	draw_string(ThemeDB.fallback_font, Vector2(24, 56), "%s | Damage %d | Cooldown %.1f ticks | Detect %.0f px" % [weapon_stats.display_name, weapon_stats.resolved_damage(player_data), weapon_stats.resolved_cooldown_ticks(player_data), weapon_stats.detection_range(player_data)], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(0.9, 0.95, 0.9))
+	if combat_runtime.state == CombatRuntimeScript.STATE_WON:
+		draw_string(ThemeDB.fallback_font, get_viewport_rect().size * 0.5 + Vector2(-120, -20), "RUN WON", HORIZONTAL_ALIGNMENT_LEFT, -1, 44, Color(0.9, 1.0, 0.55))
+	elif combat_runtime.state == CombatRuntimeScript.STATE_LOST:
+		draw_string(ThemeDB.fallback_font, get_viewport_rect().size * 0.5 + Vector2(-120, -20), "RUN LOST", HORIZONTAL_ALIGNMENT_LEFT, -1, 44, Color(1.0, 0.45, 0.35))
 
 func _update_player(delta: float) -> void:
 	var input_vector := Vector2(
@@ -107,8 +138,22 @@ func _update_enemies(delta: float) -> void:
 				direction = -direction
 			elif distance <= 360.0:
 				direction = Vector2.ZERO
-		enemy["position"] = enemy_pos + direction * float(enemy["speed"]) * delta
+		var movement_velocity := direction * float(enemy["speed"])
+		var knockback_velocity: Vector2 = combat_runtime.enemy_knockback_velocity(enemy)
+		enemy["position"] = enemy_pos + (movement_velocity + knockback_velocity) * delta
+		combat_runtime.decay_enemy_knockback(enemy)
 		enemies[i] = enemy
+
+func _update_contact_damage() -> void:
+	for enemy in enemies:
+		var enemy_data: Dictionary = enemy
+		if not combat_runtime.enemy_is_touching_player(enemy_data, player_position):
+			continue
+		if not combat_runtime.enemy_can_contact_damage(enemy_data):
+			continue
+		combat_runtime.resolve_player_damage(int(enemy_data.get("damage", 1)))
+		if combat_runtime.state != CombatRuntimeScript.STATE_RUNNING:
+			return
 
 func _update_weapon(delta: float) -> void:
 	weapon_cooldown_ticks -= delta * 60.0
@@ -124,25 +169,14 @@ func _update_weapon(delta: float) -> void:
 	var critical: bool = randf() <= weapon_stats.effective_crit_chance(player_data)
 	damage = weapon_stats.damage_after_crit(damage, critical)
 	damage = formulas.enemy_damage_after_armor(damage, int(target.get("armor", 0)))
-	target["hp"] -= damage
+	var hit_result: Dictionary = combat_runtime.apply_enemy_damage(target, damage, player_position, weapon_stats.resolved_knockback(player_data))
 	weapon_cooldown_ticks = weapon_stats.resolved_cooldown_ticks(player_data)
-	if int(target["hp"]) <= 0:
-		_drop_material(target["position"], 1)
+	if bool(hit_result.get("dead", false)):
+		combat_runtime.spawn_material_from_enemy(target, materials, current_wave)
 		enemies.erase(target)
 
 func _update_materials(delta: float) -> void:
-	for material in materials.duplicate():
-		var material_data: Dictionary = material
-		var material_pos: Vector2 = material_data["position"]
-		var distance: float = material_pos.distance_to(player_position)
-		if distance <= 30.0:
-			player_data.materials += material_data["value"]
-			player_data.gain_xp(material_data["value"])
-			materials.erase(material)
-		elif distance <= 150.0:
-			var speed: float = formulas.pickup_flight_speed(500.0, 1200.0, material_data["flight_time"])
-			material_data["flight_time"] += delta
-			material_data["position"] = material_pos + (player_position - material_pos).normalized() * speed * delta
+	combat_runtime.update_materials(materials, player_position, delta)
 
 func _update_wave(delta: float) -> void:
 	var requests: Array = wave_scheduler.advance(delta, current_danger, enemies.size())
@@ -155,9 +189,8 @@ func _update_wave(delta: float) -> void:
 	var materialized: Array = wave_scheduler.physics_tick(player_position, Callable(self, "_random_spawn_position"))
 	for request in materialized:
 		_spawn_enemy_from_request(request)
-	if wave_scheduler.elapsed_seconds >= wave_scheduler.duration_seconds and enemies.is_empty() and wave_scheduler.active_warning_count() == 0 and wave_scheduler.pending_spawn_count() == 0 and current_wave < _highest_wave_number():
-		current_wave += 1
-		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
+	if wave_scheduler.elapsed_seconds >= wave_scheduler.duration_seconds:
+		_complete_current_wave()
 
 func _spawn_enemy_from_request(request: Dictionary) -> void:
 	var enemy_id := _enemy_id_from_request(request)
@@ -177,12 +210,14 @@ func _enemy_id_from_request(request: Dictionary) -> String:
 		return String(enemy_pool[randi() % enemy_pool.size()])
 	return "baby_alien"
 
-func _drop_material(pos: Vector2, value: int) -> void:
-	materials.append({
-		"position": pos,
-		"value": value,
-		"flight_time": 0.0,
-	})
+func _complete_current_wave() -> void:
+	wave_scheduler.warning_queue.clear()
+	wave_scheduler.spawn_queue.clear()
+	var result: Dictionary = combat_runtime.complete_wave(enemies, materials)
+	current_wave = int(result.get("next_wave", current_wave))
+	if combat_runtime.state == CombatRuntimeScript.STATE_RUNNING:
+		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
+		combat_runtime.start_wave(current_wave)
 
 func _performance_cull_enemies(count: int) -> void:
 	for i in maxi(0, count):
@@ -228,7 +263,7 @@ func _raw_spawn_position(area: String, viewport_size: Vector2) -> Vector2:
 		var offset := Vector2.RIGHT.rotated(randf() * TAU) * randf() * radius
 		return (center + offset).clamp(Vector2(margin, margin), viewport_size - Vector2(margin, margin))
 	if area.begins_with("inner_"):
-		var inner_margin := min(float(area.get_slice("_", 1)), min(viewport_size.x, viewport_size.y) * 0.2)
+		var inner_margin: float = min(float(area.get_slice("_", 1)), min(viewport_size.x, viewport_size.y) * 0.2)
 		return Vector2(randf_range(inner_margin, viewport_size.x - inner_margin), randf_range(inner_margin, viewport_size.y - inner_margin))
 	return Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 
@@ -237,14 +272,14 @@ func _texture_for_enemy(enemy_data: Dictionary) -> Texture2D:
 	if path.is_empty():
 		return null
 	if not enemy_textures.has(path):
-		enemy_textures[path] = load(path)
+		enemy_textures[path] = _load_texture(path)
 	return enemy_textures[path]
 
 func _load_m2_data() -> void:
 	var weapon_json: Dictionary = _load_json(WEAPON_DATA_PATH)
 	var weapon_rows: Array = weapon_json.get("weapons", [])
 	weapon_stats = WeaponStatsScript.from_dict(weapon_rows[0])
-	weapon_texture = load(weapon_stats.texture_path)
+	weapon_texture = _load_texture(weapon_stats.texture_path)
 
 	var enemy_json: Dictionary = _load_json(ENEMY_DATA_PATH)
 	for row in enemy_json.get("enemies", []):
@@ -256,6 +291,20 @@ func _load_m2_data() -> void:
 	for row in wave_json.get("waves", []):
 		waves_by_number[int(row.get("wave", 1))] = row
 	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
+
+func _load_texture(path: String) -> Texture2D:
+	if path.is_empty():
+		return null
+	if ResourceLoader.exists(path):
+		var loaded := ResourceLoader.load(path)
+		if loaded is Texture2D:
+			return loaded
+	var image := Image.new()
+	var error := image.load(ProjectSettings.globalize_path(path))
+	if error != OK:
+		push_warning("Could not load texture: %s" % path)
+		return null
+	return ImageTexture.create_from_image(image)
 
 func _load_json(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)
