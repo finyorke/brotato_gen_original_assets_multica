@@ -21,6 +21,13 @@ Current M2 slice:
 - Combat helpers for weapon resolution, enemy stat scaling, targeting, material drop chance, pickup radius, and player iframe timing.
 - Main scene now consumes the M2 data instead of hard-coded weapon/enemy numbers.
 
+Current M3B backend slice:
+
+- Fixture economy catalog for a small documented subset of items, weapons, and consumables until full M3A content data is merged.
+- Shop/economy APIs for tier rolls, prices, rerolls, locking, item purchase, weapon buy-combine, recycling, and reward settlement.
+- Level-up option generation with documented tier overrides and upgrade values for effect keys already present in the M1 dictionary.
+- Headless tests for shop probabilities, pricing, reroll/free reroll, locking, combining, recycling, XP/harvesting rewards, crates, and consumables.
+
 ## Run Locally
 
 ```powershell
