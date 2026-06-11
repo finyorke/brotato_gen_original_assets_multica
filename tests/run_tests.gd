@@ -18,6 +18,11 @@ const RewardResolverScript = preload("res://src/economy/reward_resolver.gd")
 const AssetManifestScript = preload("res://src/presentation/asset_manifest.gd")
 const PresentationRulesScript = preload("res://src/presentation/presentation_rules.gd")
 const AudioRulesScript = preload("res://src/presentation/audio_rules.gd")
+const ChallengeRegistryScript = preload("res://src/progression/challenge_registry.gd")
+const ProgressionStateScript = preload("res://src/progression/progression_state.gd")
+const SaveServiceScript = preload("res://src/progression/save_service.gd")
+const GameSettingsScript = preload("res://src/settings/game_settings.gd")
+const CoopStateScript = preload("res://src/coop/coop_state.gd")
 
 var failures: Array = []
 var assertions_run: int = 0
@@ -48,6 +53,9 @@ func _run_all() -> void:
 	_combat_m2c_tests()
 	_economy_m3b_tests()
 	_presentation_m5_tests()
+	_progression_m6_tests()
+	_save_settings_m6_tests()
+	_coop_m6_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -204,6 +212,16 @@ func _formula_tests() -> void:
 	_assert_equal(formulas.pickup_flight_speed(500, 1200, 0.5), 1100.0, "pickup flight acceleration")
 	_assert_true(not formulas.generic_probability_succeeds(0.0, 0.0), "zero chance always fails")
 	_assert_true(formulas.generic_probability_succeeds(0.2, 0.2), "generic chance uses <= roll")
+	_assert_equal(formulas.danger_effects(5)["danger_enemy_damage"], 40, "danger 5 applies documented enemy damage")
+	_assert_equal(formulas.danger_elite_event_count(4), 3, "danger 4 schedules three elite events")
+	_assert_equal(formulas.danger_boss_count(5), 2, "danger 5 uses double boss")
+	_assert_approx(formulas.coop_enemy_damage_multiplier(4), 1.24, "coop damage uses eight percent per extra player")
+	_assert_approx(formulas.coop_material_value_multiplier(2), 1.430769, "coop material compensation uses documented factor", 0.00001)
+	_assert_approx(formulas.endless_hp_multiplier(formulas.endless_factor(21)), 1.045, "endless hp multiplier uses 2.25 coefficient")
+	_assert_equal(formulas.enemy_damage(10, 0, 21, 0, 1.4, formulas.endless_factor(21), 4), 18, "enemy damage combines danger coop and endless")
+	_assert_equal(formulas.enemy_speed(100, 20, 0.5, formulas.endless_factor(40)), 88, "enemy speed applies accessibility and endless cap")
+	_assert_equal(formulas.endless_max_enemies(100, 21), 135, "endless reuses wave index for enemy cap")
+	_assert_equal(formulas.endless_extra_group_count(30), 6, "endless extra group count")
 
 func _burn_tests() -> void:
 	var a: Variant = BurnDataScript.new()
@@ -973,6 +991,101 @@ func _presentation_m5_tests() -> void:
 	_assert_equal(AudioRulesScript.next_track(next_candidates, "a")["id"], "b", "music next track avoids immediate repeat")
 	_assert_equal(AudioRulesScript.music_volume_for_state(manifest.audio_data(), "wave_failed"), -20.0, "music failure ducking follows doc")
 	_assert_equal(AudioRulesScript.music_volume_for_state(manifest.audio_data(), "shop"), -8.0, "music shop ducking follows doc")
+
+func _progression_m6_tests() -> void:
+	_assert_equal(ChallengeRegistryScript.count(), 113, "challenge registry exposes documented 113 base challenges")
+	_assert_equal(ChallengeRegistryScript.by_id("fake_item_banned_item")["reward"], "ban_system", "ban system challenge is registered")
+	_assert_equal(ChallengeRegistryScript.storage_id("chal_evil_hat"), "chal_evil_mob", "evil hat uses documented storage id")
+	var state: Variant = ProgressionStateScript.new()
+	_assert_true(state.can_select_danger("character_well_rounded", "zone_crash_site", 0), "danger 0 default unlocked")
+	_assert_true(not state.can_select_danger("character_well_rounded", "zone_crash_site", 1), "danger 1 starts locked")
+	var result: Dictionary = state.record_run_result({
+		"won": true,
+		"danger": 0,
+		"wave": 20,
+		"character_id": "character_well_rounded",
+		"zone_id": "zone_crash_site",
+		"enemy_scaling": {"health": 1.0, "damage": 1.0, "speed": 1.0},
+		"retries": 0,
+		"bans_used": 0,
+	})
+	_assert_true(result["completed_challenges"].has("unlock_difficulty_1"), "winning danger 0 completes danger unlock")
+	_assert_true(result["completed_challenges"].has("chal_difficulty_0"), "winning danger 0 completes exact difficulty challenge")
+	_assert_true(result["completed_challenges"].has("chal_well_rounded"), "winning with a character completes character win challenge")
+	_assert_true(state.can_select_danger("character_brawler", "zone_crash_site", 1), "danger unlock is shared across characters")
+	_assert_true(state.characters_unlocked.has("character_one_arm"), "danger zero challenge unlocks one arm")
+	_assert_true(state.items_unlocked.has("item_potato"), "character win reward unlocks item")
+	var worse_result: Dictionary = state.record_run_result({
+		"won": true,
+		"danger": 0,
+		"wave": 20,
+		"character_id": "character_well_rounded",
+		"zone_id": "zone_crash_site",
+		"enemy_scaling": {"health": 1.0, "damage": 1.0, "speed": 1.0},
+		"retries": 2,
+		"bans_used": 0,
+	})
+	_assert_true(not worse_result["completed_challenges"].has("chal_difficulty_0"), "completed challenges are idempotent")
+	var info: Dictionary = state.get_difficulty_info("character_well_rounded", "zone_crash_site")
+	_assert_equal(info["best_record"]["retries"], 0, "worse retry count does not replace best record")
+	state.record_run_result({
+		"won": true,
+		"danger": 1,
+		"wave": 25,
+		"endless": true,
+		"character_id": "character_well_rounded",
+		"zone_id": "zone_crash_site",
+	})
+	info = state.get_difficulty_info("character_well_rounded", "zone_crash_site")
+	_assert_equal(info["max_endless_wave_beaten"], 25, "endless wave record updates")
+	_assert_true(state.systems_unlocked.has("ban_system"), "danger >=1 win unlocks ban system")
+
+func _save_settings_m6_tests() -> void:
+	var settings: Variant = GameSettingsScript.new()
+	_assert_equal(settings.get_value("gameplay.share_coop_loot"), true, "share coop loot default")
+	_assert_equal(settings.get_value("accessibility.enemy_scaling.health"), 1.0, "enemy scaling default")
+	settings.set_value("gameplay.play_mode", "COOP")
+	settings.set_value("accessibility.enemy_scaling.health", 0.75)
+	_assert_true(settings.is_coop_enabled(), "settings can enable coop mode")
+	var restored_settings: Variant = GameSettingsScript.from_dict(settings.to_dict())
+	_assert_equal(restored_settings.enemy_scaling_snapshot()["health"], 0.75, "settings round trip keeps nested values")
+	var service: Variant = SaveServiceScript.new("user://m6_tests")
+	var progress: Variant = ProgressionStateScript.new()
+	progress.complete_challenge("chal_hourglass")
+	_assert_true(service.save_progress(0, progress), "progress save writes")
+	_assert_true(service.save_settings(settings), "settings save writes")
+	var loaded_progress: Variant = service.load_progress(0)
+	_assert_true(loaded_progress.has_completed_challenge("chal_hourglass"), "progress save loads challenge")
+	var loaded_settings: Variant = service.load_settings()
+	_assert_equal(loaded_settings.get_value("gameplay.play_mode"), "COOP", "settings save loads gameplay value")
+	_assert_true(service.save_run(0, {"wave": 9, "danger": 2, "players": [{"character_id": "character_well_rounded"}]}), "run save writes")
+	_assert_equal(service.load_run(0)["wave"], 9, "run save loads")
+
+func _coop_m6_tests() -> void:
+	var coop: Variant = CoopStateScript.new()
+	var p1: Variant = PlayerDataScript.new()
+	var p2: Variant = PlayerDataScript.new()
+	_assert_equal(coop.add_player(p1, "character_well_rounded", "weapon_pistol"), 0, "coop adds p1")
+	_assert_equal(coop.add_player(p2, "character_brawler", "weapon_fist"), 1, "coop adds p2")
+	var distributed: Dictionary = coop.pickup_material(5)
+	_assert_equal(distributed["distribution"][0]["materials"], 3, "coop material rotates first share")
+	_assert_equal(distributed["distribution"][1]["materials"], 2, "coop material rotates second share")
+	_assert_equal(p1.materials, 3, "coop pickup credits p1 wallet")
+	_assert_equal(p2.materials, 2, "coop pickup credits p2 wallet")
+	_assert_equal(coop.assign_item_box(0, 0.0), 0, "first shared box can go to first tied queue")
+	_assert_equal(coop.assign_item_box(0, 0.0), 1, "second shared box goes to shorter queue")
+	coop.set_alive(0, false)
+	_assert_true(not coop.all_players_dead(), "one living coop player keeps wave alive")
+	coop.set_alive(1, false)
+	_assert_true(coop.all_players_dead(), "all dead ends coop wave")
+	coop.start_wave()
+	_assert_equal(coop.living_player_count(), 2, "next wave respawns all players")
+	coop.set_ready(0, true)
+	_assert_true(not coop.all_ready(), "coop waits for all go states")
+	coop.set_ready(1, true)
+	_assert_true(coop.all_ready(), "coop all ready state")
+	var context: Dictionary = coop.coop_enemy_context()
+	_assert_approx(context["enemy_health_multiplier"], 1.3, "coop context exposes enemy hp scaling")
 
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1

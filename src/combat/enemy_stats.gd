@@ -64,11 +64,11 @@ func max_health_for_wave(wave: int, player: Variant = null, difficulty_multiplie
 		enemy_health_percent = player.get_stat("enemy_health")
 	return _formulas.enemy_hp(health, health_increase_each_wave, wave, enemy_health_percent, difficulty_multiplier, player_count, endless_factor)
 
-func contact_damage_for_wave(wave: int, player: Variant = null, difficulty_multiplier: float = 1.0, endless_factor: float = 0.0) -> int:
+func contact_damage_for_wave(wave: int, player: Variant = null, difficulty_multiplier: float = 1.0, endless_factor: float = 0.0, player_count: int = 1) -> int:
 	var enemy_damage_percent := 0.0
 	if player != null:
 		enemy_damage_percent = player.get_stat("enemy_damage")
-	return _formulas.enemy_damage(damage, damage_increase_each_wave, wave, enemy_damage_percent, difficulty_multiplier, endless_factor)
+	return _formulas.enemy_damage(damage, damage_increase_each_wave, wave, enemy_damage_percent, difficulty_multiplier, endless_factor, player_count)
 
 func armor_for_wave(wave: int, armor_percent_modifier: float = 0.0) -> int:
 	return _formulas.enemy_armor(armor, armor_increase_each_wave, wave, armor_percent_modifier)
@@ -83,15 +83,15 @@ func material_drop_chance(wave: int, is_horde_wave: bool = false) -> float:
 		return 1.0
 	return _formulas.enemy_material_drop_chance(wave, is_horde_wave)
 
-func instantiate(wave: int, position: Vector2, player: Variant = null, speed_roll: float = 0.0, difficulty_multiplier: float = 1.0) -> Dictionary:
-	var hp := max_health_for_wave(wave, player, difficulty_multiplier)
+func instantiate(wave: int, position: Vector2, player: Variant = null, speed_roll: float = 0.0, difficulty_multiplier: float = 1.0, player_count: int = 1, endless_factor: float = 0.0) -> Dictionary:
+	var hp := max_health_for_wave(wave, player, difficulty_multiplier, player_count, endless_factor)
 	return {
 		"id": enemy_id,
 		"display_name": display_name,
 		"position": position,
 		"hp": hp,
 		"max_hp": hp,
-		"damage": contact_damage_for_wave(wave, player, difficulty_multiplier),
+		"damage": contact_damage_for_wave(wave, player, difficulty_multiplier, endless_factor, player_count),
 		"armor": armor_for_wave(wave),
 		"speed": speed_for_roll(speed_roll),
 		"knockback_resistance": knockback_resistance,
