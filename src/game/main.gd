@@ -155,7 +155,7 @@ var settings := {
 
 var ui_layer: CanvasLayer
 var screen_root: Control
-var hud_root: Control
+var hud_root: Node
 var floating_root: Control
 var tooltip_panel: PanelContainer
 var tooltip_label: Label
@@ -1526,7 +1526,8 @@ func _create_ui_roots() -> void:
 	add_child(ui_layer)
 	screen_root = _full_rect_control("ScreenRoot")
 	ui_layer.add_child(screen_root)
-	hud_root = _full_rect_control("HudRoot")
+	hud_root = Node.new()
+	hud_root.name = "HudRoot"
 	ui_layer.add_child(hud_root)
 	floating_root = _full_rect_control("FloatingTextRoot")
 	floating_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1576,6 +1577,7 @@ func _menu_background(name: String) -> Control:
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(bg)
 	return root
 
@@ -1586,16 +1588,19 @@ func _add_title_background(root: Control) -> void:
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(bg)
 	var brotato := TextureRect.new()
 	brotato.texture = title_brotato_texture
 	brotato.set_anchors_preset(Control.PRESET_FULL_RECT)
 	brotato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	brotato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	brotato.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(brotato)
 	var shade := ColorRect.new()
 	shade.color = Color(0, 0, 0, 0.20)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(shade)
 
 func _margin_container(parent: Control, margin: int) -> MarginContainer:
