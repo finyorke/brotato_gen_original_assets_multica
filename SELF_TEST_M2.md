@@ -8,7 +8,7 @@ This pass starts M2 by moving the combat demo from hard-coded values to data-dri
 - `EnemyStats`: HP/damage/armor/speed scaling and material drop chance.
 - `WaveScheduler`: wave timing, repeated spawn groups, 60 tick spawn warnings, 3 tick spawn materialization queue.
 - `CombatRuntime`: player damage intake, armor/dodge/iframes, enemy knockback, material drop and pickup resolution, wave cleanup, and run win/loss state.
-- Starter data rows for 3 weapons, 5 enemies, and area 1 waves 1-5 primary groups.
+- Starter data rows for 3 weapons, area 1 enemy rows, and area 1 waves 1-20 plus common groups.
 - Main scene now uses those data rows for the playable combat slice.
 
 ## Verification
@@ -33,7 +33,6 @@ Main scene smoke:
 
 ## Remaining M2 Work
 
-- Ingest all 20 waves and all area 1 enemy rows.
 - Add projectile node behavior for piercing, bounce, spread, and lifetime.
 - Add melee thrust/sweep hit windows instead of direct target damage.
-- Complete Danger 0 20-wave playthrough validation.
+- Complete interactive Danger 0 20-wave playthrough validation beyond the deterministic scheduler simulation.

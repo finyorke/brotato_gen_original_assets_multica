@@ -1,6 +1,12 @@
 {
   "source": "devkit game mechanics chapter 07",
-  "scope": "M2 starter subset: area 1 waves 1-5 primary groups.",
+  "scope": "M2 area 1 waves 1-20, including danger-gated groups, area common groups, and the Danger 0 wave 20 boss pool.",
+  "boss_pool": ["predator", "invoker"],
+  "common_groups": [
+    {"enemy_id": "tree", "entity_type": "neutral", "count_min": 1, "count_max": 2, "unit_spawn_rate": 0.33, "spawn_timing": 10, "repeating": 999, "repeat_interval": 10, "interval_decrease": 0, "min_repeat_interval": 10, "spawn_area": "full"},
+    {"enemy_id": "looter", "is_loot": true, "count_min": 1, "count_max": 1, "unit_spawn_rate": 0.10, "spawn_timing": 25, "repeating": 3, "repeat_interval": 15, "interval_decrease": 0, "min_repeat_interval": 15, "spawn_area": "full"},
+    {"enemy_id": "evil_mob", "is_loot": true, "count_min": 1, "count_max": 1, "unit_spawn_rate": 0.03, "spawn_timing": 10, "repeating": 0, "repeat_interval": 0, "interval_decrease": 0, "min_repeat_interval": 0, "spawn_area": "edge"}
+  ],
   "waves": [
     {
       "wave": 1,
@@ -26,8 +32,9 @@
       "groups": [
         {"enemy_id": "baby_alien", "count_min": 5, "count_max": 6, "spawn_timing": 1, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
         {"enemy_id": "chaser", "count_min": 3, "count_max": 4, "spawn_timing": 10, "repeating": 999, "repeat_interval": 7, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "cluster_200"},
-        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 0, "repeat_interval": 0, "spawn_area": "cluster_100", "min_danger": 1},
-        {"enemy_id": "fly", "count_min": 1, "count_max": 1, "spawn_timing": 10, "repeating": 0, "repeat_interval": 0, "spawn_area": "cluster_100", "min_danger": 2}
+        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 0, "repeat_interval": 0, "interval_decrease": 0, "min_repeat_interval": 0, "spawn_area": "cluster_100", "min_danger": 1},
+        {"enemy_id": "fly", "count_min": 1, "count_max": 1, "spawn_timing": 10, "repeating": 0, "repeat_interval": 0, "interval_decrease": 0, "min_repeat_interval": 0, "spawn_area": "cluster_100", "min_danger": 2},
+        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 10, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full", "min_danger": 5}
       ]
     },
     {
@@ -38,7 +45,8 @@
         {"enemy_id": "spitter", "count_min": 2, "count_max": 2, "spawn_timing": 1, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full"},
         {"enemy_id": "baby_alien", "count_min": 6, "count_max": 7, "spawn_timing": 4, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "cluster_300"},
         {"enemy_id": "spitter", "count_min": 2, "count_max": 2, "spawn_timing": 25, "repeating": 999, "repeat_interval": 7, "interval_decrease": 0, "min_repeat_interval": 7, "spawn_area": "full"},
-        {"enemy_id": "fly", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 0, "repeat_interval": 0, "spawn_area": "full", "min_danger": 1}
+        {"enemy_id": "fly", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 0, "repeat_interval": 0, "interval_decrease": 0, "min_repeat_interval": 0, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "helmet_alien", "count_min": 2, "count_max": 2, "spawn_timing": 3, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "full", "min_danger": 5}
       ]
     },
     {
@@ -49,7 +57,212 @@
         {"enemy_id": "baby_alien", "count_min": 8, "count_max": 8, "spawn_timing": 1, "repeating": 999, "repeat_interval": 4, "interval_decrease": 0, "min_repeat_interval": 4, "spawn_area": "edge"},
         {"enemy_id": "chaser", "count_min": 3, "count_max": 4, "spawn_timing": 3, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "cluster_200"},
         {"enemy_id": "spitter", "count_min": 1, "count_max": 2, "spawn_timing": 25, "repeating": 999, "repeat_interval": 6, "interval_decrease": 0, "min_repeat_interval": 6, "spawn_area": "full"},
-        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 999, "repeat_interval": 4, "interval_decrease": 0, "min_repeat_interval": 4, "spawn_area": "edge", "min_danger": 1}
+        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 999, "repeat_interval": 4, "interval_decrease": 0, "min_repeat_interval": 4, "spawn_area": "edge", "min_danger": 1},
+        {"enemy_id": "chaser", "count_min": 1, "count_max": 2, "spawn_timing": 7, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "cluster_200", "min_danger": 2},
+        {"enemy_id": "horned_charger", "count_min": 1, "count_max": 1, "spawn_timing": 15, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "full", "min_danger": 4}
+      ]
+    },
+    {
+      "wave": 6,
+      "duration": 45,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "charger", "count_min": 4, "count_max": 5, "spawn_timing": 1, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "chaser", "count_min": 3, "count_max": 4, "spawn_timing": 3, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "cluster_200"},
+        {"enemy_id": "baby_alien", "count_min": 5, "count_max": 6, "spawn_timing": 25, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "cluster_200"},
+        {"enemy_id": "fly", "count_min": 2, "count_max": 3, "spawn_timing": 15, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "edge", "min_danger": 1},
+        {"enemy_id": "horned_charger", "count_min": 1, "count_max": 1, "spawn_timing": 10, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "edge", "min_danger": 5}
+      ]
+    },
+    {
+      "wave": 7,
+      "duration": 50,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "baby_alien", "count_min": 6, "count_max": 7, "spawn_timing": 1, "repeating": 999, "repeat_interval": 2, "interval_decrease": 0, "min_repeat_interval": 2, "spawn_area": "edge"},
+        {"enemy_id": "charger", "count_min": 6, "count_max": 6, "spawn_timing": 10, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "cluster_200"},
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 3, "spawn_timing": 30, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "cluster_200"},
+        {"enemy_id": "healer", "count_min": 1, "count_max": 1, "spawn_timing": 1, "repeating": 999, "repeat_interval": 15, "interval_decrease": 0, "min_repeat_interval": 15, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "slasher_egg", "count_min": 1, "count_max": 2, "spawn_timing": 3, "repeating": 999, "repeat_interval": 10, "interval_decrease": 0, "min_repeat_interval": 10, "spawn_area": "full", "min_danger": 5}
+      ]
+    },
+    {
+      "wave": 8,
+      "duration": 55,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "bruiser", "count_min": 3, "count_max": 3, "spawn_timing": 1, "repeating": 999, "repeat_interval": 8, "interval_decrease": 1, "min_repeat_interval": 6, "spawn_area": "full"},
+        {"enemy_id": "spitter", "count_min": 1, "count_max": 2, "spawn_timing": 2, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "full"},
+        {"enemy_id": "baby_alien", "count_min": 3, "count_max": 3, "spawn_timing": 5, "repeating": 999, "repeat_interval": 6, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "cluster_300"},
+        {"enemy_id": "horned_bruiser", "count_min": 1, "count_max": 1, "spawn_timing": 30, "repeating": 0, "repeat_interval": 0, "interval_decrease": 0, "min_repeat_interval": 0, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "horned_bruiser", "count_min": 1, "count_max": 1, "spawn_timing": 15, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "full", "min_danger": 3}
+      ]
+    },
+    {
+      "wave": 9,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "chaser", "count_min": 6, "count_max": 7, "spawn_timing": 1, "repeating": 999, "repeat_interval": 2, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "cluster_400"},
+        {"enemy_id": "charger", "count_min": 2, "count_max": 3, "spawn_timing": 10, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "bruiser", "count_min": 2, "count_max": 3, "spawn_timing": 22, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "edge"},
+        {"enemy_id": "fin_alien", "count_min": 2, "count_max": 3, "spawn_timing": 3, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "cluster_200", "min_danger": 1},
+        {"enemy_id": "fin_alien", "count_min": 3, "count_max": 4, "spawn_timing": 3, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "cluster_200", "min_danger": 4}
+      ]
+    },
+    {
+      "wave": 10,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "baby_alien", "count_min": 8, "count_max": 9, "spawn_timing": 1, "repeating": 999, "repeat_interval": 2, "interval_decrease": 0, "min_repeat_interval": 2, "spawn_area": "edge"},
+        {"enemy_id": "bruiser", "count_min": 2, "count_max": 3, "spawn_timing": 5, "repeating": 999, "repeat_interval": 8, "interval_decrease": 1, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 20, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "cluster_200"},
+        {"enemy_id": "chaser", "count_min": 4, "count_max": 5, "spawn_timing": 30, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "full"},
+        {"enemy_id": "helmet_alien", "count_min": 3, "count_max": 4, "spawn_timing": 20, "repeating": 999, "repeat_interval": 12, "interval_decrease": 0, "min_repeat_interval": 12, "spawn_area": "edge", "min_danger": 1},
+        {"enemy_id": "chaser", "count_min": 2, "count_max": 2, "spawn_timing": 30, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "full", "min_danger": 2}
+      ]
+    },
+    {
+      "wave": 11,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "pursuer", "count_min": 2, "count_max": 3, "spawn_timing": 1, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "baby_alien", "count_min": 3, "count_max": 4, "spawn_timing": 3, "repeating": 999, "repeat_interval": 6, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "cluster_400"},
+        {"enemy_id": "charger", "count_min": 3, "count_max": 3, "spawn_timing": 5, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 3, "spawn_timing": 25, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "fly", "count_min": 3, "count_max": 4, "spawn_timing": 12, "repeating": 999, "repeat_interval": 10, "interval_decrease": 0, "min_repeat_interval": 10, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "pursuer", "count_min": 1, "count_max": 1, "spawn_timing": 3, "repeating": 999, "repeat_interval": 10, "interval_decrease": 0, "min_repeat_interval": 10, "spawn_area": "full", "min_danger": 5}
+      ]
+    },
+    {
+      "wave": 12,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "chaser", "count_min": 10, "count_max": 10, "spawn_timing": 1, "repeating": 10, "repeat_interval": 2, "interval_decrease": 0, "min_repeat_interval": 2, "spawn_area": "edge"},
+        {"enemy_id": "pursuer", "count_min": 1, "count_max": 1, "spawn_timing": 5, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "inner_250"},
+        {"enemy_id": "bruiser", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "charger", "count_min": 2, "count_max": 3, "spawn_timing": 25, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "cluster_300"},
+        {"enemy_id": "baby_alien", "count_min": 3, "count_max": 4, "spawn_timing": 25, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "edge"},
+        {"enemy_id": "healer", "count_min": 1, "count_max": 1, "spawn_timing": 3, "repeating": 999, "repeat_interval": 10, "interval_decrease": 0, "min_repeat_interval": 10, "spawn_area": "full", "min_danger": 1},
+        {"units": [{"enemy_id": "baby_alien", "count_min": 2, "count_max": 3}, {"enemy_id": "bruiser", "count_min": 1, "count_max": 1}], "spawn_timing": 15, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "full", "min_danger": 2}
+      ]
+    },
+    {
+      "wave": 13,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "helmet_alien", "count_min": 8, "count_max": 8, "spawn_timing": 1, "repeating": 999, "repeat_interval": 4, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "full"},
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 3, "spawn_timing": 4, "repeating": 999, "repeat_interval": 8, "interval_decrease": 1, "min_repeat_interval": 4, "spawn_area": "full"},
+        {"enemy_id": "baby_alien", "count_min": 4, "count_max": 5, "spawn_timing": 8, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "edge"},
+        {"units": [{"enemy_id": "bruiser", "count_min": 1, "count_max": 2}, {"enemy_id": "horned_bruiser", "count_min": 1, "count_max": 1}], "spawn_timing": 30, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 4, "spawn_area": "edge"},
+        {"enemy_id": "fly", "count_min": 3, "count_max": 4, "spawn_timing": 8, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "cluster_300", "min_danger": 1},
+        {"enemy_id": "tentacle", "count_min": 2, "count_max": 2, "spawn_timing": 8, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "full", "min_danger": 3}
+      ]
+    },
+    {
+      "wave": 14,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "spawner", "count_min": 2, "count_max": 2, "spawn_timing": 1, "repeating": 999, "repeat_interval": 8, "interval_decrease": 1, "min_repeat_interval": 4, "spawn_area": "full"},
+        {"enemy_id": "helmet_alien", "count_min": 6, "count_max": 6, "spawn_timing": 2, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "baby_alien", "count_min": 6, "count_max": 6, "spawn_timing": 15, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "edge"},
+        {"enemy_id": "junkie", "count_min": 1, "count_max": 2, "spawn_timing": 22, "repeating": 999, "repeat_interval": 6, "interval_decrease": 0, "min_repeat_interval": 6, "spawn_area": "cluster_200"},
+        {"enemy_id": "bruiser", "count_min": 2, "count_max": 2, "spawn_timing": 30, "repeating": 999, "repeat_interval": 10, "interval_decrease": 1, "min_repeat_interval": 4, "spawn_area": "full"},
+        {"enemy_id": "healer", "count_min": 1, "count_max": 1, "spawn_timing": 5, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "spawner", "count_min": 1, "count_max": 2, "spawn_timing": 8, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "full", "min_danger": 4}
+      ]
+    },
+    {
+      "wave": 15,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"units": [{"enemy_id": "baby_alien", "count_min": 8, "count_max": 8}, {"enemy_id": "spawner", "count_min": 1, "count_max": 2}], "spawn_timing": 1, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "cluster_500"},
+        {"enemy_id": "helmet_alien", "count_min": 6, "count_max": 6, "spawn_timing": 2, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 2, "spawn_timing": 8, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "cluster_300"},
+        {"enemy_id": "baby_alien", "count_min": 3, "count_max": 3, "spawn_timing": 12, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "edge"},
+        {"enemy_id": "fin_alien", "count_min": 1, "count_max": 2, "spawn_timing": 20, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "full"},
+        {"enemy_id": "junkie", "count_min": 1, "count_max": 1, "spawn_timing": 35, "repeating": 999, "repeat_interval": 6, "interval_decrease": 1, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "tentacle", "count_min": 1, "count_max": 2, "spawn_timing": 10, "repeating": 999, "repeat_interval": 15, "interval_decrease": 0, "min_repeat_interval": 15, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "slasher_egg", "count_min": 1, "count_max": 1, "spawn_timing": 5, "repeating": 999, "repeat_interval": 12, "interval_decrease": 0, "min_repeat_interval": 12, "spawn_area": "inner_300", "min_danger": 4}
+      ]
+    },
+    {
+      "wave": 16,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"units": [{"enemy_id": "buffer", "count_min": 2, "count_max": 2}, {"enemy_id": "helmet_alien", "count_min": 10, "count_max": 10}], "spawn_timing": 1, "repeating": 999, "repeat_interval": 4, "interval_decrease": 0, "min_repeat_interval": 4, "spawn_area": "cluster_500"},
+        {"enemy_id": "baby_alien", "count_min": 5, "count_max": 5, "spawn_timing": 5, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 4, "spawn_area": "edge"},
+        {"enemy_id": "fin_alien", "count_min": 3, "count_max": 3, "spawn_timing": 20, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "cluster_450"},
+        {"units": [{"enemy_id": "horned_bruiser", "count_min": 1, "count_max": 1}, {"enemy_id": "bruiser", "count_min": 1, "count_max": 1}], "spawn_timing": 32, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "cluster_450"},
+        {"enemy_id": "healer", "count_min": 1, "count_max": 1, "spawn_timing": 20, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "helmet_alien", "count_min": 3, "count_max": 4, "spawn_timing": 3, "repeating": 999, "repeat_interval": 6, "interval_decrease": 0, "min_repeat_interval": 6, "spawn_area": "edge", "min_danger": 2}
+      ]
+    },
+    {
+      "wave": 17,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "pursuer", "count_min": 3, "count_max": 4, "spawn_timing": 1, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"units": [{"enemy_id": "buffer", "count_min": 1, "count_max": 1}, {"enemy_id": "pursuer", "count_min": 1, "count_max": 2}], "spawn_timing": 4, "repeating": 999, "repeat_interval": 10, "interval_decrease": 0, "min_repeat_interval": 10, "spawn_area": "cluster_300"},
+        {"enemy_id": "spawner", "count_min": 1, "count_max": 2, "spawn_timing": 7, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "edge"},
+        {"enemy_id": "helmet_alien", "count_min": 3, "count_max": 4, "spawn_timing": 15, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "fin_alien", "count_min": 4, "count_max": 5, "spawn_timing": 30, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "cluster_300"},
+        {"enemy_id": "baby_alien", "count_min": 4, "count_max": 4, "spawn_timing": 40, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "tentacle", "count_min": 1, "count_max": 1, "spawn_timing": 15, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full", "min_danger": 1}
+      ]
+    },
+    {
+      "wave": 18,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"units": [{"enemy_id": "horned_charger", "count_min": 6, "count_max": 6}, {"enemy_id": "buffer", "count_min": 1, "count_max": 1}], "spawn_timing": 1, "repeating": 10, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "full"},
+        {"enemy_id": "helmet_alien", "count_min": 2, "count_max": 3, "spawn_timing": 4, "repeating": 999, "repeat_interval": 10, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "horned_charger", "count_min": 5, "count_max": 5, "spawn_timing": 1, "repeating": 35, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "helmet_alien", "count_min": 2, "count_max": 3, "spawn_timing": 10, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 2, "spawn_timing": 20, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "spawner", "count_min": 2, "count_max": 2, "spawn_timing": 24, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "helmet_alien", "count_min": 2, "count_max": 3, "spawn_timing": 30, "repeating": 999, "repeat_interval": 3, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "full"},
+        {"enemy_id": "healer", "count_min": 1, "count_max": 2, "spawn_timing": 1, "repeating": 5, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full", "min_danger": 1},
+        {"enemy_id": "slasher_egg", "count_min": 2, "count_max": 3, "spawn_timing": 40, "repeating": 99, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full", "min_danger": 4}
+      ]
+    },
+    {
+      "wave": 19,
+      "duration": 60,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "baby_alien", "count_min": 6, "count_max": 6, "spawn_timing": 1, "repeating": 999, "repeat_interval": 1, "interval_decrease": 0, "min_repeat_interval": 1, "spawn_area": "edge"},
+        {"enemy_id": "helmet_alien", "count_min": 3, "count_max": 3, "spawn_timing": 4, "repeating": 999, "repeat_interval": 1, "interval_decrease": 0, "min_repeat_interval": 1, "spawn_area": "full"},
+        {"enemy_id": "buffer", "count_min": 1, "count_max": 1, "spawn_timing": 10, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "horned_bruiser", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 4, "spawn_area": "full"},
+        {"enemy_id": "pursuer", "count_min": 1, "count_max": 1, "spawn_timing": 25, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "cluster_200"},
+        {"enemy_id": "horned_charger", "count_min": 3, "count_max": 3, "spawn_timing": 30, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "helmet_alien", "count_min": 2, "count_max": 2, "spawn_timing": 32, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 1, "spawn_area": "edge"},
+        {"units": [{"enemy_id": "healer", "count_min": 1, "count_max": 1}, {"enemy_id": "tentacle", "count_min": 2, "count_max": 3}], "spawn_timing": 5, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "edge", "min_danger": 1, "min_edge_distance": 100},
+        {"enemy_id": "fin_alien", "count_min": 4, "count_max": 5, "spawn_timing": 8, "repeating": 999, "repeat_interval": 8, "interval_decrease": 0, "min_repeat_interval": 8, "spawn_area": "edge", "min_danger": 1, "min_edge_distance": 100}
+      ]
+    },
+    {
+      "wave": 20,
+      "duration": 90,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_pool": ["predator", "invoker"], "is_boss": true, "count_min": 1, "count_max": 1, "spawn_timing": 0, "repeating": 0, "repeat_interval": 0, "interval_decrease": 0, "min_repeat_interval": 0, "spawn_area": "edge"},
+        {"enemy_id": "baby_alien", "count_min": 5, "count_max": 5, "spawn_timing": 1, "repeating": 5, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "helmet_alien", "count_min": 5, "count_max": 5, "spawn_timing": 10, "repeating": 5, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "helmet_alien", "count_min": 5, "count_max": 5, "spawn_timing": 15, "repeating": 5, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "fin_alien", "count_min": 5, "count_max": 5, "spawn_timing": 20, "repeating": 5, "repeat_interval": 1, "interval_decrease": 0, "min_repeat_interval": 1, "spawn_area": "edge"},
+        {"enemy_id": "horned_bruiser", "count_min": 1, "count_max": 1, "spawn_timing": 20, "repeating": 5, "repeat_interval": 1, "interval_decrease": 0, "min_repeat_interval": 1, "spawn_area": "full"},
+        {"units": [{"enemy_id": "spawner", "count_min": 1, "count_max": 1}, {"enemy_id": "buffer", "count_min": 1, "count_max": 1}, {"enemy_id": "helmet_alien", "count_min": 3, "count_max": 3}, {"enemy_id": "horned_bruiser", "count_min": 1, "count_max": 1}], "spawn_timing": 30, "repeating": 999, "repeat_interval": 6, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "edge"}
       ]
     }
   ]

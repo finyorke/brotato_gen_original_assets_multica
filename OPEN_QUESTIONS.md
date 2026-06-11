@@ -24,6 +24,12 @@
 - Document locations: `game_mechanics_docs/07_波次难度与生成系统.md` §4.2.
 - Conservative handling: The current formula applies the wave lower bound first, then the horde multiplier, matching the literal reading used in the M2 review; revisit if later documentation clarifies a post-horde clamp.
 
+## Boss Base Movement Speed
+
+- Question: Chapter 06 gives boss HP, damage, knockback resistance, value, phase movement behavior, and phase speed modifiers, but does not state a standalone base movement speed for Invoker/Predator.
+- Document locations: `game_mechanics_docs/06_敌人与实体系统.md` §7.1 and §7.3.
+- Conservative handling: The M2 boss rows encode the documented HP/damage/drop/value fields and omit a base speed value; boss movement remains behavior-driven pending source data.
+
 ## M3 Weapon Quality Slots
 
 - Question: Chapter 03 describes "61 weapons x each grade" but the weapon tables list 201 concrete grade rows, leaving 43 family/quality slots without stats.

@@ -27,6 +27,9 @@ const EconomyCatalogScript = preload("res://src/economy/economy_catalog.gd")
 const ShopStateScript = preload("res://src/economy/shop_state.gd")
 const LevelUpPoolScript = preload("res://src/economy/level_up_pool.gd")
 const RewardResolverScript = preload("res://src/economy/reward_resolver.gd")
+const AssetManifestScript = preload("res://src/presentation/asset_manifest.gd")
+const PresentationRulesScript = preload("res://src/presentation/presentation_rules.gd")
+const AudioRulesScript = preload("res://src/presentation/audio_rules.gd")
 
 const MENU_FONT_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/fonts/raw/Anybody-Medium.ttf"
 const PLAYER_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/player/potato.png"
@@ -42,6 +45,7 @@ const UPGRADE_ICON_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_p
 const WEAPON_DATA_PATH := "res://data/m2/starter_weapons.json"
 const ENEMY_DATA_PATH := "res://data/m2/area1_enemies.json"
 const WAVE_DATA_PATH := "res://data/m2/area1_waves.json"
+const ASSET_MANIFEST_PATH := "res://data/m5/asset_manifest.json"
 
 # Doc 11 section 4 fixes combat HUD at a 24 px edge margin.
 const HUD_MARGIN := 24
@@ -176,6 +180,8 @@ var current_shop: Variant
 var combat_runtime: Variant
 var weapon_stats: Variant
 var wave_scheduler: Variant
+var asset_manifest: Variant
+var audio_rules: Variant = AudioRulesScript.new()
 var player_position := Vector2.ZERO
 var enemies: Array = []
 var materials: Array = []
@@ -188,6 +194,7 @@ var enemy_textures: Dictionary = {}
 var waves_by_number: Dictionary = {}
 var starter_weapons: Array = []
 var weapon_icon_by_id: Dictionary = {}
+var common_wave_groups: Array = []
 var weapon_texture: Texture2D
 var performance_clears: int = 0
 var world_visible := false
@@ -201,6 +208,13 @@ var last_level_option_ids: Array = []
 var crate_reward_entry: Dictionary = {}
 var last_wave_summary: Dictionary = {}
 var run_result: Dictionary = {}
+var player_visual: Dictionary = {}
+var ground_theme: Dictionary = {}
+var ground_texture: Texture2D
+var ground_subtiles: Array = []
+var material_textures: Array = []
+var screen_shake := {"intensity": 0.0, "duration": 0.0}
+var screen_shake_offset := Vector2.ZERO
 
 func _ready() -> void:
 	_bootstrap()
@@ -211,6 +225,7 @@ func _bootstrap() -> void:
 	bootstrapped = true
 	Engine.physics_ticks_per_second = 60
 	randomize()
+	_load_m5_presentation()
 	_load_bitmap_assets()
 	_load_m2_data()
 	economy_catalog = EconomyCatalogScript.from_json()
@@ -226,7 +241,11 @@ func _process(delta: float) -> void:
 		_refresh_hud()
 
 func _physics_process(delta: float) -> void:
+	_update_presentation(delta)
 	if ui_state != UIState.COMBAT:
+		return
+	if combat_runtime == null or combat_runtime.state != CombatRuntimeScript.STATE_RUNNING:
+		queue_redraw()
 		return
 	combat_runtime.advance(delta)
 	_update_player(delta)
@@ -256,16 +275,16 @@ func _draw() -> void:
 		return
 	var viewport_size: Vector2 = _viewport_size()
 	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.18, 0.31, 0.17), true)
-	for x in range(0, int(viewport_size.x), 64):
-		draw_line(Vector2(x, 0), Vector2(x, viewport_size.y), Color(0.22, 0.36, 0.2), 1.0)
-	for y in range(0, int(viewport_size.y), 64):
-		draw_line(Vector2(0, y), Vector2(viewport_size.x, y), Color(0.22, 0.36, 0.2), 1.0)
+	draw_set_transform(screen_shake_offset, 0.0, Vector2.ONE)
+	_draw_ground(viewport_size)
 	for material in materials:
 		var material_data: Dictionary = material
 		var material_pos: Vector2 = material_data["position"]
-		var material_size := Vector2(24, 24) * float(material_data.get("scale", 1.0))
-		if material_texture != null:
-			draw_texture_rect(material_texture, Rect2(material_pos - material_size * 0.5, material_size), false)
+		var sprite_texture := _texture_for_material(material_data)
+		var material_scale: float = float(material_data.get("scale", PresentationRulesScript.material_scale(int(material_data.get("value", 1)), int(material_data.get("boosted", 1)))))
+		var material_size := Vector2(24, 24) * material_scale
+		if sprite_texture != null:
+			draw_texture_rect(sprite_texture, Rect2(material_pos - material_size * 0.5, material_size), false)
 		else:
 			draw_circle(material_pos, material_size.x * 0.35, Color(0.9, 0.8, 0.22), true)
 	if wave_scheduler != null:
@@ -280,7 +299,10 @@ func _draw() -> void:
 		var enemy_pos: Vector2 = enemy_data["position"]
 		var texture := _texture_for_enemy(enemy_data)
 		if texture != null:
-			draw_texture_rect(texture, Rect2(enemy_pos - Vector2(32, 32), Vector2(64, 64)), false)
+			var enemy_rect := Rect2(enemy_pos - Vector2(32, 32), Vector2(64, 64))
+			draw_texture_rect(texture, enemy_rect, false)
+			if float(enemy_data.get("flash_seconds", 0.0)) > 0.0:
+				draw_rect(enemy_rect.grow(-8.0), Color(1, 1, 1, 0.62), true)
 		else:
 			draw_circle(enemy_pos, 26.0, Color(0.8, 0.14, 0.12), true)
 		var hp_ratio: float = clamp(float(enemy_data["hp"]) / float(enemy_data["max_hp"]), 0.0, 1.0)
@@ -290,12 +312,17 @@ func _draw() -> void:
 	var player_tint := Color.WHITE
 	if combat_runtime != null and combat_runtime.iframe_seconds_remaining > 0.0:
 		player_tint = Color(1.0, 1.0, 1.0, 0.55 + 0.35 * sin(combat_runtime.iframe_seconds_remaining * 80.0))
+	var player_size: Vector2 = _vec2(player_visual.get("body_draw_size", [96, 96]))
 	if player_texture != null:
-		draw_texture_rect(player_texture, Rect2(player_position - Vector2(48, 48), Vector2(96, 96)), false, player_tint)
+		draw_texture_rect(player_texture, Rect2(player_position - player_size * 0.5, player_size), false, player_tint)
 	else:
 		draw_circle(player_position, 30.0, Color(0.84, 0.66, 0.34, player_tint.a), true)
 	if weapon_texture != null:
-		draw_texture_rect(weapon_texture, Rect2(player_position + Vector2(32, -14), Vector2(56, 28)), false)
+		var weapon_visual: Dictionary = asset_manifest.weapon_visual(weapon_stats.weapon_id) if asset_manifest != null and weapon_stats != null else {}
+		var weapon_size: Vector2 = _vec2(weapon_visual.get("sprite_size", [88, 44])) * 0.64
+		var weapon_origin: Vector2 = PresentationRulesScript.weapon_draw_origin(player_position, weapon_visual, player_visual, 0, 1)
+		draw_texture_rect(weapon_texture, Rect2(weapon_origin - weapon_size * 0.5, weapon_size), false)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 func start_new_run() -> void:
 	_bootstrap()
@@ -497,9 +524,9 @@ func _start_wave() -> void:
 	if combat_runtime != null:
 		combat_runtime.start_wave(current_wave)
 	if waves_by_number.has(current_wave):
-		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave])
+		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
 	else:
-		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[_highest_wave_number()])
+		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[_highest_wave_number()], common_wave_groups)
 	player_position = _viewport_size() * 0.5
 	ui_state = UIState.COMBAT
 	_clear_screen_ui()
@@ -967,6 +994,16 @@ func _show_result(won: bool) -> void:
 	box.add_child(_make_label("New danger progress and challenge rewards attach here when unlock runtime lands.", 20, HORIZONTAL_ALIGNMENT_CENTER))
 	box.add_child(_make_button("TITLE", Callable(self, "_show_title_screen"), "Return to title.", Vector2(190, 54)))
 
+func _update_presentation(delta: float) -> void:
+	audio_rules.dequeue_frame()
+	var shake_duration: float = max(0.0, float(screen_shake.get("duration", 0.0)) - delta)
+	if shake_duration <= 0.0:
+		screen_shake = {"intensity": 0.0, "duration": 0.0}
+		screen_shake_offset = Vector2.ZERO
+	else:
+		screen_shake["duration"] = shake_duration
+		screen_shake_offset = PresentationRulesScript.screen_shake_offset(float(screen_shake.get("intensity", 0.0)), randf(), randf())
+
 func _update_player(delta: float) -> void:
 	var input_vector := Vector2(
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
@@ -982,10 +1019,14 @@ func _update_player(delta: float) -> void:
 func _update_enemies(delta: float) -> void:
 	for i in enemies.size():
 		var enemy: Dictionary = enemies[i]
+		enemy["flash_seconds"] = max(0.0, float(enemy.get("flash_seconds", 0.0)) - delta)
 		var enemy_pos: Vector2 = enemy["position"]
+		var movement_mode := String(enemy.get("movement_mode", "chase"))
+		if movement_mode == "stationary" or movement_mode == "stationary_summon":
+			continue
 		var to_player := player_position - enemy_pos
 		var direction := to_player.normalized()
-		if String(enemy.get("movement_mode", "chase")) == "keep_distance":
+		if movement_mode == "keep_distance":
 			var distance := to_player.length()
 			if distance < 260.0:
 				direction = -direction
@@ -1006,9 +1047,13 @@ func _update_contact_damage() -> void:
 			continue
 		var result: Dictionary = combat_runtime.resolve_player_damage(int(enemy_data.get("damage", 1)))
 		if bool(result.get("accepted", false)):
+			_request_screen_shake(PresentationRulesScript.screen_shake_for_player_damage())
+			_queue_sound("player_hit", player_position)
 			var damage := int(result.get("damage", 0))
 			if bool(result.get("dodged", false)):
-				_spawn_floating_text("DODGE", player_position + Vector2(0, -64), "level_up", true)
+				_spawn_floating_text("DODGE", player_position + Vector2(0, -64), "dodge", true)
+			elif bool(result.get("blocked", false)) or damage <= 0:
+				_spawn_floating_text("0", player_position + Vector2(0, -64), "nullified", true)
 			elif damage > 0:
 				_spawn_floating_text("-%d" % damage, player_position + Vector2(0, -64), "player_damage", true)
 		if combat_runtime.state == CombatRuntimeScript.STATE_LOST:
@@ -1030,10 +1075,20 @@ func _update_weapon(delta: float) -> void:
 	damage = weapon_stats.damage_after_crit(damage, critical)
 	damage = formulas.enemy_damage_after_armor(damage, int(target.get("armor", 0)))
 	var hit_result: Dictionary = combat_runtime.apply_enemy_damage(target, damage, player_position, weapon_stats.resolved_knockback(player_data))
+	target["flash_seconds"] = PresentationRulesScript.FLASH_DURATION_SECONDS
+	_request_screen_shake(PresentationRulesScript.screen_shake_for_enemy_damage(damage))
+	_queue_sound("enemy_crit" if critical else "enemy_hit", target["position"])
+	var weapon_visual: Dictionary = asset_manifest.weapon_visual(weapon_stats.weapon_id)
+	_queue_sound(String(weapon_visual.get("shooting_sound_event", "")), player_position)
 	weapon_cooldown_ticks = weapon_stats.resolved_cooldown_ticks(player_data)
-	_spawn_floating_text(str(damage), target["position"] + Vector2(0, -36), "enemy_critical" if critical else "enemy_damage")
+	_spawn_floating_text(str(int(hit_result.get("damage", damage))), target["position"] + Vector2(0, -36), "enemy_critical" if critical else "enemy_damage")
 	if bool(hit_result.get("dead", false)):
-		combat_runtime.spawn_material_from_enemy(target, materials, current_wave)
+		var before_count := materials.size()
+		var dropped: bool = combat_runtime.spawn_material_from_enemy(target, materials, current_wave)
+		if dropped and materials.size() > before_count:
+			var material_data: Dictionary = materials[materials.size() - 1]
+			_assign_material_visual(material_data)
+			materials[materials.size() - 1] = material_data
 		enemies.erase(target)
 
 func _update_materials(delta: float) -> void:
@@ -1041,6 +1096,7 @@ func _update_materials(delta: float) -> void:
 	for event in events:
 		var pickup: Dictionary = event
 		if bool(pickup.get("collected", false)):
+			_queue_sound("material_pickup", player_position)
 			_spawn_floating_text("+%d" % int(pickup.get("value", 0)), player_position + Vector2(0, -48), "material", true)
 			if int(pickup.get("gained_levels", 0)) > 0:
 				pending_level_ups += int(pickup.get("gained_levels", 0))
@@ -1062,7 +1118,7 @@ func _update_wave(delta: float) -> void:
 		_complete_wave(true)
 
 func _spawn_enemy_from_request(request: Dictionary) -> void:
-	var enemy_id := String(request.get("enemy_id", "baby_alien"))
+	var enemy_id := _enemy_id_from_request(request)
 	var stats: Variant = enemy_stats_by_id.get(enemy_id, null)
 	if stats == null:
 		push_warning("Missing enemy stats for %s" % enemy_id)
@@ -1072,14 +1128,37 @@ func _spawn_enemy_from_request(request: Dictionary) -> void:
 
 func _drop_material(pos: Vector2, value: int) -> void:
 	if combat_runtime != null:
+		var before_count := materials.size()
 		combat_runtime.add_material_drop(materials, pos, value)
+		if materials.size() > before_count:
+			_assign_material_visual(materials[materials.size() - 1])
 	else:
-		materials.append({
+		var material := {
 			"position": pos,
 			"value": value,
 			"flight_time": 0.0,
 			"scale": 1.0,
-		})
+		}
+		_assign_material_visual(material)
+		materials.append(material)
+
+func _enemy_id_from_request(request: Dictionary) -> String:
+	var enemy_id := String(request.get("enemy_id", ""))
+	if not enemy_id.is_empty():
+		return enemy_id
+	var enemy_pool: Array = request.get("enemy_pool", [])
+	if not enemy_pool.is_empty():
+		return String(enemy_pool[randi() % enemy_pool.size()])
+	return "baby_alien"
+
+func _complete_current_wave() -> void:
+	wave_scheduler.warning_queue.clear()
+	wave_scheduler.spawn_queue.clear()
+	var result: Dictionary = combat_runtime.complete_wave(enemies, materials)
+	current_wave = int(result.get("next_wave", current_wave))
+	if combat_runtime.state == CombatRuntimeScript.STATE_RUNNING:
+		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
+		combat_runtime.start_wave(current_wave)
 
 func _performance_cull_enemies(count: int) -> void:
 	for _i in range(maxi(0, count)):
@@ -1124,6 +1203,9 @@ func _raw_spawn_position(area: String, viewport_size: Vector2) -> Vector2:
 		var center := Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 		var offset := Vector2.RIGHT.rotated(randf() * TAU) * randf() * radius
 		return (center + offset).clamp(Vector2(margin, margin), viewport_size - Vector2(margin, margin))
+	if area.begins_with("inner_"):
+		var inner_margin: float = min(float(area.get_slice("_", 1)), min(viewport_size.x, viewport_size.y) * 0.2)
+		return Vector2(randf_range(inner_margin, viewport_size.x - inner_margin), randf_range(inner_margin, viewport_size.y - inner_margin))
 	return Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 
 func _texture_for_enemy(enemy_data: Dictionary) -> Texture2D:
@@ -1133,6 +1215,56 @@ func _texture_for_enemy(enemy_data: Dictionary) -> Texture2D:
 	if not enemy_textures.has(path):
 		enemy_textures[path] = _safe_texture(path)
 	return enemy_textures[path]
+
+func _texture_for_material(material_data: Dictionary) -> Texture2D:
+	if material_textures.is_empty():
+		return material_texture
+	return material_textures[int(material_data.get("texture_index", 0)) % material_textures.size()]
+
+func _assign_material_visual(material: Dictionary) -> void:
+	if material_textures.is_empty():
+		return
+	if not material.has("texture_index"):
+		material["texture_index"] = randi() % material_textures.size()
+
+func _draw_ground(viewport_size: Vector2) -> void:
+	if ground_texture == null:
+		for x in range(0, int(viewport_size.x), 64):
+			draw_line(Vector2(x, 0), Vector2(x, viewport_size.y), Color(0.22, 0.36, 0.2), 1.0)
+		for y in range(0, int(viewport_size.y), 64):
+			draw_line(Vector2(0, y), Vector2(viewport_size.x, y), Color(0.22, 0.36, 0.2), 1.0)
+		return
+	var cell_size := int(asset_manifest.ground_data().get("cell_size", 64))
+	for x in range(-cell_size, int(viewport_size.x) + cell_size, cell_size):
+		for y in range(-cell_size, int(viewport_size.y) + cell_size, cell_size):
+			var cell := Vector2i(floori(float(x) / float(cell_size)), floori(float(y) / float(cell_size)))
+			var subtile: Vector2i = PresentationRulesScript.pick_weighted_ground_subtile(PresentationRulesScript.deterministic_ground_roll(cell, current_wave), ground_subtiles)
+			var src_rect := Rect2(Vector2(subtile.x * cell_size, subtile.y * cell_size), Vector2(cell_size, cell_size))
+			draw_texture_rect_region(ground_texture, Rect2(Vector2(x, y), Vector2(cell_size, cell_size)), src_rect)
+	var outline_color := _color_from_array(ground_theme.get("outline_color", [0.267, 0.267, 0.267]))
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), outline_color, false, 6.0)
+
+func _request_screen_shake(incoming: Dictionary) -> void:
+	if float(screen_shake.get("duration", 0.0)) <= 0.0 or PresentationRulesScript.should_replace_screen_shake(screen_shake, incoming):
+		screen_shake = incoming.duplicate(true)
+
+func _queue_sound(event_id: String, pos: Vector2 = Vector2.ZERO) -> void:
+	if event_id.is_empty() or asset_manifest == null:
+		return
+	audio_rules.request_sound(event_id, asset_manifest.sound_event(event_id), randf(), randf(), pos)
+
+func _load_m5_presentation() -> void:
+	asset_manifest = AssetManifestScript.load_from_path(ASSET_MANIFEST_PATH)
+	player_visual = asset_manifest.player_visual()
+	ground_subtiles = PresentationRulesScript.weighted_ground_subtiles()
+	var themes: Array = asset_manifest.ground_themes()
+	if not themes.is_empty():
+		ground_theme = themes[0]
+		ground_texture = _safe_texture(String(ground_theme.get("texture", "")))
+	for path in asset_manifest.material_texture_paths():
+		var texture := _safe_texture(String(path))
+		if texture != null:
+			material_textures.append(texture)
 
 func _load_m2_data() -> void:
 	var weapon_json: Dictionary = _load_json(WEAPON_DATA_PATH)
@@ -1149,9 +1281,10 @@ func _load_m2_data() -> void:
 		var stats: Variant = EnemyStatsScript.from_dict(row)
 		enemy_stats_by_id[stats.enemy_id] = stats
 	var wave_json: Dictionary = _load_json(WAVE_DATA_PATH)
+	common_wave_groups = wave_json.get("common_groups", [])
 	for row in wave_json.get("waves", []):
 		waves_by_number[int(row.get("wave", 1))] = row
-	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number.get(1, {}))
+	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number.get(current_wave, waves_by_number.get(1, {})), common_wave_groups)
 
 func _load_bitmap_assets() -> void:
 	# Raw asset files are kept in the devkit tree without committed Godot import metadata.
@@ -1691,3 +1824,15 @@ func _update_tooltip_position() -> void:
 	pos.x = min(pos.x, viewport_size.x - 300)
 	pos.y = min(pos.y, viewport_size.y - 120)
 	tooltip_panel.position = pos
+
+func _vec2(values: Variant) -> Vector2:
+	if values is Vector2:
+		return values
+	if values is Array and values.size() >= 2:
+		return Vector2(float(values[0]), float(values[1]))
+	return Vector2.ZERO
+
+func _color_from_array(values: Variant) -> Color:
+	if values is Array and values.size() >= 3:
+		return Color(float(values[0]), float(values[1]), float(values[2]), 1.0)
+	return Color.WHITE

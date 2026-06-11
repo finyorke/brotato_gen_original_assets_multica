@@ -15,6 +15,9 @@ const ShopStateScript = preload("res://src/economy/shop_state.gd")
 const LevelUpPoolScript = preload("res://src/economy/level_up_pool.gd")
 const RewardResolverScript = preload("res://src/economy/reward_resolver.gd")
 const MainScene = preload("res://scenes/main.tscn")
+const AssetManifestScript = preload("res://src/presentation/asset_manifest.gd")
+const PresentationRulesScript = preload("res://src/presentation/presentation_rules.gd")
+const AudioRulesScript = preload("res://src/presentation/audio_rules.gd")
 
 var failures: Array = []
 var assertions_run: int = 0
@@ -43,6 +46,7 @@ func _run_all() -> void:
 	_combat_m2c_tests()
 	_economy_m3b_tests()
 	_ui_flow_m4_tests()
+	_presentation_m5_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -248,6 +252,7 @@ func _combat_m2_tests() -> void:
 	_assert_equal(TargetingScript.nearest_enemy(enemies, Vector2.ZERO, 90.0), null, "targeting rejects enemies outside detection range")
 
 	var enemy_json := _load_json("res://data/m2/area1_enemies.json")
+	_assert_equal(enemy_json["enemies"].size(), 25, "area 1 enemy data includes normal enemies, tree, and bosses")
 	var baby: Variant = EnemyStatsScript.from_dict(enemy_json["enemies"][0])
 	_assert_equal(baby.max_health_for_wave(5), 11, "baby alien hp wave scaling")
 	player.add_permanent_stat("enemy_health", 50)
@@ -255,8 +260,21 @@ func _combat_m2_tests() -> void:
 	_assert_equal(baby.contact_damage_for_wave(3), 2, "baby alien damage wave scaling")
 	_assert_equal(baby.speed_for_roll(1.0), 300.0, "enemy speed randomization upper bound")
 	_assert_equal(baby.instantiate(1, Vector2(12, 24))["hp"], 3, "enemy instantiate carries hp")
+	var helmet: Variant = EnemyStatsScript.from_dict(_enemy_row(enemy_json, "helmet_alien"))
+	_assert_equal(helmet.max_health_for_wave(13), 56, "helmet alien hp scaling row")
+	var horned_charger: Variant = EnemyStatsScript.from_dict(_enemy_row(enemy_json, "horned_charger"))
+	_assert_equal(horned_charger.contact_damage_for_wave(18), 20, "horned charger damage scaling row")
+	var junkie_row := _enemy_row(enemy_json, "junkie")
+	_assert_equal(junkie_row["item_drop_chance"], 0.01, "junkie keeps literal documented item chance")
+	_assert_equal(junkie_row["can_drop_consumable"], false, "junkie still cannot drop consumables")
+	var tree: Variant = EnemyStatsScript.from_dict(_enemy_row(enemy_json, "tree"))
+	_assert_equal(tree.entity_type, "neutral", "tree row remains neutral data")
+	_assert_approx(tree.material_drop_chance(20), 1.0, "always-drop rows bypass wave material chance")
+	_assert_true(String(_enemy_row(enemy_json, "tree").get("source", "")).contains("tree_stats"), "tree stat row cites asset mapping source")
 
 	var wave_json := _load_json("res://data/m2/area1_waves.json")
+	_assert_equal(wave_json["waves"].size(), 20, "area 1 wave table includes all 20 waves")
+	_assert_equal(wave_json["common_groups"].size(), 3, "area 1 common groups are encoded once")
 	var scheduler: Variant = WaveSchedulerScript.from_dict(wave_json["waves"][0])
 	_assert_equal(scheduler.advance(0.99, 0, 0).size(), 0, "wave scheduler waits until first whole second")
 	var requests: Array = scheduler.advance(0.01, 0, 0)
@@ -292,6 +310,21 @@ func _combat_m2_tests() -> void:
 	for i in 3:
 		queue_materialized = queue_scheduler.physics_tick()
 	_assert_equal(queue_materialized.size(), 2, "spawn queue drains up to two when backlog exceeds 100")
+
+	var composite_scheduler: Variant = WaveSchedulerScript.from_dict(wave_json["waves"][15])
+	var composite_requests: Array = composite_scheduler.advance(1.0, 0, 95)
+	_assert_equal(composite_requests.size(), 2, "composite group emits one request per unit row")
+	_assert_equal(composite_requests[0]["enemy_id"], "buffer", "composite group keeps first unit id")
+	_assert_equal(composite_requests[1]["enemy_id"], "helmet_alien", "composite group keeps second unit id")
+	_assert_equal(composite_requests[0]["performance_cull"], 7, "composite group culls against the combined group count")
+
+	var boss_scheduler: Variant = WaveSchedulerScript.from_dict(wave_json["waves"][19])
+	var boss_requests: Array = boss_scheduler.advance(0.0, 0, 0)
+	_assert_equal(boss_requests.size(), 1, "boss group emits before the first elapsed second")
+	_assert_true(bool(boss_requests[0].get("is_boss", false)), "boss request carries boss flag")
+	_assert_equal(boss_requests[0]["enemy_pool"], ["predator", "invoker"], "boss request carries area 1 boss pool")
+
+	_assert_danger0_wave_schedule_simulates(wave_json, enemy_json)
 
 func _content_m3_tests() -> void:
 	var characters_json := _load_json("res://data/m3/characters.json")
@@ -685,6 +718,106 @@ func _ui_flow_m4_tests() -> void:
 	_assert_true(bool(main.floating_text_rule("material")["always_display"]), "material floating text is an always-display HUD contract")
 	main.queue_free()
 
+func _presentation_m5_tests() -> void:
+	var manifest: Variant = AssetManifestScript.load_from_path("res://data/m5/asset_manifest.json")
+	var audit: Dictionary = manifest.representative_audit()
+	_assert_equal(audit["source_docs"], 7, "M5 manifest points at all seven asset mapping docs")
+	_assert_true(int(audit["weapon_count"]) >= 3, "M5 manifest includes starter weapon visuals")
+	_assert_true(int(audit["enemy_count"]) >= 5, "M5 manifest includes area 1 enemy visuals")
+	_assert_equal(audit["material_texture_count"], 11, "M5 manifest includes 11 material sprites")
+	_assert_equal(audit["ground_theme_count"], 6, "M5 manifest includes six ground themes")
+	_assert_equal(audit["music_track_count"], 11, "M5 manifest includes 11 music tracks")
+	_assert_true(int(audit["sound_event_count"]) >= 9, "M5 manifest includes runtime sound event groups")
+	_assert_true(int(audit["vfx_count"]) >= 10, "M5 manifest includes visual feedback rules")
+	_assert_equal(audit["quality_tint_count"], 6, "M5 manifest includes tier color rules")
+
+	var player_visual: Dictionary = manifest.player_visual()
+	_assert_file_exists(String(player_visual["body_texture"]), "player body texture exists")
+	_assert_equal(player_visual["weapon_container_offset"], [0.0, -24.0], "player weapon container offset follows mapping")
+	_assert_equal(player_visual["shadow"]["position"], [0.0, 38.0], "player shadow offset follows mapping")
+	_assert_equal(player_visual["legs"]["left_mount"], [15.0, 18.0], "player left leg mount follows mapping")
+
+	var pistol: Dictionary = manifest.weapon_visual("weapon_pistol")
+	_assert_file_exists(String(pistol["texture"]), "pistol texture exists")
+	_assert_equal(pistol["muzzle"], [32.0, 0.0], "pistol muzzle mount follows mapping")
+	_assert_equal(pistol["align_anchor"], [2.0, 16.0], "pistol align anchor follows mapping")
+	_assert_equal(int(pistol["recoil"]), 25, "pistol recoil distance follows mapping")
+	_assert_approx(float(pistol["recoil_duration"]), 0.1, "pistol recoil duration follows mapping")
+	_assert_equal(manifest.sound_event("weapon_pistol_fire")["paths"].size(), 5, "pistol fire sound group has five variants")
+
+	var smg: Dictionary = manifest.weapon_visual("weapon_smg")
+	_assert_equal(int(smg["recoil"]), 10, "smg recoil distance follows mapping")
+	_assert_approx(float(smg["recoil_duration"]), 0.05, "smg recoil duration follows mapping")
+	_assert_approx(float(smg["effect_scale"]), 0.2, "smg hit effect scale follows mapping")
+	_assert_equal(manifest.sound_event("weapon_smg_fire")["paths"].size(), 9, "smg fire sound group has nine variants")
+
+	var fist: Dictionary = manifest.weapon_visual("weapon_fist")
+	_assert_file_exists(String(fist["texture"]), "fist texture exists")
+	_assert_equal(fist["hitbox_extents"], [48.0, 20.0], "fist hitbox extents follow mapping")
+	_assert_equal(String(fist["attack_type"]), "thrust", "fist attack type follows mapping")
+
+	var fly: Dictionary = manifest.enemy_visual("fly")
+	_assert_file_exists(String(fly["texture"]), "fly texture exists")
+	_assert_equal(fly["sprite_offset"], [0.0, -20.0], "fly sprite offset follows mapping")
+	_assert_approx(float(fly["hurt_radius"]), 70.06, "fly hurt radius follows mapping")
+	var charger: Dictionary = manifest.enemy_visual("charger")
+	_assert_equal(charger["hurt_offset"], [0.0, -19.0], "charger hurt offset follows mapping")
+	_assert_approx(float(charger["charge_prep_seconds"]), 0.4, "charger prep animation follows mapping")
+
+	var rare: Color = manifest.quality_tint(2)
+	_assert_approx(rare.r, 173.0 / 255.0, "rare tier red channel")
+	_assert_approx(rare.g, 90.0 / 255.0, "rare tier green channel")
+	_assert_approx(rare.b, 1.0, "rare tier blue channel")
+
+	var hit_particles: Dictionary = manifest.vfx_data("hit_particles")
+	_assert_file_exists(String(hit_particles["texture"]), "hit particle texture exists")
+	_assert_equal(int(hit_particles["amount"]), 8, "hit particle amount follows mapping")
+	_assert_approx(float(hit_particles["lifetime"]), 0.5, "hit particle lifetime follows mapping")
+	_assert_approx(float(manifest.vfx_data("flash")["duration_seconds"]), 0.1, "flash duration follows mapping")
+
+	var entries := PresentationRulesScript.weighted_ground_subtiles()
+	_assert_equal(entries.size(), 12, "ground has 12 atlas subtiles")
+	_assert_equal(PresentationRulesScript.total_weight(entries), 61, "ground tile weights total 61")
+	_assert_approx(PresentationRulesScript.decorated_ground_probability(entries), 11.0 / 61.0, "ground decorated subtile probability")
+	_assert_equal(PresentationRulesScript.pick_weighted_ground_subtile(0, entries), Vector2i(0, 0), "ground roll can select first decorated subtile")
+	_assert_equal(PresentationRulesScript.pick_weighted_ground_subtile(10, entries), Vector2i(1, 3), "ground roll can select last decorated subtile")
+	_assert_equal(PresentationRulesScript.pick_weighted_ground_subtile(60, entries), Vector2i(2, 3), "ground roll favors plain subtile")
+	_assert_approx(PresentationRulesScript.material_scale(1, 2), 1.25, "boosted material scale")
+	_assert_approx(PresentationRulesScript.material_scale(40, 1), 2.0, "merged material scale cap")
+	_assert_equal(PresentationRulesScript.hit_effect_position(Vector2.ZERO, Vector2.RIGHT, 100.0), Vector2(25, 0), "hit effect offset uses texture width quarter")
+	_assert_true(PresentationRulesScript.should_replace_screen_shake({"intensity": 1.0, "duration": 0.05}, {"intensity": 2.0, "duration": 0.1}), "stronger longer screen shake replaces current")
+	_assert_true(not PresentationRulesScript.should_replace_screen_shake({"intensity": 3.0, "duration": 0.1}, {"intensity": 2.0, "duration": 0.2}), "weaker screen shake does not replace current")
+
+	_assert_approx(AudioRulesScript.pitch_from_roll(0.2, 0.0), 0.8, "audio pitch lower bound")
+	_assert_approx(AudioRulesScript.pitch_from_roll(0.2, 0.5), 1.0, "audio pitch center")
+	_assert_approx(AudioRulesScript.pitch_from_roll(0.2, 1.0), 1.2, "audio pitch upper bound")
+	var audio: Variant = AudioRulesScript.new()
+	var base_event := {"paths": ["a.wav"], "pitch_rand": 0.2, "volume_db": -10}
+	for i in 16:
+		_assert_true(bool(audio.request_sound("base", base_event, 0.5, 0.0)["accepted"]), "audio queue accepts within limit")
+	_assert_true(not bool(audio.request_sound("base", base_event, 0.5, 0.0)["accepted"]), "audio queue drops when full")
+	var forced_event := {"paths": ["forced.wav"], "always_play": true}
+	_assert_true(bool(audio.request_sound("forced", forced_event, 0.5, 0.0)["accepted"]), "always_play displaces queue head")
+	_assert_equal(audio.queued_count(), 16, "always_play keeps queue capped")
+	_assert_equal(audio.dequeue_frame().size(), 1, "audio dequeues one sound per frame")
+	var limited_audio: Variant = AudioRulesScript.new()
+	var limited_event := {"paths": ["pet.wav"], "max_play": 1}
+	_assert_true(bool(limited_audio.request_sound("pet_voice", limited_event, 0.5, 0.0)["accepted"]), "limited sound queues first request")
+	limited_audio.dequeue_frame()
+	_assert_true(not bool(limited_audio.request_sound("pet_voice", limited_event, 0.5, 0.0)["accepted"]), "limited sound blocks over max_play")
+	limited_audio.finish_sound("pet_voice")
+	_assert_true(bool(limited_audio.request_sound("pet_voice", limited_event, 0.5, 0.0)["accepted"]), "limited sound accepts after finish")
+
+	var all_music: Array = manifest.music_tracks(true, true)
+	_assert_equal(all_music.size(), 11, "music pool can include all 11 tracks")
+	_assert_equal(AudioRulesScript.music_pool(manifest.audio_data()["music_tracks"], false, true).size(), 5, "streamer music pool can be isolated")
+	var shuffled := AudioRulesScript.shuffled_tracks(all_music, [0.0, 0.2, 0.4, 0.6, 0.8])
+	_assert_equal(shuffled.size(), 11, "music shuffle preserves track count")
+	var next_candidates := [{"id": "a"}, {"id": "b"}]
+	_assert_equal(AudioRulesScript.next_track(next_candidates, "a")["id"], "b", "music next track avoids immediate repeat")
+	_assert_equal(AudioRulesScript.music_volume_for_state(manifest.audio_data(), "wave_failed"), -20.0, "music failure ducking follows doc")
+	_assert_equal(AudioRulesScript.music_volume_for_state(manifest.audio_data(), "shop"), -8.0, "music shop ducking follows doc")
+
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
 	if actual != expected:
@@ -699,6 +832,11 @@ func _assert_true(value: bool, label: String) -> void:
 	assertions_run += 1
 	if not value:
 		failures.append("%s: expected true" % label)
+
+func _assert_file_exists(path: String, label: String) -> void:
+	assertions_run += 1
+	if not FileAccess.file_exists(path):
+		failures.append("%s: missing %s" % [label, path])
 
 func _assert_resource_exists(path: String, label: String) -> void:
 	assertions_run += 1
@@ -731,6 +869,47 @@ func _load_json(path: String) -> Dictionary:
 		failures.append("could not parse JSON: %s" % path)
 		return {}
 	return parsed
+
+func _enemy_row(enemy_json: Dictionary, enemy_id: String) -> Dictionary:
+	for row in enemy_json.get("enemies", []):
+		if String(row.get("id", "")) == enemy_id:
+			return row
+	failures.append("missing enemy row: %s" % enemy_id)
+	return {}
+
+func _assert_danger0_wave_schedule_simulates(wave_json: Dictionary, enemy_json: Dictionary) -> void:
+	var enemy_ids := {}
+	for row in enemy_json.get("enemies", []):
+		enemy_ids[String(row.get("id", ""))] = true
+	var seen_ids := {}
+	var total_requests := 0
+	var boss_requests := 0
+	seed(12345)
+	for wave in wave_json.get("waves", []):
+		var scheduler: Variant = WaveSchedulerScript.from_dict(wave, wave_json.get("common_groups", []))
+		var wave_requests: Array = scheduler.advance(0.0, 0, 0)
+		for second in int(scheduler.duration_seconds):
+			wave_requests.append_array(scheduler.advance(1.0, 0, 0))
+		total_requests += wave_requests.size()
+		for request in wave_requests:
+			if bool(request.get("is_boss", false)):
+				boss_requests += 1
+			for enemy_id in _request_enemy_ids(request):
+				_assert_true(enemy_ids.has(enemy_id), "wave schedule references known enemy id %s" % enemy_id)
+				seen_ids[enemy_id] = true
+	_assert_true(total_requests > 200, "Danger 0 simulation emits requests across the full run")
+	_assert_equal(boss_requests, 1, "Danger 0 simulation emits one boss request")
+	for required_id in ["helmet_alien", "fin_alien", "spawner", "buffer", "horned_charger", "horned_bruiser", "pursuer"]:
+		_assert_true(seen_ids.has(required_id), "Danger 0 simulation reaches %s" % required_id)
+	_assert_true(not seen_ids.has("fly"), "Danger 0 simulation skips danger-gated fly groups")
+
+func _request_enemy_ids(request: Dictionary) -> Array:
+	var ids: Array = []
+	if request.has("enemy_id"):
+		ids.append(String(request["enemy_id"]))
+	for enemy_id in request.get("enemy_pool", []):
+		ids.append(String(enemy_id))
+	return ids
 
 func _load_text(path: String) -> String:
 	if not FileAccess.file_exists(path):
