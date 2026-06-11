@@ -27,6 +27,13 @@ Current M3 data import:
 - The generated data covers 49 characters, 61 weapon families with four quality slots, 201 documented weapon variant rows, 209 item data rows, tags/sets, unlock metadata, asset refs, and effect payloads.
 - Complex effects without full serialized fields are preserved as raw source-text payloads with doc line traceability; see `OPEN_QUESTIONS.md`.
 
+Current M3B backend slice:
+
+- Fixture economy catalog for a small documented subset of items, weapons, and consumables until full M3A content data is merged.
+- Shop/economy APIs for tier rolls, prices, rerolls, locking, item purchase, weapon buy-combine, recycling, and reward settlement.
+- Level-up option generation with documented tier overrides and upgrade values for effect keys already present in the M1 dictionary.
+- Headless tests for shop probabilities, pricing, reroll/free reroll, locking, combining, recycling, XP/harvesting rewards, crates, and consumables.
+
 ## Run Locally
 
 ```powershell

@@ -69,10 +69,43 @@ func shop_tier_chance(tier: int, wave_or_level: int, luck_percent: float = 0.0) 
 	var wave_chance: float = wave_base * (1.0 + luck) if luck >= 0.0 else wave_base / (1.0 + abs(luck))
 	return min(float(params["base"]) + wave_chance, float(params["cap"]))
 
+func roll_shop_tier(wave_or_level: int, luck_percent: float = 0.0, roll: float = -1.0, min_tier: int = 0, max_tier: int = 3, increase_tier: int = 0) -> int:
+	var actual_roll: float = randf() if roll < 0.0 else clamp(roll, 0.0, 1.0)
+	for tier in range(3, 0, -1):
+		if actual_roll <= shop_tier_chance(tier, wave_or_level, luck_percent):
+			return clampi(tier + increase_tier, min_tier, max_tier)
+	return clampi(0 + increase_tier, min_tier, max_tier)
+
+func shop_price_raw(base_value: int, wave: int, items_price_percent: float = 0.0, specific_item_price_percent: float = 0.0, weapons_price_percent: float = 0.0, is_weapon: bool = false, endless_factor_value: float = -1.0) -> float:
+	var endless: float = endless_factor(wave) if endless_factor_value < 0.0 else endless_factor_value
+	var value: float = float(base_value)
+	if is_weapon:
+		value *= 1.0 + weapons_price_percent / 100.0
+	var price_factor := 1.0 + (items_price_percent + specific_item_price_percent) / 100.0
+	return max(1.0, (value + float(wave) + value * float(wave) * 0.1) * price_factor * (1.0 + endless / 5.0))
+
+func shop_price(base_value: int, wave: int, items_price_percent: float = 0.0, specific_item_price_percent: float = 0.0, weapons_price_percent: float = 0.0, is_weapon: bool = false, hp_shop: bool = false, endless_factor_value: float = -1.0) -> int:
+	var raw: float = shop_price_raw(base_value, wave, items_price_percent, specific_item_price_percent, weapons_price_percent, is_weapon, endless_factor_value)
+	if hp_shop:
+		return maxi(1, ceili(raw / 20.0))
+	return maxi(1, ceili(raw))
+
 func reroll_price(wave: int, paid_rerolls: int, reroll_price_percent: float = 0.0, endless_factor: float = 0.0) -> int:
 	var delta := int(max(1.0, 0.4 * float(wave) * sqrt(1.0 + endless_factor)))
 	var raw_price := int(float(wave) * 0.75) + delta * (1 + paid_rerolls)
 	return ceili(float(raw_price) * max(0.1, 1.0 + reroll_price_percent / 100.0))
+
+func reroll_price_breakdown(wave: int, paid_rerolls: int, reroll_price_percent: float = 0.0, endless_factor_value: float = 0.0) -> Dictionary:
+	var delta := int(max(1.0, 0.4 * float(wave) * sqrt(1.0 + endless_factor_value)))
+	var raw_price := int(float(wave) * 0.75) + delta * (1 + paid_rerolls)
+	var paid: int = ceili(float(raw_price) * max(0.1, 1.0 + reroll_price_percent / 100.0))
+	return {"paid": paid, "raw": raw_price, "discount": raw_price - paid}
+
+func recycle_value(shop_price_value: int, base_value: int, recycling_gains_percent: float = 0.0) -> int:
+	if base_value == 1:
+		return 1
+	var rate: float = clamp(0.25 + recycling_gains_percent / 100.0, 0.01, 1.0)
+	return mini(shop_price_value, maxi(1, floori(float(shop_price_value) * rate)))
 
 func enemy_hp(base_hp: float, hp_per_wave: float, wave: int, enemy_health_percent: float = 0.0, difficulty_coefficient: float = 1.0, player_count: int = 1, endless_factor: float = 0.0) -> int:
 	var coop_multiplier := 1.0 + 0.3 * float(maxi(1, player_count) - 1)
@@ -146,6 +179,29 @@ func harvesting_growth_delta(harvesting_stat: float, harvesting_growth_percent: 
 
 func pickup_flight_speed(initial_speed: float, acceleration: float, elapsed_seconds: float) -> float:
 	return initial_speed + acceleration * elapsed_seconds
+
+func material_drop_amount(base_value: float, gold_drops_percent: float = 0.0, enemy_gold_drops_percent: float = 0.0, neutral_gold_drops_percent: float = 0.0, player_count: int = 1, distance_multiplier: float = 1.0, fractional_roll: float = -1.0) -> int:
+	var averaged_global := gold_drops_percent / float(maxi(1, player_count))
+	var averaged_enemy := enemy_gold_drops_percent / float(maxi(1, player_count))
+	var averaged_neutral := neutral_gold_drops_percent / float(maxi(1, player_count))
+	var value := base_value * (1.0 + (averaged_global + averaged_enemy + averaged_neutral) / 100.0) * distance_multiplier
+	value = max(value, 0.5 * base_value)
+	var whole := floori(value)
+	var fractional := value - float(whole)
+	var roll := randf() if fractional_roll < 0.0 else fractional_roll
+	return whole + (1 if fractional > 0.0 and roll <= fractional else 0)
+
+func consumable_heal(consumable_heal_bonus: float = 0.0) -> int:
+	return maxi(0, roundi(3.0 + consumable_heal_bonus))
+
+func consumable_drop_chance(base_drop_chance: float, total_luck_percent: float = 0.0, endless_factor_value: float = 0.0, always_drop: bool = false) -> float:
+	if always_drop:
+		return 1.0
+	return min(1.0, base_drop_chance * (1.0 + total_luck_percent / 100.0)) / (1.0 + endless_factor_value)
+
+func crate_drop_chance(item_drop_chance: float, total_luck_percent: float = 0.0, crates_dropped_this_wave: int = 0, crate_chance_percent: float = 0.0) -> float:
+	var chance := item_drop_chance * (1.0 + total_luck_percent / 100.0) / (1.0 + float(maxi(0, crates_dropped_this_wave)))
+	return chance * (1.0 + crate_chance_percent / 100.0)
 
 func generic_probability_succeeds(chance: float, roll: float) -> bool:
 	if chance == 0.0:
