@@ -1,0 +1,18 @@
+{
+  "milestone": "M1",
+  "source_docs": [
+    "devkit/brotato_original_devkit/game_mechanics_docs/00_总览与目录.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/01_核心属性与数值系统.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/08_效果系统.md"
+  ],
+  "implemented": [
+    "234+ documented effect dictionary keys with default values and array/object containers",
+    "five effect storage methods: SUM, KEY_VALUE, REPLACE, APPEND_KEY, APPEND_KEY_VALUE",
+    "permanent, temporary, linked stat aggregation with gain_stat_* modifiers",
+    "cap evaluation for max HP, speed, dodge, and crit chance",
+    "core formulas for weapon damage, cooldown, armor, regeneration, XP, shop quality, reroll price, enemy HP, harvesting, pickup flight, and burn tick timing",
+    "headless Godot test runner covering M1 formulas and effect storage behavior"
+  ],
+  "next_milestone": "M2 combat core: full weapon/enemy/wave tables and a 20-wave danger 0 run"
+}
+
