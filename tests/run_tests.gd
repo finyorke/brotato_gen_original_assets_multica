@@ -250,9 +250,13 @@ func _combat_m2_tests() -> void:
 	_assert_equal(helmet.max_health_for_wave(13), 56, "helmet alien hp scaling row")
 	var horned_charger: Variant = EnemyStatsScript.from_dict(_enemy_row(enemy_json, "horned_charger"))
 	_assert_equal(horned_charger.contact_damage_for_wave(18), 20, "horned charger damage scaling row")
+	var junkie_row := _enemy_row(enemy_json, "junkie")
+	_assert_equal(junkie_row["item_drop_chance"], 0.01, "junkie keeps literal documented item chance")
+	_assert_equal(junkie_row["can_drop_consumable"], false, "junkie still cannot drop consumables")
 	var tree: Variant = EnemyStatsScript.from_dict(_enemy_row(enemy_json, "tree"))
 	_assert_equal(tree.entity_type, "neutral", "tree row remains neutral data")
 	_assert_approx(tree.material_drop_chance(20), 1.0, "always-drop rows bypass wave material chance")
+	_assert_true(String(_enemy_row(enemy_json, "tree").get("source", "")).contains("tree_stats"), "tree stat row cites asset mapping source")
 
 	var wave_json := _load_json("res://data/m2/area1_waves.json")
 	_assert_equal(wave_json["waves"].size(), 20, "area 1 wave table includes all 20 waves")

@@ -161,7 +161,7 @@
       "knockback_resistance": 0.5,
       "value": 1,
       "base_drop_chance": 0.01,
-      "item_drop_chance": 0.0,
+      "item_drop_chance": 0.01,
       "can_drop_consumable": false,
       "movement_mode": "random_wander_shoot",
       "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/junkie/junkie.png"
@@ -369,6 +369,7 @@
     {
       "id": "tree",
       "name": "Tree",
+      "source": "devkit/brotato_original_devkit/asset_pack/资产对应_03_敌人宠物与结构.md §3 tree_stats",
       "entity_type": "neutral",
       "health": 10,
       "health_increase_each_wave": 5,
