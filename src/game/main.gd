@@ -42,6 +42,24 @@ const TITLE_BACKGROUND_TEXTURE_PATH := "res://devkit/brotato_original_devkit/ass
 const TITLE_BROTATO_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_brotato.png"
 const TITLE_LOGO_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/ui_logo.png"
 const UPGRADE_ICON_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/upgrade_icons/upgrade_icon.png"
+const UI_PANEL_NORMAL_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/hud/ui_panel_normal.png"
+const UI_PANEL_TRANSPARENT_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/hud/ui_panel_transparent.png"
+const UI_PANEL_FLAT_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/hud/ui_panel_flat.png"
+const UI_LIFEBAR_BG_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/hud/ui_lifebar_bg.png"
+const UI_LIFEBAR_FILL_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/hud/ui_lifebar_fill.png"
+const BUTTON_PHYSIC_NORMAL_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/pages/menu_profil/button_physic_normal.png"
+const BUTTON_PHYSIC_PRESSED_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/pages/menu_profil/button_physic_pressed.png"
+const MENU_START_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/start_icon.png"
+const MENU_OPTIONS_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/options_icon.png"
+const MENU_RESUME_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/resume_icons.png"
+const MENU_EXIT_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/exit_icon.png"
+const MENU_CODEX_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/codex_icon.png"
+const BIG_CHECKMARK_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/big_checkmark.png"
+const KEY_SPACE_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/key_space.png"
+const KEY_E_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/key_e.png"
+const CROSSHAIR_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/crosshair.png"
+const CUSTOM_CURSOR_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/custom_cursor.png"
+const DIFFICULTY_ICON_DIR := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/run/difficulty_selection/difficulty_icons"
 
 const WEAPON_DATA_PATH := "res://data/m2/starter_weapons.json"
 const ENEMY_DATA_PATH := "res://data/m2/area1_enemies.json"
@@ -58,8 +76,15 @@ const MATERIAL_UI_COLOR := Color("76ff76")
 const BUTTON_BG := Color(0, 0, 0, 0.784)
 const PANEL_BG := Color(0, 0, 0, 0.902)
 const PANEL_BORDER := Color(0, 0, 0, 1)
-const SHOP_CARD_SIZE := Vector2(230, 260)
-const SELECTION_CARD_SIZE := Vector2(260, 260)
+const MENU_PANEL_TINT := Color(0.17, 0.17, 0.15, 0.96)
+const BUTTON_NORMAL_TINT := Color(0.294, 0.314, 0.376, 1.0)
+const BUTTON_HOVER_TINT := Color(0.57, 0.60, 0.68, 1.0)
+const BUTTON_PRESSED_TINT := Color(0.396, 0.357, 0.196, 1.0)
+const BUTTON_DISABLED_TINT := Color(0.16, 0.16, 0.16, 1.0)
+const TEXT_DARK := Color(0.08, 0.07, 0.055)
+const TEXT_LIGHT := Color(0.96, 0.95, 0.88)
+const SHOP_CARD_SIZE := Vector2(268, 314)
+const SELECTION_CARD_SIZE := Vector2(292, 314)
 const FLOATING_TEXT_LIFETIME := 0.85
 
 const CHARACTER_OPTIONS := [
@@ -172,6 +197,17 @@ var title_background_texture: Texture2D
 var title_brotato_texture: Texture2D
 var title_logo_texture: Texture2D
 var upgrade_icon_texture: Texture2D
+var ui_panel_normal_texture: Texture2D
+var ui_panel_transparent_texture: Texture2D
+var ui_panel_flat_texture: Texture2D
+var ui_lifebar_bg_texture: Texture2D
+var ui_lifebar_fill_texture: Texture2D
+var button_physic_normal_texture: Texture2D
+var button_physic_pressed_texture: Texture2D
+var big_checkmark_texture: Texture2D
+var key_space_texture: Texture2D
+var key_e_texture: Texture2D
+var crosshair_texture: Texture2D
 var menu_font: Font
 
 var player_data: Variant
@@ -603,31 +639,64 @@ func _show_title_screen() -> void:
 	var row := HBoxContainer.new()
 	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	row.add_theme_constant_override("separation", 34)
 	margin.add_child(row)
+	var menu_panel := PanelContainer.new()
+	menu_panel.custom_minimum_size = Vector2(440, 620)
+	menu_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.10, 0.10, 0.09, 0.92)))
+	row.add_child(menu_panel)
 	var menu := VBoxContainer.new()
-	menu.custom_minimum_size = Vector2(360, 0)
+	menu.custom_minimum_size = Vector2(400, 0)
 	menu.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_child(menu)
+	menu.add_theme_constant_override("separation", 18)
+	menu_panel.add_child(menu)
 	var logo := TextureRect.new()
 	logo.texture = title_logo_texture
 	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	logo.custom_minimum_size = Vector2(320, 160)
+	logo.custom_minimum_size = Vector2(390, 176)
 	menu.add_child(logo)
-	menu.add_child(_make_button("NEW RUN", Callable(self, "start_new_run"), "Doc 11 section 2.3: title menu entry starts the pre-run flow."))
-	menu.add_child(_make_button("SETTINGS", Callable(self, "_show_settings_from_title"), "Settings are shared by title and pause menus per doc 11 section 11."))
-	menu.add_child(_make_button("RESULTS", Callable(self, "_show_result_preview"), "Preview the result screen data contract from doc 11 section 9."))
+	menu.add_child(_make_button("NEW RUN", Callable(self, "start_new_run"), "Start a new run.", Vector2(330, 64), MENU_START_ICON_PATH))
+	menu.add_child(_make_button("SETTINGS", Callable(self, "_show_settings_from_title"), "Open settings.", Vector2(330, 64), MENU_OPTIONS_ICON_PATH))
+	menu.add_child(_make_button("RESULTS", Callable(self, "_show_result_preview"), "Open run results.", Vector2(330, 64), MENU_CODEX_ICON_PATH))
+	menu.add_child(_make_button("QUIT", Callable(self, "_quit_game"), "Exit the application.", Vector2(330, 64), MENU_EXIT_ICON_PATH))
 	var filler := Control.new()
 	filler.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(filler)
+	var status_panel := PanelContainer.new()
+	status_panel.custom_minimum_size = Vector2(360, 330)
+	status_panel.size_flags_vertical = Control.SIZE_SHRINK_END
+	status_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.11, 0.11, 0.10, 0.88)))
+	row.add_child(status_panel)
+	var status_box := VBoxContainer.new()
+	status_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	status_box.add_theme_constant_override("separation", 12)
+	status_panel.add_child(status_box)
+	status_box.add_child(_make_texture_icon(player_texture, Vector2(112, 112)))
+	status_box.add_child(_make_label("RUN READY", 30, HORIZONTAL_ALIGNMENT_CENTER))
+	status_box.add_child(_make_label("DANGER 0  /  WAVE 1", 22, HORIZONTAL_ALIGNMENT_CENTER))
+	var hint_row := HBoxContainer.new()
+	hint_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	hint_row.add_theme_constant_override("separation", 10)
+	status_box.add_child(hint_row)
+	hint_row.add_child(_make_texture_icon(key_space_texture, Vector2(48, 48)))
+	hint_row.add_child(_make_label("MOVE", 18, HORIZONTAL_ALIGNMENT_CENTER))
+	hint_row.add_child(_make_texture_icon(key_e_texture, Vector2(48, 48)))
+	hint_row.add_child(_make_label("BUY", 18, HORIZONTAL_ALIGNMENT_CENTER))
 
 func _show_character_select() -> void:
 	ui_state = UIState.CHARACTER_SELECT
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("CharacterSelect")
-	_add_screen_title(root, "CHARACTER", "Doc 11 section 3.2 selection grid; fixture subset until static content import lands.")
-	var grid := _centered_grid(root, 3)
+	_add_screen_title(root, "CHARACTER", "Choose a character.")
+	var layout := _selection_layout(root, 3)
+	_add_info_panel_content(layout["info_box"], "CHOOSE A POTATO", PLAYER_TEXTURE_PATH, [
+		"Balanced starter choices for a fresh run.",
+		"Cards show starting bonuses and clear tier.",
+		"Pick one to choose a starting weapon."
+	])
+	var grid: GridContainer = layout["grid"]
 	for character in CHARACTER_OPTIONS:
 		var data: Dictionary = character
 		grid.add_child(_make_selection_card(
@@ -645,8 +714,15 @@ func _show_weapon_select() -> void:
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("WeaponSelect")
-	_add_screen_title(root, "WEAPON", "Doc 11 section 3.3 weapon choice; rows come from data/m2/starter_weapons.json.")
-	var grid := _centered_grid(root, 3)
+	_add_screen_title(root, "WEAPON", "Choose a starting weapon.")
+	var layout := _selection_layout(root, 3)
+	var selected_character := _character_option(selected_character_id)
+	_add_info_panel_content(layout["info_box"], "STARTING LOADOUT", String(selected_character.get("icon", PLAYER_TEXTURE_PATH)), [
+		"Character: %s" % String(selected_character.get("name", "Well-Rounded")),
+		"Pick one weapon for wave 1.",
+		"Quality color marks each weapon tier."
+	])
+	var grid: GridContainer = layout["grid"]
 	for weapon in starter_weapons:
 		var data: Dictionary = weapon
 		var subtitle := "%s  Damage %s  Cooldown %s" % [
@@ -669,16 +745,17 @@ func _show_danger_select() -> void:
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("DangerSelect")
-	_add_screen_title(root, "DANGER", "Doc 11 section 3.4 records the chosen danger before entering combat.")
-	var grid := _centered_grid(root, 6)
+	_add_screen_title(root, "DANGER", "Choose a danger level.")
+	var layout := _selection_layout(root, 3)
+	var weapon_name := String(selected_weapon_row.get("name", selected_weapon_id))
+	_add_info_panel_content(layout["info_box"], "RUN SETUP", _icon_for_entry(selected_weapon_row), [
+		"Weapon: %s" % weapon_name,
+		"Survive the wave timer.",
+		"Collect materials and buy upgrades."
+	])
+	var grid: GridContainer = layout["grid"]
 	for danger in range(0, 6):
-		var button := _make_button(
-			"DANGER %d" % danger,
-			Callable(self, "choose_danger").bind(danger),
-			"Enemy stat multiplier: %.0f%%" % (formulas.danger_enemy_stat_multiplier(danger) * 100.0),
-			Vector2(150, 110)
-		)
-		grid.add_child(button)
+		grid.add_child(_make_danger_card(danger))
 	_add_back_button(root, Callable(self, "_show_weapon_select"))
 
 func _show_combat_hud() -> void:
@@ -688,70 +765,87 @@ func _show_combat_hud() -> void:
 	hud_root.add_child(root)
 	var top_left := PanelContainer.new()
 	top_left.position = Vector2(HUD_MARGIN, HUD_MARGIN)
-	top_left.custom_minimum_size = Vector2(310, 152)
-	top_left.add_theme_stylebox_override("panel", _panel_style(PANEL_BG, PANEL_BORDER, 5, 8))
+	top_left.custom_minimum_size = Vector2(378, 196)
+	top_left.add_theme_stylebox_override("panel", _ui_panel_style())
 	root.add_child(top_left)
 	var left_box := VBoxContainer.new()
-	left_box.add_theme_constant_override("separation", 6)
+	left_box.add_theme_constant_override("separation", 8)
 	top_left.add_child(left_box)
-	hud_refs["hp_label"] = _make_label("", 22)
+	hud_refs["hp_label"] = _make_label("", 24)
 	left_box.add_child(hud_refs["hp_label"])
 	var hp_bar := ProgressBar.new()
-	hp_bar.show_percentage = false
-	hp_bar.custom_minimum_size = Vector2(270, 18)
+	_apply_progress_theme(hp_bar, Color(0.721, 0.0, 0.0))
+	hp_bar.custom_minimum_size = Vector2(332, 28)
 	left_box.add_child(hp_bar)
 	hud_refs["hp_bar"] = hp_bar
 	hud_refs["xp_label"] = _make_label("", 20)
 	left_box.add_child(hud_refs["xp_label"])
 	var xp_bar := ProgressBar.new()
-	xp_bar.show_percentage = false
-	xp_bar.custom_minimum_size = Vector2(270, 14)
+	_apply_progress_theme(xp_bar, Color(0.19, 0.58, 1.0))
+	xp_bar.custom_minimum_size = Vector2(332, 20)
 	left_box.add_child(xp_bar)
 	hud_refs["xp_bar"] = xp_bar
 	var material_row := HBoxContainer.new()
 	material_row.add_theme_constant_override("separation", 8)
 	left_box.add_child(material_row)
-	var material_icon := TextureRect.new()
-	material_icon.texture = material_ui_texture
-	material_icon.modulate = MATERIAL_UI_COLOR
-	material_icon.custom_minimum_size = Vector2(32, 32)
-	material_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	material_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	material_row.add_child(material_icon)
-	hud_refs["materials_label"] = _make_label("", 24)
+	material_row.add_child(_make_texture_icon(material_ui_texture, Vector2(36, 36), MATERIAL_UI_COLOR))
+	hud_refs["materials_label"] = _make_label("", 28)
 	material_row.add_child(hud_refs["materials_label"])
-	_attach_tooltip(material_row, "Asset map 04: material_ui.png is tinted #76FF76 at runtime.")
+	var queue_label := _make_label("", 18)
+	hud_refs["queue_label"] = queue_label
+	left_box.add_child(queue_label)
+	_attach_tooltip(material_row, "Materials collected this run.")
 
 	var timer_panel := PanelContainer.new()
 	timer_panel.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	timer_panel.offset_left = 420
-	timer_panel.offset_right = -420
+	timer_panel.offset_left = 560
+	timer_panel.offset_right = -560
 	timer_panel.offset_top = HUD_MARGIN
-	timer_panel.custom_minimum_size = Vector2(0, 86)
-	timer_panel.add_theme_stylebox_override("panel", _panel_style(Color(0, 0, 0, 0.70), PANEL_BORDER, 4, 8))
+	timer_panel.custom_minimum_size = Vector2(0, 108)
+	timer_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.12, 0.12, 0.108, 0.96)))
 	root.add_child(timer_panel)
 	var timer_box := VBoxContainer.new()
 	timer_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	timer_box.add_theme_constant_override("separation", 8)
 	timer_panel.add_child(timer_box)
-	hud_refs["wave_label"] = _make_label("", 30, HORIZONTAL_ALIGNMENT_CENTER)
+	hud_refs["wave_label"] = _make_label("", 38, HORIZONTAL_ALIGNMENT_CENTER)
 	timer_box.add_child(hud_refs["wave_label"])
 	var timeline := ProgressBar.new()
-	timeline.show_percentage = false
-	timeline.custom_minimum_size = Vector2(360, 12)
+	_apply_progress_theme(timeline, Color(1.0, 0.87, 0.22))
+	timeline.custom_minimum_size = Vector2(528, 18)
 	timer_box.add_child(timeline)
 	hud_refs["timeline"] = timeline
 
 	var top_right := VBoxContainer.new()
 	top_right.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	top_right.offset_left = -300
+	top_right.offset_left = -340
 	top_right.offset_top = HUD_MARGIN
 	top_right.offset_right = -HUD_MARGIN
 	top_right.add_theme_constant_override("separation", 10)
 	root.add_child(top_right)
-	top_right.add_child(_make_button("PAUSE", Callable(self, "_show_pause_menu"), "Doc 10 section 9: pause is scene-level, not time-scale.", Vector2(180, 48)))
+	top_right.add_child(_make_button("PAUSE", Callable(self, "_show_pause_menu"), "Pause the wave.", Vector2(210, 54), MENU_RESUME_ICON_PATH))
 	var stat_panel := _make_stat_panel()
 	top_right.add_child(stat_panel)
 	hud_refs["stat_panel"] = stat_panel
+	var weapon_panel := PanelContainer.new()
+	weapon_panel.position = Vector2(HUD_MARGIN, -HUD_MARGIN - 108)
+	weapon_panel.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	weapon_panel.custom_minimum_size = Vector2(378, 108)
+	weapon_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.12, 0.12, 0.108, 0.94)))
+	root.add_child(weapon_panel)
+	var weapon_row := HBoxContainer.new()
+	weapon_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	weapon_row.add_theme_constant_override("separation", 10)
+	weapon_panel.add_child(weapon_row)
+	hud_refs["weapon_icon"] = _make_texture_icon(weapon_texture, Vector2(70, 70))
+	weapon_row.add_child(hud_refs["weapon_icon"])
+	var weapon_box := VBoxContainer.new()
+	weapon_box.add_theme_constant_override("separation", 4)
+	weapon_row.add_child(weapon_box)
+	hud_refs["weapon_label"] = _make_label("", 24)
+	weapon_box.add_child(hud_refs["weapon_label"])
+	hud_refs["weapon_detail_label"] = _make_label("", 18)
+	weapon_box.add_child(hud_refs["weapon_detail_label"])
 	_refresh_hud()
 
 func _show_wave_complete_screen() -> void:
@@ -782,13 +876,13 @@ func _show_wave_complete_screen() -> void:
 	bag.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bag.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(bag)
-	box.add_child(_make_button("CONTINUE", Callable(self, "continue_wave_end"), "Doc 11 section 6: process crates before level-ups, then shop.", Vector2(220, 54)))
+	box.add_child(_make_button("CONTINUE", Callable(self, "continue_wave_end"), "Continue.", Vector2(220, 54)))
 
 func _show_crate_reward_screen() -> void:
 	ui_state = UIState.CRATE_REWARD
 	_clear_screen_ui()
 	var root := _menu_background("CrateReward")
-	_add_screen_title(root, "ITEM BOX", "Doc 11 section 6.3: item boxes are processed before level-up options.")
+	_add_screen_title(root, "ITEM BOX", "Open an item box.")
 	var panel := _center_panel(root, Vector2(520, 470))
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -807,13 +901,13 @@ func _show_crate_reward_screen() -> void:
 	buttons.add_theme_constant_override("separation", 12)
 	box.add_child(buttons)
 	buttons.add_child(_make_button("TAKE", Callable(self, "accept_crate_reward"), "Apply item effects to PlayerData.", Vector2(150, 52)))
-	buttons.add_child(_make_button("RECYCLE", Callable(self, "recycle_crate_reward"), "Convert this preview item box into materials.", Vector2(150, 52)))
+	buttons.add_child(_make_button("RECYCLE", Callable(self, "recycle_crate_reward"), "Recycle this item for materials.", Vector2(150, 52)))
 
 func _show_level_up_screen() -> void:
 	ui_state = UIState.LEVEL_UP
 	_clear_screen_ui()
 	var root := _menu_background("LevelUp")
-	_add_screen_title(root, "LEVEL UP", "Doc 11 section 6.2: generate up to four upgrade cards; tier colors come from asset map 04 section 7.")
+	_add_screen_title(root, "LEVEL UP", "Choose an upgrade.")
 	var grid := _centered_grid(root, 4, Vector2(0, 34))
 	for i in current_level_options.size():
 		var option: Dictionary = current_level_options[i]
@@ -826,7 +920,7 @@ func _show_level_up_screen() -> void:
 	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
 	bottom.add_theme_constant_override("separation", 16)
 	root.add_child(bottom)
-	bottom.add_child(_make_button("REROLL", Callable(self, "reroll_level_options"), "Uses the same reroll price formula as shop, per doc 11 section 6.2.", Vector2(170, 52)))
+	bottom.add_child(_make_button("REROLL", Callable(self, "reroll_level_options"), "Reroll upgrade choices.", Vector2(170, 52)))
 	bottom.add_child(_make_label("Materials %d" % player_data.materials, 24, HORIZONTAL_ALIGNMENT_CENTER))
 
 func _show_shop_screen() -> void:
@@ -834,7 +928,7 @@ func _show_shop_screen() -> void:
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("Shop")
-	_add_screen_title(root, "SHOP", "Doc 11 section 8: four slots, buy/lock/ban, reroll, equipment/stat panel, then GO.")
+	_add_screen_title(root, "SHOP", "Buy items and prepare for the next wave.")
 	var content := HBoxContainer.new()
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = 46
@@ -869,7 +963,7 @@ func _show_shop_screen() -> void:
 	var reroll_cost: int = formulas.reroll_price(current_wave, current_shop.paid_rerolls, player_data.get_stat("reroll_price"), formulas.endless_factor(current_wave))
 	if current_shop.free_rerolls > 0 or current_shop.next_reroll_is_free:
 		reroll_cost = 0
-	bottom.add_child(_make_button("REROLL - %d" % reroll_cost, Callable(self, "reroll_shop"), "Doc 11 section 8.3 reroll preserves locked slots.", Vector2(210, 56)))
+	bottom.add_child(_make_button("REROLL - %d" % reroll_cost, Callable(self, "reroll_shop"), "Reroll shop slots.", Vector2(210, 56)))
 	bottom.add_child(_make_button("GO", Callable(self, "leave_shop"), "Start the next wave.", Vector2(160, 56)))
 
 func _show_pause_menu() -> void:
@@ -912,7 +1006,7 @@ func _show_settings_screen() -> void:
 	ui_state = UIState.SETTINGS
 	_clear_screen_ui()
 	var root := _menu_background("Settings")
-	_add_screen_title(root, "SETTINGS", "Doc 11 section 11: title and pause share the same settings pages.")
+	_add_screen_title(root, "SETTINGS", "Adjust settings.")
 	var tabs := HBoxContainer.new()
 	tabs.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	tabs.offset_left = 120
@@ -943,7 +1037,7 @@ func _show_settings_screen() -> void:
 			box.add_child(_make_setting_check("manual_aim_on_mouse_press", "Manual Aim On Mouse Press"))
 			box.add_child(_make_setting_check("movement_with_gamepad", "Movement With Gamepad"))
 		_:
-			box.add_child(_make_label("DLC content toggles are represented here; unlock rules are out of scope for this milestone.", 22, HORIZONTAL_ALIGNMENT_CENTER))
+			box.add_child(_make_label("No DLC options available.", 22, HORIZONTAL_ALIGNMENT_CENTER))
 	var bottom := HBoxContainer.new()
 	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	bottom.offset_left = 480
@@ -977,6 +1071,9 @@ func _show_result_preview() -> void:
 	selected_weapon_id = "weapon_pistol"
 	_show_result(true)
 
+func _quit_game() -> void:
+	get_tree().quit()
+
 func _show_result(won: bool) -> void:
 	ui_state = UIState.RESULT
 	world_visible = false
@@ -991,7 +1088,7 @@ func _show_result(won: bool) -> void:
 	}
 	_clear_screen_ui()
 	var root := _menu_background("Result")
-	_add_screen_title(root, "RUN WON" if won else "RUN LOST", "Doc 11 section 9 result screen shows progress, inventory, and unlock summary.")
+	_add_screen_title(root, "RUN WON" if won else "RUN LOST", "Run summary.")
 	var panel := _center_panel(root, Vector2(640, 430))
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1000,7 +1097,7 @@ func _show_result(won: bool) -> void:
 	box.add_child(_make_label("Wave %d  Danger %d" % [current_wave, current_danger], 30, HORIZONTAL_ALIGNMENT_CENTER))
 	box.add_child(_make_label("Level %d  Materials %d" % [int(run_result["level"]), int(run_result["materials"])], 26, HORIZONTAL_ALIGNMENT_CENTER))
 	box.add_child(_make_label("Items %d  Weapons %d" % [int(run_result["items"]), int(run_result["weapons"])], 24, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_label("New danger progress and challenge rewards attach here when unlock runtime lands.", 20, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_label("Run summary recorded.", 20, HORIZONTAL_ALIGNMENT_CENTER))
 	box.add_child(_make_button("TITLE", Callable(self, "_show_title_screen"), "Return to title.", Vector2(190, 54)))
 
 func _update_presentation(delta: float) -> void:
@@ -1357,9 +1454,26 @@ func _load_bitmap_assets() -> void:
 	title_brotato_texture = _safe_texture(TITLE_BROTATO_TEXTURE_PATH)
 	title_logo_texture = _safe_texture(TITLE_LOGO_TEXTURE_PATH)
 	upgrade_icon_texture = _safe_texture(UPGRADE_ICON_TEXTURE_PATH)
+	ui_panel_normal_texture = _safe_texture(UI_PANEL_NORMAL_TEXTURE_PATH)
+	ui_panel_transparent_texture = _safe_texture(UI_PANEL_TRANSPARENT_TEXTURE_PATH)
+	ui_panel_flat_texture = _safe_texture(UI_PANEL_FLAT_TEXTURE_PATH)
+	ui_lifebar_bg_texture = _safe_texture(UI_LIFEBAR_BG_TEXTURE_PATH)
+	ui_lifebar_fill_texture = _safe_texture(UI_LIFEBAR_FILL_TEXTURE_PATH)
+	button_physic_normal_texture = _safe_texture(BUTTON_PHYSIC_NORMAL_TEXTURE_PATH)
+	button_physic_pressed_texture = _safe_texture(BUTTON_PHYSIC_PRESSED_TEXTURE_PATH)
+	big_checkmark_texture = _safe_texture(BIG_CHECKMARK_TEXTURE_PATH)
+	key_space_texture = _safe_texture(KEY_SPACE_TEXTURE_PATH)
+	key_e_texture = _safe_texture(KEY_E_TEXTURE_PATH)
+	crosshair_texture = _safe_texture(CROSSHAIR_TEXTURE_PATH)
+	var cursor := _safe_texture(CUSTOM_CURSOR_TEXTURE_PATH)
+	if cursor != null:
+		Input.set_custom_mouse_cursor(cursor, Input.CURSOR_ARROW, Vector2(3, 3))
 	menu_font = null
 
 func _texture_from_file(path: String) -> Texture2D:
+	var imported := load(path)
+	if imported is Texture2D:
+		return imported
 	var absolute_path := ProjectSettings.globalize_path(path)
 	if not FileAccess.file_exists(absolute_path):
 		return null
@@ -1477,6 +1591,13 @@ func _character_row_for_id(character_id: String) -> Dictionary:
 		if String(character.get("id", "")) == lookup_id:
 			return character
 	return {}
+
+func _character_option(character_id: String) -> Dictionary:
+	for character in CHARACTER_OPTIONS:
+		var data: Dictionary = character
+		if String(data.get("id", "")) == character_id:
+			return data
+	return CHARACTER_OPTIONS[0]
 
 func _effect_from_dict(data: Dictionary) -> Variant:
 	var key := String(data.get("key", ""))
@@ -1643,6 +1764,44 @@ func _centered_grid(root: Control, columns: int, offset: Vector2 = Vector2.ZERO)
 	center.add_child(grid)
 	return grid
 
+func _selection_layout(root: Control, columns: int) -> Dictionary:
+	var content := HBoxContainer.new()
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.offset_left = 72
+	content.offset_top = 132
+	content.offset_right = -72
+	content.offset_bottom = -74
+	content.add_theme_constant_override("separation", 24)
+	root.add_child(content)
+	var info_panel := PanelContainer.new()
+	info_panel.custom_minimum_size = Vector2(390, 0)
+	info_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.11, 0.11, 0.10, 0.94)))
+	content.add_child(info_panel)
+	var info_box := VBoxContainer.new()
+	info_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	info_box.add_theme_constant_override("separation", 14)
+	info_panel.add_child(info_box)
+	var center := CenterContainer.new()
+	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(center)
+	var grid := GridContainer.new()
+	grid.columns = columns
+	grid.add_theme_constant_override("h_separation", 18)
+	grid.add_theme_constant_override("v_separation", 18)
+	center.add_child(grid)
+	return {"info_box": info_box, "grid": grid}
+
+func _add_info_panel_content(box: VBoxContainer, title: String, icon_path: String, lines: Array) -> void:
+	if not icon_path.is_empty():
+		box.add_child(_make_texture_icon_from_path(icon_path, Vector2(136, 136)))
+	box.add_child(_make_label(title, 30, HORIZONTAL_ALIGNMENT_CENTER))
+	for line in lines:
+		var label := _make_label(String(line), 20, HORIZONTAL_ALIGNMENT_CENTER)
+		label.custom_minimum_size = Vector2(320, 0)
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(label)
+
 func _center_panel(root: Control, size: Vector2, offset: Vector2 = Vector2.ZERO) -> PanelContainer:
 	var center := CenterContainer.new()
 	center.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1653,31 +1812,50 @@ func _center_panel(root: Control, size: Vector2, offset: Vector2 = Vector2.ZERO)
 	root.add_child(center)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = size
-	panel.add_theme_stylebox_override("panel", _panel_style(PANEL_BG, PANEL_BORDER, 5, 8))
+	panel.add_theme_stylebox_override("panel", _ui_panel_style())
 	center.add_child(panel)
 	return panel
 
 func _make_selection_card(title: String, subtitle: String, icon_path: String, tier: int, callback: Callable, tooltip: String) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = SELECTION_CARD_SIZE
-	panel.add_theme_stylebox_override("panel", _panel_style(Color(0.07, 0.07, 0.07, 0.88), _tier_color(tier), 5, 8))
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.16, 0.16, 0.145, 0.96)))
 	_attach_tooltip(panel, tooltip)
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 8)
+	box.add_theme_constant_override("separation", 10)
 	panel.add_child(box)
+	var tier_line := ColorRect.new()
+	tier_line.color = _tier_color(tier)
+	tier_line.custom_minimum_size = Vector2(220, 7)
+	box.add_child(tier_line)
 	var icon := TextureRect.new()
 	icon.texture = _safe_texture(icon_path)
-	icon.custom_minimum_size = Vector2(104, 104)
+	icon.custom_minimum_size = Vector2(124, 124)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(icon)
 	box.add_child(_make_label(title, 27, HORIZONTAL_ALIGNMENT_CENTER))
 	var sub := _make_label(subtitle, 18, HORIZONTAL_ALIGNMENT_CENTER)
-	sub.custom_minimum_size = Vector2(210, 44)
+	sub.custom_minimum_size = Vector2(238, 52)
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(sub)
 	box.add_child(_make_button("SELECT", callback, tooltip, Vector2(150, 48)))
+	return panel
+
+func _make_danger_card(danger: int) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(230, 250)
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.15, 0.15, 0.135, 0.96)))
+	_attach_tooltip(panel, "Enemy stat multiplier: %.0f%%" % (formulas.danger_enemy_stat_multiplier(danger) * 100.0))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 10)
+	panel.add_child(box)
+	box.add_child(_make_texture_icon_from_path("%s/%d.png" % [DIFFICULTY_ICON_DIR, danger], Vector2(98, 98)))
+	box.add_child(_make_label("DANGER %d" % danger, 26, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_label("ENEMIES %.0f%%" % (formulas.danger_enemy_stat_multiplier(danger) * 100.0), 18, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_button("START", Callable(self, "choose_danger").bind(danger), "Start the run at this danger.", Vector2(140, 48), MENU_START_ICON_PATH))
 	return panel
 
 func _make_upgrade_card(option: Dictionary, callback: Callable) -> PanelContainer:
@@ -1686,13 +1864,17 @@ func _make_upgrade_card(option: Dictionary, callback: Callable) -> PanelContaine
 	var title := _stat_display_name(key)
 	var value := int(option.get("value", 0))
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(230, 280)
-	panel.add_theme_stylebox_override("panel", _panel_style(Color(0.07, 0.07, 0.07, 0.9), _tier_color(tier), 5, 8))
+	panel.custom_minimum_size = Vector2(254, 314)
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.16, 0.16, 0.145, 0.96)))
 	_attach_tooltip(panel, "Tier %d upgrade generated by LevelUpPool." % (tier + 1))
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 9)
 	panel.add_child(box)
+	var tier_line := ColorRect.new()
+	tier_line.color = _tier_color(tier)
+	tier_line.custom_minimum_size = Vector2(206, 7)
+	box.add_child(tier_line)
 	var icon := TextureRect.new()
 	icon.texture = _safe_texture(String(UPGRADE_ICON_BY_KEY.get(key, "")))
 	if icon.texture == null:
@@ -1711,15 +1893,19 @@ func _make_shop_card(index: int, slot: Dictionary) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = SHOP_CARD_SIZE
 	var border := Color.WHITE if bool(slot.get("locked", false)) else _tier_color(tier)
-	panel.add_theme_stylebox_override("panel", _panel_style(Color(0.055, 0.055, 0.055, 0.92), border, 5, 8))
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.15, 0.15, 0.135, 0.97)))
 	_attach_tooltip(panel, _effects_text(slot))
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 7)
 	panel.add_child(box)
+	var tier_line := ColorRect.new()
+	tier_line.color = border
+	tier_line.custom_minimum_size = Vector2(214, 7)
+	box.add_child(tier_line)
 	var icon := TextureRect.new()
 	icon.texture = _safe_texture(_icon_for_entry(slot))
-	icon.custom_minimum_size = Vector2(94, 94)
+	icon.custom_minimum_size = Vector2(104, 104)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(icon)
@@ -1737,10 +1923,10 @@ func _make_shop_card(index: int, slot: Dictionary) -> PanelContainer:
 	var buy := _make_button("BUY", Callable(self, "buy_shop_slot").bind(index), "Purchase through ShopState.buy_slot.", Vector2(70, 40))
 	buy.disabled = bool(slot.get("sold", false))
 	row.add_child(buy)
-	var lock := _make_button("LOCK", Callable(self, "lock_shop_slot").bind(index), "Doc 11 section 8.2 lock preserves the slot on reroll.", Vector2(76, 40))
+	var lock := _make_button("LOCK", Callable(self, "lock_shop_slot").bind(index), "Keep this slot on reroll.", Vector2(76, 40))
 	lock.disabled = bool(slot.get("sold", false))
 	row.add_child(lock)
-	var ban := _make_button("BAN", Callable(self, "ban_shop_slot").bind(index), "Preview ban action for the shop card contract.", Vector2(70, 40))
+	var ban := _make_button("BAN", Callable(self, "ban_shop_slot").bind(index), "Remove this item from future shop rolls.", Vector2(70, 40))
 	ban.disabled = bool(slot.get("sold", false))
 	row.add_child(ban)
 	if bool(slot.get("sold", false)):
@@ -1749,7 +1935,7 @@ func _make_shop_card(index: int, slot: Dictionary) -> PanelContainer:
 
 func _make_wallet_panel() -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _panel_style(PANEL_BG, PANEL_BORDER, 5, 8))
+	panel.add_theme_stylebox_override("panel", _ui_panel_style())
 	var box := HBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 8)
@@ -1766,7 +1952,7 @@ func _make_wallet_panel() -> PanelContainer:
 
 func _make_inventory_panel() -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _panel_style(PANEL_BG, PANEL_BORDER, 5, 8))
+	panel.add_theme_stylebox_override("panel", _ui_panel_style())
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 6)
 	panel.add_child(box)
@@ -1778,8 +1964,8 @@ func _make_inventory_panel() -> PanelContainer:
 func _make_stat_panel() -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(260, 250)
-	panel.add_theme_stylebox_override("panel", _panel_style(PANEL_BG, PANEL_BORDER, 5, 8))
-	_attach_tooltip(panel, "Doc 11 section 12: stat panel refreshes after purchases, rerolls, and upgrades.")
+	panel.add_theme_stylebox_override("panel", _ui_panel_style())
+	_attach_tooltip(panel, "Current character stats.")
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 5)
 	panel.add_child(box)
@@ -1809,10 +1995,10 @@ func _make_setting_check(key: String, title: String) -> CheckButton:
 		check.add_theme_font_override("font", menu_font)
 	check.add_theme_font_size_override("font_size", 22)
 	check.toggled.connect(Callable(self, "_set_bool_setting").bind(key))
-	_attach_tooltip(check, "Setting key: %s" % key)
+	_attach_tooltip(check, "Toggle %s." % title)
 	return check
 
-func _make_button(text: String, callback: Callable, tooltip: String = "", min_size: Vector2 = Vector2(220, 54)) -> Button:
+func _make_button(text: String, callback: Callable, tooltip: String = "", min_size: Vector2 = Vector2(220, 54), icon_path: String = "") -> Button:
 	var button := Button.new()
 	button.text = text
 	button.custom_minimum_size = min_size
@@ -1820,11 +2006,17 @@ func _make_button(text: String, callback: Callable, tooltip: String = "", min_si
 	if menu_font != null:
 		button.add_theme_font_override("font", menu_font)
 	button.add_theme_font_size_override("font_size", 22)
-	button.add_theme_stylebox_override("normal", _panel_style(BUTTON_BG, Color(0, 0, 0, 1), 3, 8))
-	button.add_theme_stylebox_override("hover", _panel_style(Color(1, 1, 1, 0.784), Color(0, 0, 0, 1), 3, 8))
-	button.add_theme_stylebox_override("pressed", _panel_style(Color(0.396, 0.357, 0.196, 0.92), Color(0, 0, 0, 1), 3, 8))
-	button.add_theme_color_override("font_color", Color(0.92, 0.92, 0.88))
-	button.add_theme_color_override("font_hover_color", Color(0, 0, 0))
+	button.add_theme_stylebox_override("normal", _button_texture_style(BUTTON_NORMAL_TINT))
+	button.add_theme_stylebox_override("hover", _button_texture_style(BUTTON_HOVER_TINT))
+	button.add_theme_stylebox_override("pressed", _button_texture_style(BUTTON_PRESSED_TINT, true))
+	button.add_theme_stylebox_override("disabled", _button_texture_style(BUTTON_DISABLED_TINT))
+	button.add_theme_color_override("font_color", TEXT_LIGHT)
+	button.add_theme_color_override("font_hover_color", TEXT_DARK)
+	button.add_theme_color_override("font_pressed_color", TEXT_LIGHT)
+	button.add_theme_color_override("font_disabled_color", Color(0.55, 0.55, 0.52))
+	if not icon_path.is_empty():
+		button.icon = _safe_texture(icon_path)
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button.pressed.connect(callback)
 	if not tooltip.is_empty():
 		_attach_tooltip(button, tooltip)
@@ -1852,6 +2044,49 @@ func _panel_style(bg: Color, border: Color, border_width: int, radius: int) -> S
 	style.content_margin_top = 10
 	style.content_margin_bottom = 10
 	return style
+
+func _texture_style(texture: Texture2D, tint: Color, margin_left: int, margin_top: int, margin_right: int, margin_bottom: int, content_margin: int = 12) -> StyleBox:
+	if texture == null:
+		return _panel_style(PANEL_BG, PANEL_BORDER, 4, 8)
+	var style := StyleBoxTexture.new()
+	style.texture = texture
+	style.texture_margin_left = margin_left
+	style.texture_margin_top = margin_top
+	style.texture_margin_right = margin_right
+	style.texture_margin_bottom = margin_bottom
+	style.modulate_color = tint
+	style.draw_center = true
+	style.content_margin_left = content_margin
+	style.content_margin_right = content_margin
+	style.content_margin_top = content_margin
+	style.content_margin_bottom = content_margin
+	return style
+
+func _ui_panel_style(tint: Color = MENU_PANEL_TINT, transparent: bool = false) -> StyleBox:
+	var texture := ui_panel_transparent_texture if transparent else ui_panel_normal_texture
+	return _texture_style(texture, tint, 20, 20, 20, 20, 16)
+
+func _button_texture_style(tint: Color, pressed: bool = false) -> StyleBox:
+	var texture := button_physic_pressed_texture if pressed else button_physic_normal_texture
+	return _texture_style(texture, tint, 20, 20 if pressed else 18, 20, 18 if pressed else 22, 16)
+
+func _apply_progress_theme(bar: ProgressBar, fill_color: Color) -> void:
+	bar.show_percentage = false
+	bar.add_theme_stylebox_override("background", _texture_style(ui_lifebar_bg_texture, Color(1, 1, 1, 1), 18, 18, 18, 18, 0))
+	bar.add_theme_stylebox_override("fill", _texture_style(ui_lifebar_fill_texture, fill_color, 18, 18, 18, 18, 0))
+
+func _make_texture_icon(texture: Texture2D, size: Vector2, tint: Color = Color.WHITE) -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = texture
+	icon.modulate = tint
+	icon.custom_minimum_size = size
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return icon
+
+func _make_texture_icon_from_path(path: String, size: Vector2, tint: Color = Color.WHITE) -> TextureRect:
+	return _make_texture_icon(_safe_texture(path), size, tint)
 
 func _safe_texture(path: String) -> Texture2D:
 	if path.is_empty():
@@ -1883,7 +2118,7 @@ func _icon_for_entry(entry: Dictionary) -> String:
 func _effects_text(entry: Dictionary) -> String:
 	var effects: Array = entry.get("effects", [])
 	if effects.is_empty():
-		return "No stat effect in the current fixture data."
+		return "No stat effect."
 	var parts: Array = []
 	for effect in effects:
 		var data: Dictionary = effect
@@ -1920,10 +2155,21 @@ func _refresh_hud() -> void:
 	hud_refs["xp_bar"].max_value = needed
 	hud_refs["xp_bar"].value = player_data.current_xp
 	hud_refs["materials_label"].text = "%d" % player_data.materials
+	if hud_refs.has("queue_label"):
+		hud_refs["queue_label"].text = "UPGRADES %d   BOXES %d   ENEMIES %d" % [pending_level_ups, pending_crates.size(), enemies.size()]
 	var remaining: int = maxi(0, ceili(wave_scheduler.duration_seconds - wave_scheduler.elapsed_seconds))
 	hud_refs["wave_label"].text = "WAVE %d  %02d" % [current_wave, remaining]
 	hud_refs["timeline"].max_value = wave_scheduler.duration_seconds
 	hud_refs["timeline"].value = wave_scheduler.elapsed_seconds
+	if weapon_stats != null and hud_refs.has("weapon_label"):
+		hud_refs["weapon_label"].text = weapon_stats.display_name.to_upper()
+		hud_refs["weapon_detail_label"].text = "DMG %d   CD %.1fs   RANGE %d" % [
+			weapon_stats.resolved_damage(player_data),
+			weapon_stats.resolved_cooldown_ticks(player_data) / 60.0,
+			roundi(weapon_stats.resolved_range(player_data)),
+		]
+		if hud_refs.has("weapon_icon"):
+			hud_refs["weapon_icon"].texture = weapon_texture
 
 func _spawn_floating_text(text: String, position: Vector2, kind: String, force: bool = false) -> void:
 	var rule := floating_text_rule(kind)
