@@ -4,3 +4,4 @@
 export/
 *.tmp
 *.log
+test-results/
