@@ -67,9 +67,18 @@ const WAVE_DATA_PATH := "res://data/m2/area1_waves.json"
 const CHARACTER_DATA_PATH := "res://data/m3/characters.json"
 const ASSET_MANIFEST_PATH := "res://data/m5/asset_manifest.json"
 const STARTER_WEAPON_IDS := ["weapon_pistol_1", "weapon_fist_1", "weapon_smg_1"]
+const CHARACTER_ICON_ROOT := "res://devkit/brotato_original_devkit/asset_pack/assets/characters"
 
 # Doc 11 section 4 fixes combat HUD at a 24 px edge margin.
 const HUD_MARGIN := 24
+# Docs 07 §2.1/quick ref and 12 §12.10.1 define the Area 1 zone as 32x24 64px cells, modified by map_size.
+const MAP_TILE_SIZE := 64.0
+const BASE_ZONE_GRID := Vector2(32, 24)
+const MIN_ZONE_CELLS := 12.0
+const BASE_WORLD_SIZE := BASE_ZONE_GRID * MAP_TILE_SIZE
+# Preview presentation only: combat still resolves from WeaponAttackRuntime, these lifetimes keep the attack visible for the player.
+const PROJECTILE_TRAIL_LIFETIME := 0.16
+const MELEE_TRAIL_LIFETIME := 0.22
 # Asset map 04 section 3 defines the runtime HUD material tint as #76FF76.
 const MATERIAL_UI_COLOR := Color("76ff76")
 # Asset map 05 section 7.2 uses black 78 percent buttons and black 90 percent panels.
@@ -84,7 +93,7 @@ const BUTTON_DISABLED_TINT := Color(0.16, 0.16, 0.16, 1.0)
 const TEXT_DARK := Color(0.08, 0.07, 0.055)
 const TEXT_LIGHT := Color(0.96, 0.95, 0.88)
 const SHOP_CARD_SIZE := Vector2(268, 314)
-const SELECTION_CARD_SIZE := Vector2(292, 314)
+const SELECTION_CARD_SIZE := Vector2(244, 258)
 const FLOATING_TEXT_LIFETIME := 0.85
 
 const CHARACTER_OPTIONS := [
@@ -222,8 +231,10 @@ var wave_scheduler: Variant
 var asset_manifest: Variant
 var audio_rules: Variant = AudioRulesScript.new()
 var player_position := Vector2.ZERO
+var world_size := BASE_WORLD_SIZE
 var enemies: Array = []
 var materials: Array = []
+var active_attack_visuals: Array = []
 var weapon_cooldown_ticks := 0.0
 var weapon_attack_runtime: Variant = WeaponAttackRuntimeScript.new()
 var weapon_attack_sequence: int = 0
@@ -235,6 +246,8 @@ var enemy_textures: Dictionary = {}
 var waves_by_number: Dictionary = {}
 var starter_weapons: Array = []
 var weapon_icon_by_id: Dictionary = {}
+var character_rows: Array = []
+var character_rows_by_id: Dictionary = {}
 var common_wave_groups: Array = []
 var weapon_texture: Texture2D
 var performance_clears: int = 0
@@ -269,6 +282,7 @@ func _bootstrap() -> void:
 	_load_m5_presentation()
 	_load_bitmap_assets()
 	economy_catalog = EconomyCatalogScript.from_m3_content()
+	_load_character_data()
 	_load_m2_data()
 	reward_resolver = RewardResolverScript.new()
 	level_up_pool = LevelUpPoolScript.new()
@@ -277,6 +291,7 @@ func _bootstrap() -> void:
 
 func _process(delta: float) -> void:
 	_update_floating_texts(delta)
+	_update_attack_visuals(delta)
 	_update_tooltip_position()
 	if ui_state == UIState.COMBAT:
 		_refresh_hud()
@@ -305,6 +320,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_show_pause_menu()
 	elif ui_state == UIState.PAUSE and (event.is_action_released("ui_pause") or event.is_action_released("ui_cancel")):
 		_resume_combat()
+	elif ui_state == UIState.SETTINGS and event.is_action_released("ui_cancel"):
+		_close_settings()
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and bool(settings.get("pause_on_focus_lost", true)) and ui_state == UIState.COMBAT:
@@ -316,8 +333,8 @@ func _draw() -> void:
 		return
 	var viewport_size: Vector2 = _viewport_size()
 	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.18, 0.31, 0.17), true)
-	draw_set_transform(screen_shake_offset, 0.0, Vector2.ONE)
-	_draw_ground(viewport_size)
+	draw_set_transform(_world_draw_offset() + screen_shake_offset, 0.0, Vector2.ONE)
+	_draw_ground(world_size)
 	for material in materials:
 		var material_data: Dictionary = material
 		var material_pos: Vector2 = material_data["position"]
@@ -349,6 +366,7 @@ func _draw() -> void:
 		var hp_ratio: float = clamp(float(enemy_data["hp"]) / float(enemy_data["max_hp"]), 0.0, 1.0)
 		draw_rect(Rect2(enemy_pos + Vector2(-24, -44), Vector2(48, 5)), Color.BLACK, true)
 		draw_rect(Rect2(enemy_pos + Vector2(-24, -44), Vector2(48 * hp_ratio, 5)), Color(0.9, 0.14, 0.12), true)
+	_draw_attack_visuals()
 	draw_ellipse(player_position + Vector2(0, 30), 84.0, 24.0, Color(0, 0, 0, 0.35), true)
 	var player_tint := Color.WHITE
 	if combat_runtime != null and combat_runtime.iframe_seconds_remaining > 0.0:
@@ -376,6 +394,12 @@ func start_new_run() -> void:
 func choose_character(character_id: String) -> void:
 	_bootstrap()
 	selected_character_id = character_id
+	var character_row := _character_row_for_id(selected_character_id)
+	if not character_row.is_empty() and character_row.get("starting_weapons", []).is_empty():
+		selected_weapon_id = ""
+		selected_weapon_row = {}
+		_show_danger_select()
+		return
 	_show_weapon_select()
 
 func choose_weapon(weapon_id: String) -> void:
@@ -533,18 +557,20 @@ func leave_shop() -> void:
 
 func _begin_run() -> void:
 	player_data = PlayerDataScript.new()
-	player_data.materials = 12
-	player_data.add_permanent_stat("stat_ranged_damage", 4)
-	player_data.add_permanent_stat("stat_attack_speed", 20)
+	player_data.materials = 0
 	_apply_selected_character()
-	if selected_weapon_row.is_empty():
+	world_size = _current_world_size()
+	if selected_weapon_row.is_empty() and not selected_weapon_id.is_empty():
 		selected_weapon_row = _starter_weapon_entry_for_id(selected_weapon_id)
-	if selected_weapon_row.is_empty() and not starter_weapons.is_empty():
+	if selected_weapon_row.is_empty() and not selected_weapon_id.is_empty() and not starter_weapons.is_empty():
 		selected_weapon_row = starter_weapons[0].duplicate(true)
 	if not selected_weapon_row.is_empty():
 		selected_weapon_id = String(selected_weapon_row.get("id", selected_weapon_id))
 		weapon_stats = WeaponStatsScript.from_dict(selected_weapon_row)
 		weapon_texture = _safe_texture(weapon_stats.texture_path)
+	else:
+		weapon_stats = null
+		weapon_texture = null
 	_grant_starting_weapon()
 	_refresh_active_weapon_stats()
 	current_wave = 1
@@ -554,7 +580,8 @@ func _begin_run() -> void:
 	pending_level_ups = 0
 	pending_crates.clear()
 	last_level_option_ids.clear()
-	player_position = _viewport_size() * 0.5
+	active_attack_visuals.clear()
+	player_position = world_size * 0.5
 	player_data.current_health = player_data.get_max_health()
 	_start_wave()
 
@@ -562,6 +589,7 @@ func _start_wave() -> void:
 	world_visible = true
 	enemies.clear()
 	materials.clear()
+	active_attack_visuals.clear()
 	floating_texts.clear()
 	weapon_cooldown_ticks = 0.0
 	current_health_invuln = 0.0
@@ -572,7 +600,8 @@ func _start_wave() -> void:
 		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
 	else:
 		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[_highest_wave_number()], common_wave_groups)
-	player_position = _viewport_size() * 0.5
+	world_size = _current_world_size()
+	player_position = world_size * 0.5
 	ui_state = UIState.COMBAT
 	_clear_screen_ui()
 	_show_combat_hud()
@@ -690,22 +719,22 @@ func _show_character_select() -> void:
 	_clear_screen_ui()
 	var root := _menu_background("CharacterSelect")
 	_add_screen_title(root, "CHARACTER", "Choose a character.")
-	var layout := _selection_layout(root, 3)
+	var layout := _selection_layout(root, 4, true)
 	_add_info_panel_content(layout["info_box"], "CHOOSE A POTATO", PLAYER_TEXTURE_PATH, [
-		"Balanced starter choices for a fresh run.",
-		"Cards show starting bonuses and clear tier.",
-		"Pick one to choose a starting weapon."
+		"%d documented characters loaded." % character_rows.size(),
+		"All entries come from chapter 02 data.",
+		"Unlocked defaults are playable in preview."
 	])
 	var grid: GridContainer = layout["grid"]
-	for character in CHARACTER_OPTIONS:
+	for character in character_rows:
 		var data: Dictionary = character
 		grid.add_child(_make_selection_card(
-			String(data["name"]),
-			String(data["subtitle"]),
-			String(data["icon"]),
-			0,
+			_character_display_name(data),
+			_character_effect_summary(data),
+			_character_icon_path(data),
+			int(data.get("tier", 0)),
 			Callable(self, "choose_character").bind(String(data["id"])),
-			"Character stats apply to PlayerData before combat."
+			"Character data from M3 catalog."
 		))
 	_add_back_button(root, Callable(self, "_show_title_screen"))
 
@@ -715,15 +744,16 @@ func _show_weapon_select() -> void:
 	_clear_screen_ui()
 	var root := _menu_background("WeaponSelect")
 	_add_screen_title(root, "WEAPON", "Choose a starting weapon.")
-	var layout := _selection_layout(root, 3)
+	var layout := _selection_layout(root, 4, true)
 	var selected_character := _character_option(selected_character_id)
+	var starting_weapon_entries := _starting_weapon_entries_for_character(selected_character)
 	_add_info_panel_content(layout["info_box"], "STARTING LOADOUT", String(selected_character.get("icon", PLAYER_TEXTURE_PATH)), [
-		"Character: %s" % String(selected_character.get("name", "Well-Rounded")),
-		"Pick one weapon for wave 1.",
-		"Quality color marks each weapon tier."
+		"Character: %s" % _character_display_name(selected_character),
+		"%d documented starting choices." % starting_weapon_entries.size(),
+		"Weapon rows come from chapter 03 data."
 	])
 	var grid: GridContainer = layout["grid"]
-	for weapon in starter_weapons:
+	for weapon in starting_weapon_entries:
 		var data: Dictionary = weapon
 		var subtitle := "%s  Damage %s  Cooldown %s" % [
 			String(data.get("type", "weapon")).capitalize(),
@@ -747,11 +777,15 @@ func _show_danger_select() -> void:
 	var root := _menu_background("DangerSelect")
 	_add_screen_title(root, "DANGER", "Choose a danger level.")
 	var layout := _selection_layout(root, 3)
-	var weapon_name := String(selected_weapon_row.get("name", selected_weapon_id))
-	_add_info_panel_content(layout["info_box"], "RUN SETUP", _icon_for_entry(selected_weapon_row), [
+	var weapon_name := String(selected_weapon_row.get("name", "No starting weapon"))
+	var selected_character := _character_option(selected_character_id)
+	var setup_icon := _icon_for_entry(selected_weapon_row)
+	if setup_icon.is_empty():
+		setup_icon = _character_icon_path(selected_character)
+	_add_info_panel_content(layout["info_box"], "RUN SETUP", setup_icon, [
+		"Character: %s" % _character_display_name(selected_character),
 		"Weapon: %s" % weapon_name,
-		"Survive the wave timer.",
-		"Collect materials and buy upgrades."
+		"Map: %dx%d px" % [int(_current_world_size().x), int(_current_world_size().y)]
 	])
 	var grid: GridContainer = layout["grid"]
 	for danger in range(0, 6):
@@ -956,7 +990,8 @@ func _show_shop_screen() -> void:
 	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	bottom.offset_left = 220
 	bottom.offset_right = -220
-	bottom.offset_bottom = -HUD_MARGIN
+	bottom.offset_top = -124
+	bottom.offset_bottom = -HUD_MARGIN - 36
 	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
 	bottom.add_theme_constant_override("separation", 16)
 	root.add_child(bottom)
@@ -964,12 +999,12 @@ func _show_shop_screen() -> void:
 	if current_shop.free_rerolls > 0 or current_shop.next_reroll_is_free:
 		reroll_cost = 0
 	bottom.add_child(_make_button("REROLL - %d" % reroll_cost, Callable(self, "reroll_shop"), "Reroll shop slots.", Vector2(210, 56)))
-	bottom.add_child(_make_button("GO", Callable(self, "leave_shop"), "Start the next wave.", Vector2(160, 56)))
+	bottom.add_child(_make_button("CONTINUE (WAVE %d)" % (current_wave + 1), Callable(self, "leave_shop"), "Start the next wave.", Vector2(280, 56), MENU_START_ICON_PATH))
 
-func _show_pause_menu() -> void:
-	if ui_state != UIState.COMBAT:
+func _show_pause_menu(from_settings: bool = false) -> void:
+	if ui_state != UIState.COMBAT and not from_settings:
 		return
-	previous_state = ui_state
+	previous_state = UIState.COMBAT
 	ui_state = UIState.PAUSE
 	_clear_screen_ui()
 	var root := _full_rect_control("PauseMenu")
@@ -1007,6 +1042,7 @@ func _show_settings_screen() -> void:
 	_clear_screen_ui()
 	var root := _menu_background("Settings")
 	_add_screen_title(root, "SETTINGS", "Adjust settings.")
+	_add_back_button(root, Callable(self, "_close_settings"))
 	var tabs := HBoxContainer.new()
 	tabs.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	tabs.offset_left = 120
@@ -1056,7 +1092,7 @@ func _set_bool_setting(pressed: bool, key: String) -> void:
 
 func _close_settings() -> void:
 	if settings_return_state == UIState.PAUSE:
-		_show_pause_menu()
+		_show_pause_menu(true)
 	else:
 		_show_title_screen()
 
@@ -1118,7 +1154,7 @@ func _update_player(delta: float) -> void:
 	if input_vector.length() > 1.0:
 		input_vector = input_vector.normalized()
 	player_position += input_vector * player_data.get_speed() * delta
-	var bounds: Vector2 = _viewport_size()
+	var bounds: Vector2 = world_size
 	player_position.x = clamp(player_position.x, 40.0, bounds.x - 40.0)
 	player_position.y = clamp(player_position.y, 40.0, bounds.y - 40.0)
 
@@ -1140,7 +1176,8 @@ func _update_enemies(delta: float) -> void:
 				direction = Vector2.ZERO
 		var movement_velocity := direction * float(enemy["speed"])
 		var knockback_velocity: Vector2 = combat_runtime.enemy_knockback_velocity(enemy)
-		enemy["position"] = enemy_pos + (movement_velocity + knockback_velocity) * delta
+		var next_position: Vector2 = enemy_pos + (movement_velocity + knockback_velocity) * delta
+		enemy["position"] = next_position.clamp(Vector2(24, 24), world_size - Vector2(24, 24))
 		combat_runtime.decay_enemy_knockback(enemy)
 		enemies[i] = enemy
 
@@ -1167,6 +1204,8 @@ func _update_contact_damage() -> void:
 		return
 
 func _update_weapon(delta: float) -> void:
+	if weapon_stats == null:
+		return
 	weapon_cooldown_ticks = weapon_attack_runtime.tick_cooldown(weapon_cooldown_ticks, delta)
 	var readiness: Dictionary = weapon_attack_runtime.can_start_attack(weapon_stats, player_data, enemies, player_position, weapon_cooldown_ticks)
 	if not bool(readiness["can_attack"]):
@@ -1177,6 +1216,7 @@ func _update_weapon(delta: float) -> void:
 	weapon_attack_sequence += 1
 	var attack: Dictionary = weapon_attack_runtime.start_attack(weapon_stats, player_data, player_position, aim_angle, target_distance, weapon_attack_sequence)
 	weapon_cooldown_ticks = float(attack["cooldown_ticks"])
+	_record_attack_visual(attack, target)
 	var weapon_visual: Dictionary = asset_manifest.weapon_visual(weapon_stats.weapon_id)
 	_queue_sound(String(weapon_visual.get("shooting_sound_event", "")), player_position)
 	if weapon_stats.type == WeaponStatsScript.TYPE_RANGED:
@@ -1324,14 +1364,13 @@ func _random_performance_cull_index() -> int:
 	return randi() % enemies.size()
 
 func _random_spawn_position(area: String) -> Vector2:
-	var viewport_size: Vector2 = _viewport_size()
 	var min_distance := 300.0
 	for _attempt in range(32):
-		var pos := _raw_spawn_position(area, viewport_size)
+		var pos := _raw_spawn_position(area, world_size)
 		if pos.distance_to(player_position) >= min_distance:
 			return pos
 		min_distance = max(25.0, min_distance - 5.0)
-	return _raw_spawn_position("edge", viewport_size)
+	return _raw_spawn_position("edge", world_size)
 
 func _raw_spawn_position(area: String, viewport_size: Vector2) -> Vector2:
 	var margin := 64.0
@@ -1391,6 +1430,70 @@ func _draw_ground(viewport_size: Vector2) -> void:
 	var outline_color := _color_from_array(ground_theme.get("outline_color", [0.267, 0.267, 0.267]))
 	draw_rect(Rect2(Vector2.ZERO, viewport_size), outline_color, false, 6.0)
 
+func _record_attack_visual(attack: Dictionary, target: Dictionary) -> void:
+	if weapon_stats == null:
+		return
+	var origin: Vector2 = attack.get("origin", player_position)
+	var aim_angle := float(attack.get("aim_angle", 0.0))
+	if weapon_stats.type == WeaponStatsScript.TYPE_RANGED:
+		for projectile_variant in attack.get("projectiles", []):
+			var projectile: Dictionary = projectile_variant
+			var start: Vector2 = projectile.get("position", origin)
+			var direction: Vector2 = projectile.get("velocity", Vector2.RIGHT.rotated(aim_angle)).normalized()
+			var target_position: Vector2 = target.get("position", origin + direction * weapon_stats.resolved_range(player_data))
+			var distance: float = min(start.distance_to(target_position), weapon_stats.resolved_range(player_data) + WeaponStatsScript.PROJECTILE_AUTO_EXTRA_DISTANCE)
+			active_attack_visuals.append({
+				"type": "projectile",
+				"start": start,
+				"end": start + direction * distance,
+				"age": 0.0,
+				"lifetime": PROJECTILE_TRAIL_LIFETIME,
+			})
+	else:
+		active_attack_visuals.append({
+			"type": "melee",
+			"origin": origin,
+			"angle": aim_angle,
+			"reach": attack.get("windows", {}).get("reach", weapon_stats.resolved_range(player_data)),
+			"attack_type": String(attack.get("attack_type", weapon_stats.attack_type)),
+			"age": 0.0,
+			"lifetime": MELEE_TRAIL_LIFETIME,
+		})
+
+func _update_attack_visuals(delta: float) -> void:
+	for i in range(active_attack_visuals.size() - 1, -1, -1):
+		var visual: Dictionary = active_attack_visuals[i]
+		visual["age"] = float(visual.get("age", 0.0)) + delta
+		if float(visual["age"]) >= float(visual.get("lifetime", 0.1)):
+			active_attack_visuals.remove_at(i)
+		else:
+			active_attack_visuals[i] = visual
+
+func _draw_attack_visuals() -> void:
+	for visual_variant in active_attack_visuals:
+		var visual: Dictionary = visual_variant
+		var lifetime: float = max(0.001, float(visual.get("lifetime", 0.1)))
+		var progress: float = clamp(float(visual.get("age", 0.0)) / lifetime, 0.0, 1.0)
+		var alpha: float = 1.0 - progress
+		if String(visual.get("type", "")) == "projectile":
+			var start: Vector2 = visual.get("start", player_position)
+			var end: Vector2 = visual.get("end", start)
+			var head: Vector2 = start.lerp(end, progress)
+			draw_line(start, head, Color(1.0, 0.92, 0.35, 0.8 * alpha), 7.0)
+			draw_line(start, head, Color(1.0, 1.0, 1.0, 0.9 * alpha), 2.0)
+			draw_circle(head, 9.0, Color(1.0, 0.72, 0.18, alpha), true)
+		elif String(visual.get("type", "")) == "melee":
+			var origin: Vector2 = visual.get("origin", player_position)
+			var angle: float = float(visual.get("angle", 0.0))
+			var reach: float = max(80.0, float(visual.get("reach", 120.0)))
+			var color := Color(0.72, 1.0, 0.95, 0.82 * alpha)
+			if String(visual.get("attack_type", "")) == WeaponStatsScript.ATTACK_SWEEP:
+				draw_arc(origin, reach * 0.72, angle - 0.9 * PI, angle - 0.9 * PI + 1.8 * PI * progress, 28, color, 9.0)
+			else:
+				var tip: Vector2 = origin + Vector2.RIGHT.rotated(angle) * reach * min(1.0, progress + 0.25)
+				draw_line(origin + Vector2.RIGHT.rotated(angle) * 34.0, tip, color, 10.0)
+				draw_circle(tip, 12.0, Color(1.0, 1.0, 1.0, 0.65 * alpha), true)
+
 func _request_screen_shake(incoming: Dictionary) -> void:
 	if float(screen_shake.get("duration", 0.0)) <= 0.0 or PresentationRulesScript.should_replace_screen_shake(screen_shake, incoming):
 		screen_shake = incoming.duplicate(true)
@@ -1399,6 +1502,18 @@ func _queue_sound(event_id: String, pos: Vector2 = Vector2.ZERO) -> void:
 	if event_id.is_empty() or asset_manifest == null:
 		return
 	audio_rules.request_sound(event_id, asset_manifest.sound_event(event_id), randf(), randf(), pos)
+
+func _load_character_data() -> void:
+	character_rows.clear()
+	character_rows_by_id.clear()
+	var parsed: Dictionary = _load_json(CHARACTER_DATA_PATH)
+	for row in parsed.get("characters", []):
+		var character: Dictionary = row.duplicate(true)
+		character["icon"] = _character_icon_path(character)
+		character_rows.append(character)
+		character_rows_by_id[String(character.get("id", ""))] = character
+	if selected_character_id.is_empty() and not character_rows.is_empty():
+		selected_character_id = String(character_rows[0].get("id", ""))
 
 func _load_m5_presentation() -> void:
 	asset_manifest = AssetManifestScript.load_from_path(ASSET_MANIFEST_PATH)
@@ -1417,12 +1532,13 @@ func _load_m2_data() -> void:
 	starter_weapons.clear()
 	weapon_icon_by_id.clear()
 	if economy_catalog != null:
-		for weapon_id in STARTER_WEAPON_IDS:
-			var entry: Dictionary = economy_catalog.get_entry(String(weapon_id))
-			if entry.is_empty():
+		for entry_variant in economy_catalog.entries:
+			var entry: Dictionary = entry_variant
+			if String(entry.get("kind", "")) != "weapon":
 				continue
-			starter_weapons.append(entry)
 			_register_weapon_icon(entry)
+			if int(entry.get("tier", 0)) == 0:
+				starter_weapons.append(entry.duplicate(true))
 	if starter_weapons.is_empty():
 		var weapon_json: Dictionary = _load_json(WEAPON_DATA_PATH)
 		starter_weapons = weapon_json.get("weapons", [])
@@ -1506,6 +1622,37 @@ func _viewport_size() -> Vector2:
 		float(ProjectSettings.get_setting("display/window/size/viewport_height", 720))
 	)
 
+func _current_world_size() -> Vector2:
+	var map_scale := 1.0
+	if player_data != null:
+		map_scale += player_data.get_stat("map_size") / 100.0
+	var cells := Vector2(
+		max(MIN_ZONE_CELLS, BASE_ZONE_GRID.x * map_scale),
+		max(MIN_ZONE_CELLS, BASE_ZONE_GRID.y * map_scale)
+	)
+	return cells * MAP_TILE_SIZE
+
+func _camera_top_left() -> Vector2:
+	var viewport := _viewport_size()
+	var desired := player_position - viewport * 0.5
+	var max_offset := world_size - viewport
+	var top_left := Vector2.ZERO
+	if max_offset.x > 0.0:
+		top_left.x = clamp(desired.x, 0.0, max_offset.x)
+	else:
+		top_left.x = max_offset.x * 0.5
+	if max_offset.y > 0.0:
+		top_left.y = clamp(desired.y, 0.0, max_offset.y)
+	else:
+		top_left.y = max_offset.y * 0.5
+	return top_left
+
+func _world_draw_offset() -> Vector2:
+	return -_camera_top_left()
+
+func _world_to_screen(position: Vector2) -> Vector2:
+	return position - _camera_top_left()
+
 func _apply_selected_character() -> void:
 	var character_row := _character_row_for_id(selected_character_id)
 	if not character_row.is_empty():
@@ -1582,22 +1729,72 @@ func _best_inventory_weapon() -> Dictionary:
 func _character_row_for_id(character_id: String) -> Dictionary:
 	var lookup_id := character_id
 	if lookup_id.is_empty():
-		lookup_id = "well_rounded"
+		lookup_id = "character_well_rounded"
 	if not lookup_id.begins_with("character_"):
 		lookup_id = "character_%s" % lookup_id
-	var parsed: Dictionary = _load_json(CHARACTER_DATA_PATH)
-	for row in parsed.get("characters", []):
-		var character: Dictionary = row
-		if String(character.get("id", "")) == lookup_id:
-			return character
+	if character_rows_by_id.has(lookup_id):
+		return character_rows_by_id[lookup_id].duplicate(true)
 	return {}
 
 func _character_option(character_id: String) -> Dictionary:
-	for character in CHARACTER_OPTIONS:
-		var data: Dictionary = character
-		if String(data.get("id", "")) == character_id:
-			return data
-	return CHARACTER_OPTIONS[0]
+	var row := _character_row_for_id(character_id)
+	if not row.is_empty():
+		return row
+	if not character_rows.is_empty():
+		return character_rows[0].duplicate(true)
+	return {}
+
+func _character_display_name(character: Dictionary) -> String:
+	return _localized_value(character.get("name", character.get("id", "")), String(character.get("id", "")))
+
+func _localized_value(value: Variant, fallback: String = "") -> String:
+	if value is Dictionary:
+		return String(value.get("en", value.get("zh", fallback)))
+	return String(value if value != null else fallback)
+
+func _character_icon_path(character: Dictionary) -> String:
+	var explicit := String(character.get("icon", ""))
+	if not explicit.is_empty():
+		return explicit
+	var id := String(character.get("id", ""))
+	if id.begins_with("character_"):
+		id = id.substr("character_".length())
+	if id.is_empty():
+		return PLAYER_TEXTURE_PATH
+	return "%s/%s/%s_icon.png" % [CHARACTER_ICON_ROOT, id, id]
+
+func _character_effect_summary(character: Dictionary) -> String:
+	var parts: Array = []
+	for effect in character.get("effects", []):
+		if parts.size() >= 3:
+			break
+		if not (effect is Dictionary):
+			continue
+		var data: Dictionary = effect
+		var key := String(data.get("key", ""))
+		if key.is_empty():
+			continue
+		var value = data.get("value", 0)
+		if not (value is int or value is float):
+			continue
+		var prefix := "+" if float(value) >= 0.0 else ""
+		parts.append("%s%s %s" % [prefix, str(value), _stat_display_name(key)])
+	if parts.is_empty():
+		if character.get("starting_weapons", []).is_empty():
+			return "No weapon slot"
+		return "Special rules"
+	return ", ".join(parts)
+
+func _starting_weapon_entries_for_character(character: Dictionary) -> Array:
+	var result: Array = []
+	for weapon_id_variant in character.get("starting_weapons", []):
+		var entry := _starter_weapon_entry_for_id(String(weapon_id_variant))
+		if entry.is_empty():
+			continue
+		result.append(entry)
+	if result.is_empty() and not character.get("starting_weapons", []).is_empty():
+		result.append_array(starter_weapons)
+	return result
 
 func _effect_from_dict(data: Dictionary) -> Variant:
 	var key := String(data.get("key", ""))
@@ -1764,7 +1961,7 @@ func _centered_grid(root: Control, columns: int, offset: Vector2 = Vector2.ZERO)
 	center.add_child(grid)
 	return grid
 
-func _selection_layout(root: Control, columns: int) -> Dictionary:
+func _selection_layout(root: Control, columns: int, scrollable: bool = false) -> Dictionary:
 	var content := HBoxContainer.new()
 	content.set_anchors_preset(Control.PRESET_FULL_RECT)
 	content.offset_left = 72
@@ -1787,8 +1984,20 @@ func _selection_layout(root: Control, columns: int) -> Dictionary:
 	content.add_child(center)
 	var grid := GridContainer.new()
 	grid.columns = columns
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 18)
 	grid.add_theme_constant_override("v_separation", 18)
+	if scrollable:
+		var scroll := ScrollContainer.new()
+		scroll.custom_minimum_size = Vector2(1120, 820)
+		scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		center.add_child(scroll)
+		scroll.add_child(grid)
+		return {"info_box": info_box, "grid": grid, "scroll": scroll}
 	center.add_child(grid)
 	return {"info_box": info_box, "grid": grid}
 
@@ -1827,20 +2036,23 @@ func _make_selection_card(title: String, subtitle: String, icon_path: String, ti
 	panel.add_child(box)
 	var tier_line := ColorRect.new()
 	tier_line.color = _tier_color(tier)
-	tier_line.custom_minimum_size = Vector2(220, 7)
+	tier_line.custom_minimum_size = Vector2(192, 7)
 	box.add_child(tier_line)
 	var icon := TextureRect.new()
 	icon.texture = _safe_texture(icon_path)
-	icon.custom_minimum_size = Vector2(124, 124)
+	icon.custom_minimum_size = Vector2(92, 92)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	box.add_child(icon)
-	box.add_child(_make_label(title, 27, HORIZONTAL_ALIGNMENT_CENTER))
-	var sub := _make_label(subtitle, 18, HORIZONTAL_ALIGNMENT_CENTER)
-	sub.custom_minimum_size = Vector2(238, 52)
+	var title_label := _make_label(title, 22, HORIZONTAL_ALIGNMENT_CENTER)
+	title_label.custom_minimum_size = Vector2(204, 38)
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(title_label)
+	var sub := _make_label(subtitle, 15, HORIZONTAL_ALIGNMENT_CENTER)
+	sub.custom_minimum_size = Vector2(204, 48)
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(sub)
-	box.add_child(_make_button("SELECT", callback, tooltip, Vector2(150, 48)))
+	box.add_child(_make_button("SELECT", callback, tooltip, Vector2(138, 42)))
 	return panel
 
 func _make_danger_card(danger: int) -> PanelContainer:
@@ -2179,7 +2391,7 @@ func _spawn_floating_text(text: String, position: Vector2, kind: String, force: 
 		return
 	var label := _make_label(text, 24, HORIZONTAL_ALIGNMENT_CENTER)
 	label.add_theme_color_override("font_color", rule.get("color", Color.WHITE))
-	label.position = position
+	label.position = _world_to_screen(position)
 	label.custom_minimum_size = Vector2(140, 34)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	floating_root.add_child(label)

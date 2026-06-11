@@ -912,14 +912,31 @@ func _ui_flow_m4_tests() -> void:
 	var main: Node = MainScene.instantiate()
 	root.add_child(main)
 	_assert_equal(main.ui_state_name(), "title", "M4 UI starts at title")
+	main._show_settings_from_title()
+	_assert_equal(main.ui_state_name(), "settings", "title settings opens settings screen")
+	main._close_settings()
+	_assert_equal(main.ui_state_name(), "title", "settings back returns to title")
 	main.start_new_run()
 	_assert_equal(main.ui_state_name(), "character_select", "new run opens character selection")
+	_assert_equal(main.character_rows.size(), 49, "character selection exposes all 49 documented characters")
 	main.choose_character("well_rounded")
 	_assert_equal(main.ui_state_name(), "weapon_select", "character selection opens weapon selection")
+	_assert_true(main._starting_weapon_entries_for_character(main._character_option("well_rounded")).size() >= 13, "Well Rounded exposes all documented starting weapon choices")
 	main.choose_weapon("weapon_pistol")
 	_assert_equal(main.ui_state_name(), "danger_select", "weapon selection opens danger selection")
 	main.choose_danger(0)
 	_assert_equal(main.ui_state_name(), "combat", "danger selection starts combat")
+	_assert_equal(main.world_size, Vector2(2048, 1536), "combat uses documented 32x24 cell map size")
+	main.enemies.append({"id": "visual_target", "instance_id": "visual_target", "position": main.player_position + Vector2(100, 0), "hp": 999, "max_hp": 999, "armor": 0})
+	main.weapon_cooldown_ticks = 0.0
+	main._update_weapon(1.0 / 60.0)
+	_assert_true(main.active_attack_visuals.size() > 0, "weapon attacks record visible attack effects")
+	main._show_pause_menu()
+	main._show_settings_from_pause()
+	_assert_equal(main.ui_state_name(), "settings", "pause settings opens settings screen")
+	main._close_settings()
+	_assert_equal(main.ui_state_name(), "pause", "settings back returns to pause menu")
+	main._resume_combat()
 	main.force_wave_complete_for_smoke()
 	_assert_equal(main.ui_state_name(), "wave_complete", "combat can enter wave-complete flow")
 	main.continue_wave_end()
@@ -930,10 +947,16 @@ func _ui_flow_m4_tests() -> void:
 	main.choose_level_option(0)
 	_assert_equal(main.ui_state_name(), "shop", "level-up flow advances to shop")
 	_assert_true(main.current_shop.slots.size() > 0, "shop opens with fixture slots")
+	var continue_button := _find_button_with_text(main, "CONTINUE (WAVE %d)" % (main.current_wave + 1))
+	_assert_true(continue_button != null, "shop exposes a continue button for the next wave")
+	if continue_button != null:
+		var action_row := continue_button.get_parent() as Control
+		_assert_true(continue_button.custom_minimum_size.x > 0.0 and continue_button.custom_minimum_size.y > 0.0, "shop continue button has visible size")
+		_assert_true(action_row != null and action_row.offset_top < action_row.offset_bottom, "shop action row reserves bottom viewport space")
 	var previous_wave: int = main.current_wave
 	main.leave_shop()
-	_assert_equal(main.ui_state_name(), "combat", "GO starts the next combat wave")
-	_assert_equal(main.current_wave, previous_wave + 1, "GO increments the wave")
+	_assert_equal(main.ui_state_name(), "combat", "shop continue starts the next combat wave")
+	_assert_equal(main.current_wave, previous_wave + 1, "shop continue increments the wave")
 	_assert_true(bool(main.floating_text_rule("enemy_damage")["uses_damage_toggle"]), "enemy damage numbers obey damage_display setting")
 	_assert_true(bool(main.floating_text_rule("material")["always_display"]), "material floating text is an always-display HUD contract")
 	main.queue_free()
@@ -1157,6 +1180,15 @@ func _assert_resource_exists(path: String, label: String) -> void:
 	assertions_run += 1
 	if path == "" or not FileAccess.file_exists(path):
 		failures.append("%s: missing resource %s" % [label, path])
+
+func _find_button_with_text(node: Node, text: String) -> Button:
+	if node is Button and (node as Button).text == text:
+		return node as Button
+	for child in node.get_children():
+		var found := _find_button_with_text(child, text)
+		if found != null:
+			return found
+	return null
 
 func _validate_source_ref(record: Dictionary, label: String) -> void:
 	_assert_true(record.has("source_ref"), "%s has source_ref" % label)
