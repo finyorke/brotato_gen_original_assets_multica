@@ -1,0 +1,2010 @@
+{
+  "banned_item_groups": {
+    "armor": [
+      "item_stone_skin",
+      "item_helmet",
+      "item_metal_plate"
+    ],
+    "consumable_heal": [
+      "item_jerky",
+      "item_weird_food",
+      "item_lemonade",
+      "item_fruit_basket"
+    ],
+    "dodge": [
+      "item_adrenaline",
+      "item_chameleon",
+      "item_gambling_token",
+      "item_ghost_outfit"
+    ],
+    "elemental_damage": [
+      "item_strange_book",
+      "item_frozen_heart",
+      "item_boiling_water",
+      "item_snowball",
+      "item_toxic_sludge",
+      "item_fuel_tank",
+      "item_will_o_the_wisp"
+    ],
+    "engineering": [
+      "item_lighthouse",
+      "item_cog",
+      "item_nail",
+      "item_toolbox",
+      "item_book",
+      "item_pencil"
+    ],
+    "harvesting": [
+      "item_blood_donation",
+      "item_crown",
+      "item_fertilizer",
+      "item_tractor",
+      "item_wheelbarrow"
+    ],
+    "hp_regeneration": [
+      "item_mushroom",
+      "item_plant",
+      "item_sad_tomato",
+      "item_medikit",
+      "item_fairy",
+      "item_potion",
+      "item_fried_rice",
+      "item_baby_squid",
+      "item_coral",
+      "item_penguin"
+    ],
+    "lifesteal": [
+      "item_butterfly",
+      "item_bat",
+      "item_whetstone",
+      "item_decomposing_flesh",
+      "item_bloody_hand",
+      "item_fresh_meat"
+    ],
+    "lifesteal_and_hp_regeneration": [
+      "item_blood_leech"
+    ],
+    "melee_and_ranged_damage": [
+      "item_big_arms",
+      "item_hedgehog"
+    ],
+    "melee_damage": [
+      "item_mastery",
+      "item_goat_skull",
+      "item_riposte"
+    ],
+    "ranged_damage": [
+      "item_lens"
+    ],
+    "speed": [
+      "item_terrified_onion",
+      "item_beanie",
+      "item_power_generator"
+    ]
+  },
+  "character_wanted_tags": {
+    "character_apprentice": [
+      "xp_gain"
+    ],
+    "character_artificer": [
+      "explosive"
+    ],
+    "character_baby": [
+      "xp_gain",
+      "item_barnacle"
+    ],
+    "character_beast_master": [
+      "[\"pet\"]",
+      "pet",
+      "item_jelly",
+      "item_glasses"
+    ],
+    "character_brawler": [
+      "stat_melee_damage",
+      "ranged_damage"
+    ],
+    "character_bull": [
+      "stat_armor",
+      "stat_hp_regeneration",
+      "explosive",
+      "lifesteal",
+      "item_jelly",
+      "item_nail",
+      "item_crystal",
+      "item_coffee",
+      "item_seashell",
+      "item_glasses",
+      "item_community_support",
+      "item_tardigrade"
+    ],
+    "character_chunky": [
+      "stat_max_hp",
+      "consumable",
+      "stat_luck",
+      "lifesteal",
+      "lifesteal_and_hp_regeneration",
+      "speed"
+    ],
+    "character_crazy": [
+      "stat_crit_chance",
+      "stat_melee_damage"
+    ],
+    "character_cryptid": [
+      "exploration",
+      "stat_dodge",
+      "lifesteal"
+    ],
+    "character_cyborg": [
+      "structure",
+      "stat_ranged_damage",
+      "melee_damage",
+      "elemental_damage",
+      "item_charcoal",
+      "item_gnome"
+    ],
+    "character_doctor": [
+      "stat_hp_regeneration"
+    ],
+    "character_engineer": [
+      "stat_engineering",
+      "structure"
+    ],
+    "character_entrepreneur": [
+      "stat_harvesting",
+      "economy"
+    ],
+    "character_explorer": [
+      "stat_speed",
+      "exploration",
+      "consumable"
+    ],
+    "character_farmer": [
+      "stat_harvesting",
+      "consumable"
+    ],
+    "character_generalist": [
+      "stat_melee_damage",
+      "stat_ranged_damage",
+      "item_mastery"
+    ],
+    "character_ghost": [
+      "stat_dodge",
+      "armor",
+      "item_duct_tape",
+      "item_ghost_outfit"
+    ],
+    "character_gladiator": [
+      "stat_melee_damage",
+      "ranged_damage",
+      "item_seashell"
+    ],
+    "character_glutton": [
+      "explosive",
+      "stat_melee_damage",
+      "consumable"
+    ],
+    "character_golem": [
+      "stat_max_hp",
+      "stat_armor",
+      "hp_regeneration",
+      "lifesteal",
+      "lifesteal_and_hp_regeneration",
+      "consumable_heal",
+      "item_tentacle",
+      "item_goblet",
+      "item_cute_monkey",
+      "item_turret_healing",
+      "item_garden",
+      "item_extra_stomach",
+      "item_adrenaline",
+      "item_weird_ghost"
+    ],
+    "character_hunter": [
+      "stat_range",
+      "stat_crit_chance",
+      "harvesting"
+    ],
+    "character_knight": [
+      "stat_armor",
+      "harvesting",
+      "ranged_damage",
+      "item_seashell"
+    ],
+    "character_lich": [
+      "stat_max_hp",
+      "stat_hp_regeneration",
+      "stat_lifesteal"
+    ],
+    "character_loud": [
+      "more_enemies"
+    ],
+    "character_lucky": [
+      "stat_luck",
+      "pickup",
+      "exploration"
+    ],
+    "character_mage": [
+      "stat_elemental_damage",
+      "melee_damage",
+      "ranged_damage",
+      "melee_and_ranged_damage"
+    ],
+    "character_masochist": [
+      "stat_max_hp",
+      "stat_armor",
+      "stat_hp_regeneration",
+      "stat_lifesteal"
+    ],
+    "character_mutant": [
+      "xp_gain"
+    ],
+    "character_old": [
+      "less_enemies",
+      "less_enemy_speed"
+    ],
+    "character_one_arm": [
+      "wanted_tags",
+      "boosted_wanted_item_tag"
+    ],
+    "character_pacifist": [
+      "stat_max_hp",
+      "stat_hp_regeneration",
+      "stat_armor",
+      "engineering"
+    ],
+    "character_ranger": [
+      "stat_ranged_damage",
+      "stat_range",
+      "melee_damage"
+    ],
+    "character_sick": [
+      "stat_lifesteal",
+      "hp_regeneration",
+      "item_weird_ghost",
+      "item_tardigrade"
+    ],
+    "character_soldier": [
+      "stand_still"
+    ],
+    "character_speedy": [
+      "stat_speed"
+    ],
+    "character_streamer": [
+      "structure"
+    ],
+    "character_technomage": [
+      "stat_elemental_damage",
+      "stat_engineering",
+      "structure",
+      "melee_damage",
+      "ranged_damage",
+      "melee_and_ranged_damage"
+    ],
+    "character_vampire": [
+      "stat_lifesteal",
+      "hp_regeneration",
+      "consumable_heal"
+    ]
+  },
+  "item_tags": {
+    "consumable": 4,
+    "economy": 7,
+    "exploration": 4,
+    "explosive": 8,
+    "knockback": 9,
+    "less_enemies": 2,
+    "less_enemy_speed": 3,
+    "more_enemies": 2,
+    "number_of_enemies": 1,
+    "pet": 10,
+    "pickup": 9,
+    "stand_still": 3,
+    "stat_armor": 11,
+    "stat_attack_speed": 9,
+    "stat_crit_chance": 15,
+    "stat_dodge": 12,
+    "stat_elemental_damage": 23,
+    "stat_engineering": 25,
+    "stat_harvesting": 10,
+    "stat_hp_regeneration": 21,
+    "stat_lifesteal": 14,
+    "stat_luck": 16,
+    "stat_max_hp": 26,
+    "stat_melee_damage": 19,
+    "stat_percent_damage": 20,
+    "stat_range": 10,
+    "stat_ranged_damage": 18,
+    "stat_speed": 11,
+    "structure": 13,
+    "xp_gain": 6
+  },
+  "source_docs": [
+    "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/05_道具清单.md"
+  ],
+  "summary": {
+    "item_tag_count": 30,
+    "unlock_count": 49,
+    "weapon_set_count": 15
+  },
+  "unlock_metadata": {
+    "character_apprentice": {
+      "challenge_id": "student",
+      "condition": "升级时检查",
+      "method": "单局达到 20 级",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 180,
+        "section": "2 unlock table"
+      }
+    },
+    "character_arms_dealer": {
+      "challenge_id": "recycling",
+      "condition": "仅商店丢弃武器时计数",
+      "method": "单局回收 12 把武器",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 177,
+        "section": "2 unlock table"
+      }
+    },
+    "character_artificer": {
+      "challenge_id": "fireworks",
+      "condition": "单次爆炸击杀计数达标",
+      "method": "一次(玩家)爆炸击杀 15 个敌人",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 176,
+        "section": "2 unlock table"
+      }
+    },
+    "character_baby": {
+      "challenge_id": "fast_learner(参数 [6])",
+      "condition": "升级时检查",
+      "method": "在第 6 波前达到 10 级",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 181,
+        "section": "2 unlock table"
+      }
+    },
+    "character_beast_master": {
+      "challenge_id": "paws_n_claws",
+      "condition": "宠物挑战全部完成时检查",
+      "method": "完成全部 5 个宠物挑战(bonk_dog / catling_gun / bot_o_mine / blazemander / lootworm)",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 188,
+        "section": "2 unlock table"
+      }
+    },
+    "character_brawler": {
+      "challenge_id": "",
+      "condition": "unlocked_by_default = true",
+      "method": "默认解锁",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 144,
+        "section": "2 unlock table"
+      }
+    },
+    "character_bull": {
+      "challenge_id": "chal_difficulty_1",
+      "condition": "同上",
+      "method": "赢下危险 1",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 146,
+        "section": "2 unlock table"
+      }
+    },
+    "character_chunky": {
+      "challenge_id": "rookie",
+      "condition": "全员死亡时直接完成",
+      "method": "输掉一局",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 161,
+        "section": "2 unlock table"
+      }
+    },
+    "character_crazy": {
+      "challenge_id": "",
+      "condition": "unlocked_by_default = true",
+      "method": "默认解锁",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 144,
+        "section": "2 unlock table"
+      }
+    },
+    "character_cryptid": {
+      "challenge_id": "forest",
+      "condition": "波次结束检查",
+      "method": "场上同时存活 ≥ 10 棵树",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 182,
+        "section": "2 unlock table"
+      }
+    },
+    "character_cyborg": {
+      "challenge_id": "advanced_technology(参数 [3])",
+      "condition": "复合属性+计数挑战",
+      "method": "远程伤害 ≥ 10 且同时拥有 ≥ 3 个结构",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 170,
+        "section": "2 unlock table"
+      }
+    },
+    "character_demon": {
+      "challenge_id": "chal_difficulty_5",
+      "condition": "同上",
+      "method": "赢下危险 5",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 150,
+        "section": "2 unlock table"
+      }
+    },
+    "character_doctor": {
+      "challenge_id": "medicine",
+      "condition": "单波治疗量累计达标",
+      "method": "单波内治疗 200 生命",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 175,
+        "section": "2 unlock table"
+      }
+    },
+    "character_engineer": {
+      "challenge_id": "turrets",
+      "condition": "结构生成时检查",
+      "method": "同时拥有 5 个炮塔",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 173,
+        "section": "2 unlock table"
+      }
+    },
+    "character_entrepreneur": {
+      "challenge_id": "hoarder",
+      "condition": "材料入账时检查",
+      "method": "同时持有 3000 材料",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 172,
+        "section": "2 unlock table"
+      }
+    },
+    "character_explorer": {
+      "challenge_id": "lumberjack",
+      "condition": "伐树数 ≥ 50(跨局累计)",
+      "method": "累计摧毁 50 棵树",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 174,
+        "section": "2 unlock table"
+      }
+    },
+    "character_farmer": {
+      "challenge_id": "agriculture",
+      "condition": "属性挑战",
+      "method": "收获 ≥ 200",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 163,
+        "section": "2 unlock table"
+      }
+    },
+    "character_fisherman": {
+      "challenge_id": "baited",
+      "condition": "物品变动时检查",
+      "method": "同时持有 2 个鱼饵(item_bait)",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 187,
+        "section": "2 unlock table"
+      }
+    },
+    "character_generalist": {
+      "challenge_id": "gatherer_2",
+      "condition": "≥ 2000",
+      "method": "累计采集 2000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 157,
+        "section": "2 unlock table"
+      }
+    },
+    "character_ghost": {
+      "challenge_id": "hallucination",
+      "condition": "属性挑战",
+      "method": "闪避 ≥ 60",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 164,
+        "section": "2 unlock table"
+      }
+    },
+    "character_gladiator": {
+      "challenge_id": "survivor_5",
+      "condition": "同上 ≥ 20000",
+      "method": "累计击杀 20000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 155,
+        "section": "2 unlock table"
+      }
+    },
+    "character_glutton": {
+      "challenge_id": "hungry",
+      "condition": "拾取消耗品时计数",
+      "method": "单局拾取 20 个消耗品",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 178,
+        "section": "2 unlock table"
+      }
+    },
+    "character_golem": {
+      "challenge_id": "reckless",
+      "condition": "波次结束时生命 == 1",
+      "method": "以恰好 1 点生命结束一波",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 183,
+        "section": "2 unlock table"
+      }
+    },
+    "character_hunter": {
+      "challenge_id": "perfect_vision",
+      "condition": "属性挑战",
+      "method": "射程 ≥ 300",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 167,
+        "section": "2 unlock table"
+      }
+    },
+    "character_jack": {
+      "challenge_id": "giant_slayer",
+      "condition": "头目与精英共用同一计时判定",
+      "method": "在 Boss/精英出现后 15 秒内击杀它",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 179,
+        "section": "2 unlock table"
+      }
+    },
+    "character_king": {
+      "challenge_id": "bourgeoisie",
+      "condition": "武器变动时检查",
+      "method": "同时持有 3 把 IV 级(红色)武器",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 185,
+        "section": "2 unlock table"
+      }
+    },
+    "character_knight": {
+      "challenge_id": "chal_difficulty_4",
+      "condition": "同上",
+      "method": "赢下危险 4",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 149,
+        "section": "2 unlock table"
+      }
+    },
+    "character_lich": {
+      "challenge_id": "robust",
+      "condition": "属性挑战",
+      "method": "最大生命 ≥ 100",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 168,
+        "section": "2 unlock table"
+      }
+    },
+    "character_loud": {
+      "challenge_id": "survivor_3",
+      "condition": "同上 ≥ 5000",
+      "method": "累计击杀 5000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 153,
+        "section": "2 unlock table"
+      }
+    },
+    "character_lucky": {
+      "challenge_id": "gatherer_1",
+      "condition": "材料采集数 ≥ 300(跨局累计)",
+      "method": "累计采集 300 材料",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 156,
+        "section": "2 unlock table"
+      }
+    },
+    "character_mage": {
+      "challenge_id": "",
+      "condition": "unlocked_by_default = true",
+      "method": "默认解锁",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 144,
+        "section": "2 unlock table"
+      }
+    },
+    "character_masochist": {
+      "challenge_id": "chal_difficulty_3",
+      "condition": "同上",
+      "method": "赢下危险 3",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 148,
+        "section": "2 unlock table"
+      }
+    },
+    "character_multitasker": {
+      "challenge_id": "gatherer_3",
+      "condition": "≥ 5000",
+      "method": "累计采集 5000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 158,
+        "section": "2 unlock table"
+      }
+    },
+    "character_mutant": {
+      "challenge_id": "survivor_2",
+      "condition": "同上 ≥ 2000",
+      "method": "累计击杀 2000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 152,
+        "section": "2 unlock table"
+      }
+    },
+    "character_old": {
+      "challenge_id": "survivor_1",
+      "condition": "击杀数 ≥ 300(跨局累计)",
+      "method": "累计击杀 300 敌人",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 151,
+        "section": "2 unlock table"
+      }
+    },
+    "character_one_arm": {
+      "challenge_id": "chal_difficulty_0",
+      "condition": "胜局结算时自动完成",
+      "method": "赢下危险 0",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 145,
+        "section": "2 unlock table"
+      }
+    },
+    "character_pacifist": {
+      "challenge_id": "gatherer_4",
+      "condition": "≥ 10000",
+      "method": "累计采集 10000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 159,
+        "section": "2 unlock table"
+      }
+    },
+    "character_ranger": {
+      "challenge_id": "",
+      "condition": "unlocked_by_default = true",
+      "method": "默认解锁",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 144,
+        "section": "2 unlock table"
+      }
+    },
+    "character_renegade": {
+      "challenge_id": "scavenger",
+      "condition": "物品变动时检查",
+      "method": "拥有 10 件不同的 I 级(白色)物品",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 184,
+        "section": "2 unlock table"
+      }
+    },
+    "character_saver": {
+      "challenge_id": "gatherer_5",
+      "condition": "≥ 20000",
+      "method": "累计采集 20000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 160,
+        "section": "2 unlock table"
+      }
+    },
+    "character_sick": {
+      "challenge_id": "dying",
+      "condition": "属性挑战",
+      "method": "生命再生 ≤ -5",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 162,
+        "section": "2 unlock table"
+      }
+    },
+    "character_soldier": {
+      "challenge_id": "chal_difficulty_2",
+      "condition": "同上",
+      "method": "赢下危险 2",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 147,
+        "section": "2 unlock table"
+      }
+    },
+    "character_speedy": {
+      "challenge_id": "fast",
+      "condition": "属性挑战",
+      "method": "速度 ≥ 50",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 165,
+        "section": "2 unlock table"
+      }
+    },
+    "character_streamer": {
+      "challenge_id": "slow",
+      "condition": "属性挑战",
+      "method": "速度 ≤ -20",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 166,
+        "section": "2 unlock table"
+      }
+    },
+    "character_technomage": {
+      "challenge_id": "magic_and_machinery",
+      "condition": "同上",
+      "method": "元素伤害 ≥ 10 且 ≥ 3 个结构",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 171,
+        "section": "2 unlock table"
+      }
+    },
+    "character_vagabond": {
+      "challenge_id": "experimentation",
+      "condition": "武器变动时检查",
+      "method": "同时持有 6 把互不相同的武器",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 186,
+        "section": "2 unlock table"
+      }
+    },
+    "character_vampire": {
+      "challenge_id": "blood_drinker",
+      "condition": "属性挑战",
+      "method": "吸血 ≥ 40",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 169,
+        "section": "2 unlock table"
+      }
+    },
+    "character_well_rounded": {
+      "challenge_id": "",
+      "condition": "unlocked_by_default = true",
+      "method": "默认解锁",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 144,
+        "section": "2 unlock table"
+      }
+    },
+    "character_wildling": {
+      "challenge_id": "survivor_4",
+      "condition": "同上 ≥ 10000",
+      "method": "累计击杀 10000",
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+        "line": 154,
+        "section": "2 unlock table"
+      }
+    }
+  },
+  "weapon_sets": [
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_crit_chance",
+              "source_text": "+3% 暴击率",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 3
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+3% 暴击率"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+6%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+6%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+9%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+9%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+12%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+12%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+15%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+15%"
+        }
+      ],
+      "id": "precise",
+      "name": {
+        "en": "precise",
+        "zh": "精准"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 433,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_lifesteal",
+              "source_text": "+1 近战伤害, +1% 吸血",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+1 近战伤害, +1% 吸血"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2, +2%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+2, +2%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+3, +3%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+3, +3%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+4, +4%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+4, +4%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+5, +5%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+5, +5%"
+        }
+      ],
+      "id": "blade",
+      "name": {
+        "en": "blade",
+        "zh": "刀剑"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 434,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_armor",
+              "source_text": "+1 护甲, -2% 移速",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+1 护甲, -2% 移速"
+        },
+        {
+          "effects": [
+            {
+              "key": "stat_max_hp",
+              "source_text": "+1 护甲, +3 最大生命, -4%",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+1 护甲, +3 最大生命, -4%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2, +3, -6%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+2, +3, -6%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2, +6, -8%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+2, +6, -8%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+3, +6, -10%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+3, +6, -10%"
+        }
+      ],
+      "id": "blunt",
+      "name": {
+        "en": "blunt",
+        "zh": "钝器"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 435,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_dodge",
+              "source_text": "+3% 闪避",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 3
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+3% 闪避"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+6%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+6%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+9%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+9%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+12%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+12%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+15%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+15%"
+        }
+      ],
+      "id": "unarmed",
+      "name": {
+        "en": "unarmed",
+        "zh": "徒手"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 436,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_max_hp",
+              "source_text": "+3 最大生命",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 3
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+3 最大生命"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+6",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+6"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+9",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+9"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+12",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+12"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+15",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+15"
+        }
+      ],
+      "id": "primitive",
+      "name": {
+        "en": "primitive",
+        "zh": "原始"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 437,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_armor",
+              "source_text": "+1 护甲",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+1 护甲"
+        },
+        {
+          "effects": [
+            {
+              "key": "stat_dodge",
+              "source_text": "+1 护甲, +3% 闪避",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+1 护甲, +3% 闪避"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2, +3%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+2, +3%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2, +6%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+2, +6%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+3, +6%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+3, +6%"
+        }
+      ],
+      "id": "medieval",
+      "name": {
+        "en": "medieval",
+        "zh": "中世纪"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 438,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_dodge",
+              "source_text": "+6% 闪避, -1 护甲",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 6
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+6% 闪避, -1 护甲"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+12%, -2",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+12%, -2"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+18%, -3",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+18%, -3"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+24%, -4",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+24%, -4"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+30%, -5",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+30%, -5"
+        }
+      ],
+      "id": "ethereal",
+      "name": {
+        "en": "ethereal",
+        "zh": "虚灵"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 439,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_percent_damage",
+              "source_text": "+5% 伤害",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 5
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+5% 伤害"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+10%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+10%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+15%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+15%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+20%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+20%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+25%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+25%"
+        }
+      ],
+      "id": "heavy",
+      "name": {
+        "en": "heavy",
+        "zh": "重型"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 440,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_range",
+              "source_text": "+10 射程",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 10
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+10 射程"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+20",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+20"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+30",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+30"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+40",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+40"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+50",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+50"
+        }
+      ],
+      "id": "gun",
+      "name": {
+        "en": "gun",
+        "zh": "枪械"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 441,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_elemental_damage",
+              "source_text": "+1 元素伤害",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+1 元素伤害"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+2"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+3",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+3"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+4",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+4"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+5",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+5"
+        }
+      ],
+      "id": "fire",
+      "name": {
+        "en": "fire",
+        "zh": "元素"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 442,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "explosion_damage",
+              "source_text": "+5% 爆炸伤害, +5% 爆炸范围",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 5
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+5% 爆炸伤害, +5% 爆炸范围"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+10%, +10%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+10%, +10%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+15%, +15%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+15%, +15%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+20%, +20%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+20%, +20%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+25%, +25%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+25%, +25%"
+        }
+      ],
+      "id": "explosive",
+      "name": {
+        "en": "explosive",
+        "zh": "爆炸"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 443,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_hp_regeneration",
+              "source_text": "+1 生命再生",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+1 生命再生"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+2"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+3",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+3"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+4",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+4"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+5",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+5"
+        }
+      ],
+      "id": "medical",
+      "name": {
+        "en": "medical",
+        "zh": "医疗"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 444,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_harvesting",
+              "source_text": "+5% 收获",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 5
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+5% 收获"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+10%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+10%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+15%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+15%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+20%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+20%"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+25%",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+25%"
+        }
+      ],
+      "id": "support",
+      "name": {
+        "en": "support",
+        "zh": "支援"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 445,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_engineering",
+              "source_text": "+1 工程",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": 1
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "+1 工程"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+2",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "+2"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+3",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "+3"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+4",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "+4"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "+5",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "+5"
+        }
+      ],
+      "id": "tool",
+      "name": {
+        "en": "tool",
+        "zh": "工具"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 446,
+        "section": "9.2 weapon sets"
+      }
+    },
+    {
+      "bonuses": [
+        {
+          "effects": [
+            {
+              "key": "stat_max_hp",
+              "source_text": "-20 最大生命",
+              "storage_method": "SUM",
+              "type": "effect",
+              "value": -20
+            }
+          ],
+          "required_weapon_count": 2,
+          "source_text": "-20 最大生命"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "-40",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 3,
+          "source_text": "-40"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "-60",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 4,
+          "source_text": "-60"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "-80",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 5,
+          "source_text": "-80"
+        },
+        {
+          "effects": [
+            {
+              "payload": {
+                "parse_status": "raw_unmapped"
+              },
+              "source_text": "-100",
+              "type": "raw_effect_text"
+            }
+          ],
+          "required_weapon_count": 6,
+          "source_text": "-100"
+        }
+      ],
+      "id": "legendary",
+      "name": {
+        "en": "legendary",
+        "zh": "传奇"
+      },
+      "source_ref": {
+        "doc": "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+        "line": 447,
+        "section": "9.2 weapon sets"
+      }
+    }
+  ]
+}

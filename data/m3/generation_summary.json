@@ -1,0 +1,16 @@
+{
+  "characters": 49,
+  "generated_from": [
+    "devkit/brotato_original_devkit/game_mechanics_docs/02_角色系统.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/03_武器系统.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/05_道具清单.md",
+    "devkit/brotato_original_devkit/game_mechanics_docs/08_效果系统.md"
+  ],
+  "items": 209,
+  "parsed_effect_records": 863,
+  "raw_effect_text_records": 134,
+  "weapon_documented_variants": 201,
+  "weapon_families": 61,
+  "weapon_quality_slots": 244,
+  "weapon_undocumented_quality_slots": 43
+}

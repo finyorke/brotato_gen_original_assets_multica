@@ -23,7 +23,7 @@ func _initialize() -> void:
 	else:
 		for failure in failures:
 			push_error(failure)
-		print("M1 tests failed: %d" % failures.size())
+		print("Tests failed: %d" % failures.size())
 		quit(1)
 
 func _run_all() -> void:
@@ -33,6 +33,7 @@ func _run_all() -> void:
 	_formula_tests()
 	_burn_tests()
 	_combat_m2_tests()
+	_content_m3_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -283,6 +284,98 @@ func _combat_m2_tests() -> void:
 		queue_materialized = queue_scheduler.physics_tick()
 	_assert_equal(queue_materialized.size(), 2, "spawn queue drains up to two when backlog exceeds 100")
 
+func _content_m3_tests() -> void:
+	var characters_json := _load_json("res://data/m3/characters.json")
+	var weapons_json := _load_json("res://data/m3/weapons.json")
+	var items_json := _load_json("res://data/m3/items.json")
+	var tags_sets_json := _load_json("res://data/m3/tags_sets_unlocks.json")
+	var effect_reference_json := _load_json("res://data/m3/effect_reference.json")
+	var summary_json := _load_json("res://data/m3/generation_summary.json")
+
+	var characters: Array = characters_json.get("characters", [])
+	var weapon_families: Array = weapons_json.get("families", [])
+	var weapon_variants: Array = weapons_json.get("variants", [])
+	var items: Array = items_json.get("items", [])
+	var effect_defaults: Dictionary = effect_reference_json.get("effect_defaults", {})
+
+	_assert_equal(characters.size(), 49, "M3 character row count")
+	_assert_equal(weapon_families.size(), 61, "M3 weapon family count")
+	_assert_equal(int(weapons_json.get("summary", {}).get("quality_slot_count", 0)), 244, "M3 weapon family x quality slots")
+	_assert_equal(weapon_variants.size(), 201, "M3 documented weapon variant rows")
+	_assert_equal(items.size(), 209, "M3 item data row count")
+	_assert_equal(int(summary_json.get("weapon_undocumented_quality_slots", 0)), 43, "M3 explicitly tracks undocumented weapon slots")
+
+	_assert_equal(effect_defaults.size(), EffectKeysScript.key_count(), "M3 effect defaults mirror EffectKeys")
+	_assert_equal(effect_defaults["stat_max_hp"], 10, "M3 effect default max hp")
+	_assert_equal(effect_defaults["dodge_cap"], 60, "M3 effect default dodge cap")
+	_assert_equal(effect_defaults["weapon_slot"], 6, "M3 effect default weapon slots")
+	_assert_equal(effect_defaults["harvesting_growth"], 5, "M3 effect default harvesting growth")
+	_assert_equal(effect_defaults["hp_cap"], EffectKeysScript.INF_CAP, "M3 effect default hp cap")
+
+	var character_ids := {}
+	for character in characters:
+		var character_id := String(character.get("id", ""))
+		_assert_true(not character_ids.has(character_id), "unique character id %s" % character_id)
+		character_ids[character_id] = true
+		_validate_source_ref(character, "character %s" % character_id)
+		_assert_true(character.get("effects", []).size() > 0, "character %s has effect payloads" % character_id)
+		if not ["character_beast_master", "character_bull"].has(character_id):
+			_assert_true(character.get("starting_weapons", []).size() > 0, "character %s has starting weapon choices" % character_id)
+		for effect in character.get("effects", []):
+			_validate_effect_reference(effect, "character %s" % character_id)
+
+	var family_ids := {}
+	for family in weapon_families:
+		var family_id := String(family.get("id", ""))
+		_assert_true(not family_ids.has(family_id), "unique weapon family id %s" % family_id)
+		family_ids[family_id] = true
+		_validate_source_ref(family, "weapon family %s" % family_id)
+		_assert_equal(family.get("quality_slots", []).size(), 4, "weapon family %s has four quality slots" % family_id)
+		_assert_resource_exists(String(family.get("asset_refs", {}).get("icon", "")), "weapon family %s icon" % family_id)
+
+	for variant in weapon_variants:
+		var variant_id := String(variant.get("id", ""))
+		_validate_source_ref(variant, "weapon variant %s" % variant_id)
+		_assert_true(family_ids.has(String(variant.get("family_id", ""))), "weapon variant %s references a known family" % variant_id)
+		_assert_resource_exists(String(variant.get("asset_refs", {}).get("icon", "")), "weapon variant %s icon" % variant_id)
+		_assert_resource_exists(String(variant.get("asset_refs", {}).get("texture", "")), "weapon variant %s texture" % variant_id)
+		for scaling_key in variant.get("scaling_stats", {}).keys():
+			_assert_true(EffectKeysScript.has_key(String(scaling_key)) or String(scaling_key) == "stat_levels", "weapon variant %s scaling key %s exists" % [variant_id, scaling_key])
+		for effect in variant.get("effects", []):
+			_validate_effect_reference(effect, "weapon variant %s" % variant_id)
+
+	var item_ids := {}
+	for item in items:
+		var item_id := String(item.get("id", ""))
+		_assert_true(not item_ids.has(item_id), "unique item id %s" % item_id)
+		item_ids[item_id] = true
+		_validate_source_ref(item, "item %s" % item_id)
+		_assert_resource_exists(String(item.get("asset_refs", {}).get("icon", "")), "item %s icon" % item_id)
+		_assert_true(item.get("effects", []).size() > 0, "item %s has effect payloads" % item_id)
+		for effect in item.get("effects", []):
+			_validate_effect_reference(effect, "item %s" % item_id)
+
+	var weapon_sets: Array = tags_sets_json.get("weapon_sets", [])
+	var item_tags: Dictionary = tags_sets_json.get("item_tags", {})
+	var unlock_metadata: Dictionary = tags_sets_json.get("unlock_metadata", {})
+	var banned_item_groups: Dictionary = tags_sets_json.get("banned_item_groups", {})
+	_assert_equal(weapon_sets.size(), 15, "M3 weapon set count")
+	_assert_true(item_tags.has("stat_max_hp"), "M3 item tag index contains stat_max_hp")
+	_assert_true(item_tags.has("pet"), "M3 item tag index contains pet")
+	_assert_equal(unlock_metadata.size(), 49, "M3 unlock metadata covers all characters")
+	_assert_true(banned_item_groups.has("harvesting"), "M3 banned item groups include harvesting")
+
+	var self_test := _load_text("res://SELF_TEST_M3.md")
+	for sample_id in [
+		"character_well_rounded",
+		"character_mage",
+		"weapon_pistol_1",
+		"weapon_wrench_4",
+		"item_alien_tongue",
+		"item_hourglass",
+	]:
+		_assert_true(self_test.contains(sample_id), "SELF_TEST_M3 includes sample %s" % sample_id)
+
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
 	if actual != expected:
@@ -298,6 +391,30 @@ func _assert_true(value: bool, label: String) -> void:
 	if not value:
 		failures.append("%s: expected true" % label)
 
+func _assert_resource_exists(path: String, label: String) -> void:
+	assertions_run += 1
+	if path == "" or not FileAccess.file_exists(path):
+		failures.append("%s: missing resource %s" % [label, path])
+
+func _validate_source_ref(record: Dictionary, label: String) -> void:
+	_assert_true(record.has("source_ref"), "%s has source_ref" % label)
+	var ref: Dictionary = record.get("source_ref", {})
+	_assert_true(String(ref.get("doc", "")).ends_with(".md"), "%s source_ref doc is markdown" % label)
+	_assert_true(int(ref.get("line", 0)) > 0, "%s source_ref has positive line" % label)
+
+func _validate_effect_reference(effect: Dictionary, label: String) -> void:
+	if not effect.has("key"):
+		_assert_true(effect.has("source_text"), "%s raw effect keeps source text" % label)
+		return
+	var key := String(effect.get("key", ""))
+	var custom_key := String(effect.get("custom_key", ""))
+	if custom_key != "":
+		_assert_true(EffectKeysScript.has_key(custom_key), "%s custom effect key %s exists" % [label, custom_key])
+	elif key.begins_with("item_") or key.begins_with("weapon_"):
+		_assert_true(key != "", "%s item/weapon append key is present" % label)
+	else:
+		_assert_true(EffectKeysScript.has_key(key), "%s effect key %s exists" % [label, key])
+
 func _load_json(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)
 	var parsed = JSON.parse_string(text)
@@ -305,3 +422,9 @@ func _load_json(path: String) -> Dictionary:
 		failures.append("could not parse JSON: %s" % path)
 		return {}
 	return parsed
+
+func _load_text(path: String) -> String:
+	if not FileAccess.file_exists(path):
+		failures.append("missing text file: %s" % path)
+		return ""
+	return FileAccess.get_file_as_string(path)
