@@ -25,6 +25,7 @@ var current_danger := 0
 var enemy_stats_by_id: Dictionary = {}
 var enemy_textures: Dictionary = {}
 var waves_by_number: Dictionary = {}
+var common_wave_groups: Array = []
 var weapon_texture: Texture2D
 var performance_clears: int = 0
 
@@ -95,9 +96,12 @@ func _update_enemies(delta: float) -> void:
 	for i in enemies.size():
 		var enemy: Dictionary = enemies[i]
 		var enemy_pos: Vector2 = enemy["position"]
+		var movement_mode := String(enemy.get("movement_mode", "chase"))
+		if movement_mode == "stationary" or movement_mode == "stationary_summon":
+			continue
 		var to_player := player_position - enemy_pos
 		var direction := to_player.normalized()
-		if String(enemy.get("movement_mode", "chase")) == "keep_distance":
+		if movement_mode == "keep_distance":
 			var distance := to_player.length()
 			if distance < 260.0:
 				direction = -direction
@@ -153,16 +157,25 @@ func _update_wave(delta: float) -> void:
 		_spawn_enemy_from_request(request)
 	if wave_scheduler.elapsed_seconds >= wave_scheduler.duration_seconds and enemies.is_empty() and wave_scheduler.active_warning_count() == 0 and wave_scheduler.pending_spawn_count() == 0 and current_wave < _highest_wave_number():
 		current_wave += 1
-		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave])
+		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
 
 func _spawn_enemy_from_request(request: Dictionary) -> void:
-	var enemy_id := String(request.get("enemy_id", "baby_alien"))
+	var enemy_id := _enemy_id_from_request(request)
 	var stats: Variant = enemy_stats_by_id.get(enemy_id, null)
 	if stats == null:
 		push_warning("Missing enemy stats for %s" % enemy_id)
 		return
 	var difficulty_multiplier: float = formulas.danger_enemy_stat_multiplier(current_danger)
 	enemies.append(stats.instantiate(current_wave, request.get("position", player_position), player_data, randf_range(-1.0, 1.0), difficulty_multiplier))
+
+func _enemy_id_from_request(request: Dictionary) -> String:
+	var enemy_id := String(request.get("enemy_id", ""))
+	if not enemy_id.is_empty():
+		return enemy_id
+	var enemy_pool: Array = request.get("enemy_pool", [])
+	if not enemy_pool.is_empty():
+		return String(enemy_pool[randi() % enemy_pool.size()])
+	return "baby_alien"
 
 func _drop_material(pos: Vector2, value: int) -> void:
 	materials.append({
@@ -214,6 +227,9 @@ func _raw_spawn_position(area: String, viewport_size: Vector2) -> Vector2:
 		var center := Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 		var offset := Vector2.RIGHT.rotated(randf() * TAU) * randf() * radius
 		return (center + offset).clamp(Vector2(margin, margin), viewport_size - Vector2(margin, margin))
+	if area.begins_with("inner_"):
+		var inner_margin := min(float(area.get_slice("_", 1)), min(viewport_size.x, viewport_size.y) * 0.2)
+		return Vector2(randf_range(inner_margin, viewport_size.x - inner_margin), randf_range(inner_margin, viewport_size.y - inner_margin))
 	return Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 
 func _texture_for_enemy(enemy_data: Dictionary) -> Texture2D:
@@ -236,9 +252,10 @@ func _load_m2_data() -> void:
 		enemy_stats_by_id[stats.enemy_id] = stats
 
 	var wave_json: Dictionary = _load_json(WAVE_DATA_PATH)
+	common_wave_groups = wave_json.get("common_groups", [])
 	for row in wave_json.get("waves", []):
 		waves_by_number[int(row.get("wave", 1))] = row
-	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave])
+	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
 
 func _load_json(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)

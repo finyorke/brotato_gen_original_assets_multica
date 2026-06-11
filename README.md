@@ -16,8 +16,8 @@ Completed M1:
 Current M2 slice:
 
 - Data-driven starter weapon rows for Pistol I, Fist I, and SMG I.
-- Data-driven starter enemy rows for the first Danger 0 wave slice.
-- Wave 1-5 scheduler data, including spawn timing, repeats, danger gates, 60 tick spawn warnings, and 3 tick spawn queue cadence.
+- Data-driven area 1 enemy rows needed by the 20-wave Danger 0 schedule, with gated normal enemy rows encoded from the docs.
+- Full area 1 wave 1-20 scheduler data, including common groups, composite spawn groups, danger gates, immediate wave 20 boss timing, 60 tick spawn warnings, and 3 tick spawn queue cadence.
 - Combat helpers for weapon resolution, enemy stat scaling, targeting, material drop chance, pickup radius, and player iframe timing.
 - Main scene now consumes the M2 data instead of hard-coded weapon/enemy numbers.
 
