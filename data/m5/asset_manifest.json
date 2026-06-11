@@ -1,0 +1,565 @@
+{
+  "source": "M5 asset presentation manifest built from asset mapping docs 01-07 plus mechanics doc 12.",
+  "source_docs": [
+    "asset_mapping_01_roles_players",
+    "asset_mapping_02_weapons_projectiles",
+    "asset_mapping_03_enemies_pets_structures",
+    "asset_mapping_04_items_icons_materials",
+    "asset_mapping_05_ui_fonts",
+    "asset_mapping_06_vfx_particles_map_shaders",
+    "asset_mapping_07_audio_table"
+  ],
+  "player": {
+    "body_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/player/potato.png",
+    "legs_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/player/legs.png",
+    "highlight_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/player/highlight.png",
+    "animation_container_offset": [0, -24],
+    "weapon_container_offset": [0, -24],
+    "body_anchor": [0.5, 0.5],
+    "body_size": [150, 150],
+    "body_draw_size": [96, 96],
+    "shadow": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/player/potato.png",
+      "position": [0, 38],
+      "scale": [1.0, -0.3],
+      "color": [0.0, 0.0, 0.0, 0.392157]
+    },
+    "legs": {
+      "frame_size": [50, 50],
+      "left_frame": 1,
+      "right_frame": 0,
+      "left_mount": [15, 18],
+      "right_mount": [-16, 18],
+      "left_offset": [4, 7],
+      "right_offset": [-3, 7]
+    },
+    "weapon_mounts": {
+      "documented_container_offset": [0, -24],
+      "fallback_ring_radius": 60,
+      "extra_weapon_radius_step": 5,
+      "slots": [
+        [44, -8],
+        [22, -42],
+        [-22, -42],
+        [-44, -8],
+        [-22, 28],
+        [22, 28]
+      ]
+    }
+  },
+  "weapons": {
+    "weapon_pistol": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/pistol.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/pistol_icon.png",
+      "sprite_size": [80, 80],
+      "sprite_position": [24, 0],
+      "sprite_offset": [0, 0],
+      "muzzle": [32, 0],
+      "align_anchor": [2, 16],
+      "recoil": 25,
+      "recoil_duration": 0.1,
+      "projectile": "bullet_projectile",
+      "projectile_textures": [
+        "res://devkit/brotato_original_devkit/asset_pack/assets/projectiles/bullet/frame0000.png",
+        "res://devkit/brotato_original_devkit/asset_pack/assets/projectiles/bullet/frame0001.png"
+      ],
+      "shooting_sound_event": "weapon_pistol_fire"
+    },
+    "weapon_smg": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/smg.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/smg_icon.png",
+      "sprite_size": [80, 80],
+      "sprite_position": [24, 0],
+      "sprite_offset": [0, 0],
+      "muzzle": [32, 0],
+      "align_anchor": [2, 16],
+      "recoil": 10,
+      "recoil_duration": 0.05,
+      "effect_scale": 0.2,
+      "projectile": "bullet_projectile",
+      "shooting_sound_event": "weapon_smg_fire"
+    },
+    "weapon_fist": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/fist/fist_short.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/fist/fist_icon.png",
+      "sprite_size": [100, 50],
+      "sprite_position": [16, 0],
+      "sprite_offset": [0, 0],
+      "hitbox_extents": [48, 20],
+      "hitbox_offset": [-16, 0],
+      "muzzle": [8, 0],
+      "align_anchor": [0, 0],
+      "attack_type": "thrust",
+      "recoil": 25,
+      "recoil_duration": 0.1,
+      "shooting_sound_event": "weapon_fast_swing"
+    }
+  },
+  "enemies": {
+    "baby_alien": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/baby_alien/baby_alien.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/baby_alien/baby_alien_icon.png",
+      "sprite_size": [100, 100],
+      "sprite_offset": [0, 0],
+      "body_radius": 22,
+      "hurt_radius": 32,
+      "damage_radius": 16,
+      "priority_clear": true
+    },
+    "chaser": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/chaser/chaser.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/chaser/chaser_icon.png",
+      "sprite_size": [100, 100],
+      "sprite_offset": [0, 0],
+      "body_radius": 19.03,
+      "body_offset": [0, 1],
+      "damage_radius": 16,
+      "damage_offset": [5, 0],
+      "priority_clear": true
+    },
+    "spitter": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/spitter/spitter.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/spitter/spitter_icon.png",
+      "sprite_size": [100, 100],
+      "sprite_offset": [0, 0],
+      "body_radius": 14,
+      "hurt_radius": 32,
+      "damage_radius": 22,
+      "damage_offset": [5, -6],
+      "shoot_animation_seconds": 1.0
+    },
+    "charger": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/charger/charger.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/charger/charger_icon.png",
+      "sprite_size": [100, 100],
+      "sprite_offset": [0, 0],
+      "body_radius": 24.33,
+      "hurt_radius": 48.01,
+      "hurt_offset": [0, -19],
+      "damage_radius": 25,
+      "damage_offset": [1, -9],
+      "charge_prep_seconds": 0.4
+    },
+    "fly": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/fly/fly.png",
+      "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/fly/fly_icon.png",
+      "screen_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/enemies/fly/fly_screen.png",
+      "sprite_size": [100, 150],
+      "sprite_offset": [0, -20],
+      "body_radius": 10,
+      "body_offset": [0, 12],
+      "hurt_radius": 70.06,
+      "hurt_offset": [0, -19],
+      "damage_radius": 14,
+      "damage_offset": [0, -5]
+    }
+  },
+  "materials": {
+    "max_ground_count": 50,
+    "pickup_radius": 30,
+    "attract_radius": 150,
+    "boosted_scale": 1.25,
+    "merged_value_scale_step": 0.05,
+    "max_scale": 2.0,
+    "textures": [
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0000.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0001.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0002.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0003.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0004.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0005.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0006.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0007.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0008.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0009.png",
+      "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_0010.png"
+    ],
+    "pickup_sound_event": "material_pickup"
+  },
+  "ground": {
+    "cell_size": 64,
+    "atlas_size": [192, 256],
+    "subtile_columns": 3,
+    "subtile_rows": 4,
+    "plain_subtile": [2, 3],
+    "plain_weight": 50,
+    "decorated_weight": 1,
+    "default_zone_size": [32, 24],
+    "outline_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_outline.png",
+    "outline_patch_margin": 64,
+    "themes": [
+      {
+        "id": "BG_DIRT",
+        "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_1.png",
+        "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/icon_1.png",
+        "outline_color": [0.471, 0.404, 0.345]
+      },
+      {
+        "id": "BG_FOREST",
+        "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_2.png",
+        "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/icon_2.png",
+        "outline_color": [0.314, 0.365, 0.361]
+      },
+      {
+        "id": "BG_VOLCANO",
+        "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_3.png",
+        "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/icon_3.png",
+        "outline_color": [0.392, 0.392, 0.392]
+      },
+      {
+        "id": "BG_DREAMY_LANDS",
+        "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_4.png",
+        "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/icon_4.png",
+        "outline_color": [0.475, 0.392, 0.380]
+      },
+      {
+        "id": "BG_BONEYARD",
+        "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_5.png",
+        "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/icon_5.png",
+        "outline_color": [0.345, 0.306, 0.259]
+      },
+      {
+        "id": "BG_DARKLANDS",
+        "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/tiles_6.png",
+        "icon": "res://devkit/brotato_original_devkit/asset_pack/assets/tiles/icon_6.png",
+        "outline_color": [0.267, 0.267, 0.267]
+      }
+    ]
+  },
+  "quality_tints": {
+    "0": {
+      "name": "COMMON",
+      "color": [0.901961, 0.901961, 0.901961],
+      "dark": [0.0, 0.0, 0.0]
+    },
+    "1": {
+      "name": "UNCOMMON",
+      "color": [0.352941, 0.745098, 1.0],
+      "dark": [0.058824, 0.12549, 0.156863]
+    },
+    "2": {
+      "name": "RARE",
+      "color": [0.678431, 0.352941, 1.0],
+      "dark": [0.062745, 0.039216, 0.105882]
+    },
+    "3": {
+      "name": "LEGENDARY",
+      "color": [1.0, 0.231373, 0.231373],
+      "dark": [0.141176, 0.035294, 0.035294]
+    },
+    "4": {
+      "name": "DANGER_4",
+      "color": [1.0, 0.466667, 0.231373],
+      "dark": [0.141176, 0.066667, 0.031373]
+    },
+    "5": {
+      "name": "DANGER_5",
+      "color": [0.815686, 0.756863, 0.258824],
+      "dark": [0.101961, 0.094118, 0.031373]
+    }
+  },
+  "vfx": {
+    "flash": {
+      "color": [1.0, 1.0, 1.0, 1.0],
+      "modifier": 1.0,
+      "duration_seconds": 0.1
+    },
+    "hit_particles": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/particles/particle_1.png",
+      "amount": 8,
+      "lifetime": 0.5,
+      "emission_radius": 15,
+      "initial_velocity": 600,
+      "initial_velocity_random": 0.5,
+      "scale": 0.5,
+      "scale_random": 0.25,
+      "color": [0.6235, 0.1529, 0.1529]
+    },
+    "hit_effect": {
+      "frames": [
+        "res://devkit/brotato_original_devkit/asset_pack/assets/projectiles/slash/sprites/slash_0000.png",
+        "res://devkit/brotato_original_devkit/asset_pack/assets/projectiles/slash/sprites/slash_0001.png",
+        "res://devkit/brotato_original_devkit/asset_pack/assets/projectiles/slash/sprites/slash_0002.png"
+      ],
+      "fps": 20,
+      "play_probability_key": "effect_scale"
+    },
+    "critical_particles": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/particles/particle_29.png",
+      "amount": 1,
+      "lifetime": 0.5,
+      "color": [1.0, 0.844, 0.0]
+    },
+    "pickup_gold_particles": {
+      "texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/particles/particle_10.png",
+      "amount": 6,
+      "lifetime": 0.3,
+      "initial_velocity": 600,
+      "scale": 0.4,
+      "color": [0.463, 1.0, 0.463]
+    },
+    "burning": {
+      "main_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/particles/particle_fire_animation.png",
+      "secondary_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/particles/particle_31.png",
+      "main_amount": 3,
+      "lifetime": 0.6,
+      "after_stop_hide_delay_multiplier": 1.2,
+      "red_gradient_hint": [1.0, 0.0, 0.0],
+      "blue_gradient_hint": [0.0, 0.77, 1.0]
+    },
+    "spawn_warning": {
+      "entity_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/entity_birth.png",
+      "structure_texture": "res://devkit/brotato_original_devkit/asset_pack/assets/vfx/structure_birth.png",
+      "frames": 60,
+      "collision_radius": 72,
+      "blink_period_divisor": 3.25,
+      "blink_alpha": 0.25
+    },
+    "screen_shake": {
+      "enabled_default": true,
+      "player_damage_intensity": 5,
+      "enemy_damage_divisor": 3,
+      "enemy_damage_max_intensity": 3,
+      "duration_seconds": 0.1
+    },
+    "floating_text": {
+      "font_size": 40,
+      "direction": [0, -80],
+      "duration_seconds": 0.5,
+      "spread_radians": 0.78539816339,
+      "positive_color": [0.463, 1.0, 0.463],
+      "negative_color": [1.0, 0.231373, 0.231373],
+      "critical_color": [1.0, 0.844, 0.0],
+      "armor_color": [0.62, 0.62, 0.62]
+    },
+    "camera": {
+      "edge_margin": 96,
+      "single_player_zoom": 1.0,
+      "coop_contain_margin": 500,
+      "coop_zoom_in_ratio": 0.4,
+      "last_survivor_snap_seconds": 5
+    },
+    "pool_limits": {
+      "vfx": 100,
+      "floating_text": 100
+    }
+  },
+  "audio": {
+    "buses": ["Master", "Sound", "Music"],
+    "players_per_pool": 12,
+    "queue_limit": 16,
+    "dequeue_per_frame": 1,
+    "music_fade_in_start_db": -20,
+    "music_fade_seconds": 1.0,
+    "music_states_db": {
+      "wave": 0,
+      "wave_failed": -20,
+      "shop": -8,
+      "menu": -5
+    },
+    "music_tracks": [
+      {
+        "id": "after_midnight",
+        "pool": "legacy",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/after-midnight by luke-melville Artlist.mp3",
+        "duration": 160.10
+      },
+      {
+        "id": "density_wave",
+        "pool": "legacy",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/density-wave by _aviad-zinemanas__ Artlist.mp3",
+        "duration": 182.36
+      },
+      {
+        "id": "extreme_chaos",
+        "pool": "legacy",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/extreme-chaos by 2050 Artlist.mp3",
+        "duration": 161.12
+      },
+      {
+        "id": "power_punch",
+        "pool": "legacy",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/power-punch by 2050 Artlist.mp3",
+        "duration": 139.60
+      },
+      {
+        "id": "time_jumper",
+        "pool": "legacy",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/time-jumper by 2050 Artlist.mp3",
+        "duration": 248.35
+      },
+      {
+        "id": "wasteland_survivors",
+        "pool": "legacy",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/wasteland-survivors by evgeny-bardyuzha Artlist.mp3",
+        "duration": 195.58
+      },
+      {
+        "id": "adonai_hyperspace",
+        "pool": "streamer",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/streamer_mode/Adonai - Hyperspace.mp3",
+        "duration": 206.05
+      },
+      {
+        "id": "adonai_liquid_glass",
+        "pool": "streamer",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/streamer_mode/Adonai - Liquid Glass.mp3",
+        "duration": 163.42
+      },
+      {
+        "id": "adonai_phase_break",
+        "pool": "streamer",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/streamer_mode/Adonai - Phase Break.mp3",
+        "duration": 180.43
+      },
+      {
+        "id": "adonai_turbine_kick",
+        "pool": "streamer",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/streamer_mode/Adonai - Turbine Kick.mp3",
+        "duration": 191.92
+      },
+      {
+        "id": "adonai_wubs_deep",
+        "pool": "streamer",
+        "path": "res://devkit/brotato_original_devkit/asset_pack/assets/audio/music/streamer_mode/Adonai - Wubs of the Deep.mp3",
+        "duration": 191.90
+      }
+    ],
+    "sound_events": {
+      "enemy_hit": {
+        "bus": "Sound",
+        "mode": "2d",
+        "pitch_rand": 0.2,
+        "volume_db": 0,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_01.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_02.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_03.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_04.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_05.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_06.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_07.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/punch_general_body_impact_08.wav"
+        ]
+      },
+      "enemy_crit": {
+        "bus": "Sound",
+        "mode": "2d",
+        "pitch_rand": 0.2,
+        "volume_db": 0,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/crit/bullet_impact_metal_light_01.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/crit/bullet_impact_metal_light_02.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/crit/bullet_impact_metal_light_03.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/crit/bullet_impact_metal_light_05.wav"
+        ]
+      },
+      "player_hit": {
+        "bus": "Sound",
+        "mode": "2d",
+        "pitch_rand": 0.2,
+        "volume_db": 0,
+        "always_play": true,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/bullet_impact_body_flesh_05.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/bullet_impact_body_flesh_06.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/bullet_impact_body_flesh_07.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/hurt/bullet_impact_body_flesh_08.wav"
+        ]
+      },
+      "material_pickup": {
+        "bus": "Sound",
+        "mode": "global",
+        "pitch_rand": 0.2,
+        "volume_db": 0,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/materials/water_drop_drip_single_01.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/materials/water_drop_drip_single_02.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/materials/water_drop_drip_single_03.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/materials/water_drop_drip_single_04.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/materials/water_drop_drip_single_05.wav"
+        ]
+      },
+      "weapon_pistol_fire": {
+        "bus": "Sound",
+        "mode": "global",
+        "pitch_rand": 0.2,
+        "volume_db": -10,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/gun_pistol_shot_01.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/gun_pistol_shot_02.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/gun_pistol_shot_03.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/gun_pistol_shot_04.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/pistol/gun_pistol_shot_05.wav"
+        ]
+      },
+      "weapon_smg_fire": {
+        "bus": "Sound",
+        "mode": "global",
+        "pitch_rand": 0.2,
+        "volume_db": -10,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_01.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_02.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_03.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_04.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_05.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_06.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_07.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_08.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/weapons/smg/gun_submachine_auto_shot_09.wav"
+        ]
+      },
+      "weapon_fast_swing": {
+        "bus": "Sound",
+        "mode": "global",
+        "pitch_rand": 0.2,
+        "volume_db": -5,
+        "always_play": true,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/weapons/whoosh_swish_high_fast_01.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/weapons/whoosh_swish_high_fast_02.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/weapons/whoosh_swish_high_fast_03.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/weapons/whoosh_swish_high_fast_04.wav"
+        ]
+      },
+      "spawn_warning_begin": {
+        "bus": "Sound",
+        "mode": "2d",
+        "pitch_rand": 0.2,
+        "volume_db": 0,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/spawn/birth_begin_sound.wav"
+        ]
+      },
+      "spawn_warning_end": {
+        "bus": "Sound",
+        "mode": "2d",
+        "pitch_rand": 0.2,
+        "volume_db": -15,
+        "always_play": false,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/audio/sfx/spawn/birth_end_sound.wav"
+        ]
+      },
+      "limited_pet_voice": {
+        "bus": "Sound",
+        "mode": "2d",
+        "pitch_rand": 0.0,
+        "volume_db": 0,
+        "always_play": false,
+        "max_play": 1,
+        "paths": [
+          "res://devkit/brotato_original_devkit/asset_pack/assets/pets/bonk_dog/bonk_dog_attack_0.wav",
+          "res://devkit/brotato_original_devkit/asset_pack/assets/pets/bonk_dog/bonk_dog_attack_1.wav"
+        ]
+      }
+    }
+  }
+}
