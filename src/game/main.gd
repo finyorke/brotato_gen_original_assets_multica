@@ -34,6 +34,7 @@ var current_danger := 0
 var enemy_stats_by_id: Dictionary = {}
 var enemy_textures: Dictionary = {}
 var waves_by_number: Dictionary = {}
+var common_wave_groups: Array = []
 var player_texture: Texture2D
 var material_texture: Texture2D
 var weapon_texture: Texture2D
@@ -168,9 +169,12 @@ func _update_enemies(delta: float) -> void:
 		var enemy: Dictionary = enemies[i]
 		enemy["flash_seconds"] = max(0.0, float(enemy.get("flash_seconds", 0.0)) - delta)
 		var enemy_pos: Vector2 = enemy["position"]
+		var movement_mode := String(enemy.get("movement_mode", "chase"))
+		if movement_mode == "stationary" or movement_mode == "stationary_summon":
+			continue
 		var to_player := player_position - enemy_pos
 		var direction := to_player.normalized()
-		if String(enemy.get("movement_mode", "chase")) == "keep_distance":
+		if movement_mode == "keep_distance":
 			var distance := to_player.length()
 			if distance < 260.0:
 				direction = -direction
@@ -258,7 +262,7 @@ func _update_wave(delta: float) -> void:
 		_complete_current_wave()
 
 func _spawn_enemy_from_request(request: Dictionary) -> void:
-	var enemy_id := String(request.get("enemy_id", "baby_alien"))
+	var enemy_id := _enemy_id_from_request(request)
 	var stats: Variant = enemy_stats_by_id.get(enemy_id, null)
 	if stats == null:
 		push_warning("Missing enemy stats for %s" % enemy_id)
@@ -266,13 +270,22 @@ func _spawn_enemy_from_request(request: Dictionary) -> void:
 	var difficulty_multiplier: float = formulas.danger_enemy_stat_multiplier(current_danger)
 	enemies.append(stats.instantiate(current_wave, request.get("position", player_position), player_data, randf_range(-1.0, 1.0), difficulty_multiplier))
 
+func _enemy_id_from_request(request: Dictionary) -> String:
+	var enemy_id := String(request.get("enemy_id", ""))
+	if not enemy_id.is_empty():
+		return enemy_id
+	var enemy_pool: Array = request.get("enemy_pool", [])
+	if not enemy_pool.is_empty():
+		return String(enemy_pool[randi() % enemy_pool.size()])
+	return "baby_alien"
+
 func _complete_current_wave() -> void:
 	wave_scheduler.warning_queue.clear()
 	wave_scheduler.spawn_queue.clear()
 	var result: Dictionary = combat_runtime.complete_wave(enemies, materials)
 	current_wave = int(result.get("next_wave", current_wave))
 	if combat_runtime.state == CombatRuntimeScript.STATE_RUNNING:
-		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave])
+		wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
 		combat_runtime.start_wave(current_wave)
 
 func _performance_cull_enemies(count: int) -> void:
@@ -318,6 +331,9 @@ func _raw_spawn_position(area: String, viewport_size: Vector2) -> Vector2:
 		var center := Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 		var offset := Vector2.RIGHT.rotated(randf() * TAU) * randf() * radius
 		return (center + offset).clamp(Vector2(margin, margin), viewport_size - Vector2(margin, margin))
+	if area.begins_with("inner_"):
+		var inner_margin: float = min(float(area.get_slice("_", 1)), min(viewport_size.x, viewport_size.y) * 0.2)
+		return Vector2(randf_range(inner_margin, viewport_size.x - inner_margin), randf_range(inner_margin, viewport_size.y - inner_margin))
 	return Vector2(randf_range(margin, viewport_size.x - margin), randf_range(margin, viewport_size.y - margin))
 
 func _texture_for_enemy(enemy_data: Dictionary) -> Texture2D:
@@ -409,9 +425,10 @@ func _load_m2_data() -> void:
 		enemy_stats_by_id[stats.enemy_id] = stats
 
 	var wave_json: Dictionary = _load_json(WAVE_DATA_PATH)
+	common_wave_groups = wave_json.get("common_groups", [])
 	for row in wave_json.get("waves", []):
 		waves_by_number[int(row.get("wave", 1))] = row
-	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave])
+	wave_scheduler = WaveSchedulerScript.from_dict(waves_by_number[current_wave], common_wave_groups)
 
 func _load_texture(path: String) -> Texture2D:
 	if path.is_empty():
