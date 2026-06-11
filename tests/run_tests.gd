@@ -9,6 +9,10 @@ const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
+const EconomyCatalogScript = preload("res://src/economy/economy_catalog.gd")
+const ShopStateScript = preload("res://src/economy/shop_state.gd")
+const LevelUpPoolScript = preload("res://src/economy/level_up_pool.gd")
+const RewardResolverScript = preload("res://src/economy/reward_resolver.gd")
 
 var failures: Array = []
 var assertions_run: int = 0
@@ -33,6 +37,7 @@ func _run_all() -> void:
 	_formula_tests()
 	_burn_tests()
 	_combat_m2_tests()
+	_economy_m3b_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -282,6 +287,183 @@ func _combat_m2_tests() -> void:
 	for i in 3:
 		queue_materialized = queue_scheduler.physics_tick()
 	_assert_equal(queue_materialized.size(), 2, "spawn queue drains up to two when backlog exceeds 100")
+
+func _economy_m3b_tests() -> void:
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.001), 3, "shop tier roll hits tier IV first")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.05), 2, "shop tier roll hits tier III")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.30), 1, "shop tier roll hits tier II")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.80), 0, "shop tier roll falls back to tier I")
+	_assert_equal(formulas.roll_shop_tier(10, 0, 0.80, 1, 3, 1), 1, "shop tier increase clamps after result")
+	_assert_equal(formulas.shop_price(20, 5), 35, "shop item price formula")
+	_assert_equal(formulas.shop_price(20, 5, -20), 28, "shop item price discount")
+	_assert_equal(formulas.shop_price(10, 5, 0, 0, 100, true), 35, "weapon price modifies base value before wave formula")
+	_assert_equal(formulas.shop_price(10, 5, 0, 0, 100, true, true), 2, "hp shop price uses ceil original over 20")
+	_assert_equal(formulas.reroll_price_breakdown(10, 2, -50)["paid"], 10, "reroll price discount applies to paid amount")
+	_assert_equal(formulas.recycle_value(40, 20, 0), 10, "default recycle value is 25 percent")
+	_assert_equal(formulas.recycle_value(40, 20, 35), 24, "recycling machine raises recycle value to 60 percent")
+	_assert_equal(formulas.recycle_value(40, 1, 35), 1, "base value one always recycles for one")
+	_assert_equal(formulas.material_drop_amount(3.0, 50, 0, 0, 1, 1.0, 1.0), 4, "material drop floors boosted value without fractional bonus")
+	_assert_equal(formulas.material_drop_amount(3.0, 50, 0, 0, 1, 1.0, 0.0), 5, "material drop fractional part can add one")
+	_assert_equal(formulas.consumable_heal(2), 5, "fruit heal uses consumable_heal")
+	_assert_approx(formulas.consumable_drop_chance(0.2, 50, 0.5), 0.2, "consumable drop chance luck and endless")
+	_assert_approx(formulas.crate_drop_chance(0.2, 50, 2, 25), 0.125, "crate drop chance divides by previous crates and applies crate chance")
+
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 99173
+	var counts := [0, 0, 0, 0]
+	var samples := 20000
+	for i in samples:
+		counts[formulas.roll_shop_tier(10, 0, rng.randf())] += 1
+	_assert_approx(float(counts[3]) / float(samples), formulas.shop_tier_chance(3, 10), "statistical tier IV shop rate", 0.01)
+	_assert_approx(float(counts[2]) / float(samples), formulas.shop_tier_chance(2, 10) - formulas.shop_tier_chance(3, 10), "statistical tier III shop rate", 0.015)
+	_assert_approx(float(counts[1]) / float(samples), formulas.shop_tier_chance(1, 10) - formulas.shop_tier_chance(2, 10), "statistical tier II shop rate", 0.02)
+
+	var catalog: Variant = EconomyCatalogScript.from_json()
+	_assert_true(catalog.get_entry("item_coupon").size() > 0, "economy fixture catalog loads items")
+	var max_player: Variant = PlayerDataScript.new()
+	max_player.add_item(catalog.get_entry("item_recycling_machine"))
+	_assert_equal(catalog.pool("item", 1, max_player).size(), 1, "max_nb filters owned shop items")
+
+	var shop_player: Variant = PlayerDataScript.new()
+	shop_player.materials = 999
+	var shop: Variant = ShopStateScript.open(shop_player, catalog, 1, true, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.2, 0.0, 0.5],
+		"tag_rolls": [1.0, 1.0],
+	})
+	var weapon_slots := 0
+	for slot in shop.slots:
+		var slot_data: Dictionary = slot
+		if String(slot_data.get("kind", "")) == "weapon":
+			weapon_slots += 1
+	_assert_equal(weapon_slots, 2, "wave one shop guarantees two weapons")
+	var locked_price: int = shop.slot_price(0, shop_player)
+	var locked_id := String(shop.slots[0].get("id", ""))
+	_assert_true(shop.toggle_lock(0, shop_player), "shop slot can be locked")
+	var next_shop: Variant = ShopStateScript.open(shop_player, catalog, 2, true, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0],
+	})
+	_assert_equal(String(next_shop.slots[0].get("id", "")), locked_id, "locked shop item carries into next shop")
+	_assert_equal(next_shop.slot_price(0, shop_player), locked_price, "locked shop item keeps old wave price")
+	var materials_before_reroll: int = shop_player.materials
+	var reroll_result: Dictionary = next_shop.reroll(shop_player, catalog, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0],
+	})
+	_assert_true(reroll_result["ok"], "paid reroll succeeds")
+	_assert_equal(reroll_result["cost"], 2, "wave two paid reroll price")
+	_assert_equal(shop_player.materials, materials_before_reroll - 2, "paid reroll deducts materials")
+	_assert_equal(String(next_shop.slots[0].get("id", "")), locked_id, "reroll preserves locked slot")
+
+	var free_player: Variant = PlayerDataScript.new()
+	free_player.materials = 100
+	free_player.apply_effect(EffectEntryScript.make("free_rerolls", 1))
+	var free_shop: Variant = ShopStateScript.open(free_player, catalog, 3, true, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0, 1.0],
+	})
+	var free_result: Dictionary = free_shop.reroll(free_player, catalog, {
+		"weapon_preference_rolls": [1.0],
+		"kind_rolls": [1.0, 1.0, 1.0],
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0, 0.0],
+		"tag_rolls": [1.0, 1.0, 1.0],
+	})
+	_assert_true(free_result["free"], "free_rerolls makes first reroll free")
+	_assert_equal(free_result["cost"], 0, "free reroll has zero cost")
+	_assert_equal(free_shop.paid_rerolls, 0, "free reroll does not increment paid count")
+
+	var buy_player: Variant = PlayerDataScript.new()
+	buy_player.materials = 100
+	var buy_shop: Variant = ShopStateScript.new()
+	buy_shop.wave = 1
+	var coupon: Dictionary = catalog.get_entry("item_coupon")
+	coupon["wave_value"] = 1
+	buy_shop.slots = [coupon]
+	var buy_result: Dictionary = buy_shop.buy_slot(0, buy_player, catalog)
+	_assert_true(buy_result["ok"], "buying an item succeeds")
+	_assert_equal(buy_player.materials, 82, "buying coupon deducts documented price")
+	_assert_equal(buy_player.get_stat("items_price"), -5.0, "buying item applies effects")
+
+	var combine_player: Variant = PlayerDataScript.new()
+	combine_player.materials = 100
+	combine_player.add_permanent_stat("weapon_slot", -5)
+	combine_player.add_weapon(catalog.get_entry("weapon_pistol_t1"))
+	var combine_shop: Variant = ShopStateScript.new()
+	combine_shop.wave = 1
+	var pistol: Dictionary = catalog.get_entry("weapon_pistol_t1")
+	pistol["wave_value"] = 1
+	combine_shop.slots = [pistol]
+	var combine_result: Dictionary = combine_shop.buy_slot(0, combine_player, catalog)
+	_assert_true(combine_result["ok"], "full weapon slots can buy-combine same weapon")
+	_assert_equal(combine_result["upgraded_to"], "weapon_pistol_t2", "buy-combine upgrades to next tier")
+	_assert_equal(combine_player.weapons.size(), 1, "buy-combine keeps slot count stable")
+	_assert_equal(String(combine_player.weapons[0].get("id", "")), "weapon_pistol_t2", "inventory contains upgraded weapon")
+
+	var recycle_player: Variant = PlayerDataScript.new()
+	recycle_player.apply_effect(EffectEntryScript.make("recycling_gains", 35))
+	recycle_player.add_weapon(catalog.get_entry("weapon_smg_t1"))
+	var recycle_shop: Variant = ShopStateScript.new()
+	recycle_shop.wave = 5
+	var recycle_result: Dictionary = recycle_shop.recycle_weapon(0, recycle_player)
+	_assert_true(recycle_result["ok"], "weapon recycling succeeds")
+	_assert_equal(recycle_result["value"], 21, "weapon recycling uses current shop price and recycling gains")
+	_assert_equal(recycle_player.materials, 21, "weapon recycling pays materials")
+
+	var level_pool: Variant = LevelUpPoolScript.new()
+	var level_player: Variant = PlayerDataScript.new()
+	var level_options: Array = level_pool.generate_options(5, level_player, [], {
+		"tier_rolls": [0.99, 0.99, 0.99, 0.99],
+		"pick_rolls": [0.0, 0.0, 0.0, 0.0],
+	})
+	_assert_equal(level_options.size(), 4, "level up generates four options")
+	_assert_equal(level_options[0]["tier"], 1, "level five forces tier II upgrades")
+	_assert_equal(level_options[0]["value"], 6, "tier II max hp upgrade value")
+	level_pool.apply_option(level_player, level_options[0])
+	_assert_equal(level_player.get_max_health(), 16, "applying max hp level option changes stat")
+	_assert_equal(level_player.current_health, 16, "max hp level option heals by increase")
+	var forced_slot_player: Variant = PlayerDataScript.new()
+	forced_slot_player.add_permanent_stat("weapon_slot", -4)
+	forced_slot_player.apply_effect(EffectEntryScript.make("weapon_slot_upgrades", 6))
+	var forced_options: Array = level_pool.generate_options(2, forced_slot_player)
+	_assert_equal(forced_options.size(), 1, "weapon slot upgrades force slot option")
+	_assert_equal(forced_options[0]["key"], "weapon_slot", "forced level option is weapon slot")
+
+	var reward: Variant = RewardResolverScript.new()
+	var reward_player: Variant = PlayerDataScript.new()
+	reward_player.apply_effect(EffectEntryScript.make("chance_double_gold", 100))
+	var pickup_result: Dictionary = reward.pickup_material(reward_player, 5, 0.0)
+	_assert_equal(pickup_result["materials"], 10, "material pickup can double gold")
+	_assert_equal(reward_player.materials, 10, "material pickup adds money")
+	var harvest_player: Variant = PlayerDataScript.new()
+	harvest_player.add_permanent_stat("stat_harvesting", 10)
+	var harvest_result: Dictionary = reward.settle_harvesting(harvest_player, 1)
+	_assert_equal(harvest_result["value"], 10, "harvesting grants materials")
+	_assert_equal(harvest_result["growth"], 1, "harvesting grows by default five percent rounded up")
+	_assert_equal(harvest_player.materials, 10, "harvesting settlement adds money")
+	_assert_equal(harvest_player.get_stat("stat_harvesting"), 11.0, "harvesting growth is permanent")
+	var negative_harvest_player: Variant = PlayerDataScript.new()
+	negative_harvest_player.materials = 10
+	negative_harvest_player.add_permanent_stat("stat_harvesting", -5)
+	var negative_result: Dictionary = reward.settle_harvesting(negative_harvest_player, 1)
+	_assert_equal(negative_result["value"], -5, "negative harvesting computes negative value")
+	_assert_equal(negative_harvest_player.materials, 5, "negative harvesting deducts only money")
+	_assert_equal(reward.collect_bonus_gold([{"value": 2}, {"value": 3}]), 5, "ground materials collect into bonus gold")
+	var repayment: Dictionary = reward.repay_bonus_gold(3, 5)
+	_assert_equal(repayment["value"], 6, "bonus gold doubles next material up to its value")
+	_assert_equal(repayment["remaining_bonus_gold"], 2, "bonus gold repayment decrements pool")
 
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1

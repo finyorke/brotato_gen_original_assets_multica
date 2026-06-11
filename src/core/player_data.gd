@@ -17,6 +17,11 @@ var materials: int = 0
 var level: int = 0
 var current_xp: float = 0.0
 var current_health: int = 10
+var items: Array = []
+var weapons: Array = []
+var locked_shop_items: Array = []
+var banned_shop_ids: Array = []
+var wanted_tags: Array = []
 
 var _stat_cache: Dictionary = {}
 var _replace_stack: Dictionary = {}
@@ -32,6 +37,11 @@ func reset() -> void:
 	level = 0
 	current_xp = 0.0
 	current_health = get_max_health()
+	items = []
+	weapons = []
+	locked_shop_items = []
+	banned_shop_ids = []
+	wanted_tags = []
 	_stat_cache.clear()
 	_replace_stack.clear()
 
@@ -74,6 +84,75 @@ func add_permanent_stat(stat_key: String, amount: int) -> void:
 func add_temporary_stat(stat_key: String, amount: int) -> void:
 	temporary_stats[stat_key] = temporary_stats.get(stat_key, 0) + amount
 	invalidate_cache()
+
+func add_item(item: Dictionary) -> void:
+	items.append(item.duplicate(true))
+
+func add_weapon(weapon: Dictionary) -> void:
+	weapons.append(weapon.duplicate(true))
+
+func remove_weapon_at(index: int) -> Dictionary:
+	if index < 0 or index >= weapons.size():
+		return {}
+	var removed: Dictionary = weapons[index]
+	weapons.remove_at(index)
+	return removed
+
+func weapon_count() -> int:
+	return weapons.size()
+
+func inventory_count(item_id: String) -> int:
+	var count := 0
+	for item in items:
+		var item_data: Dictionary = item
+		if String(item_data.get("id", "")) == item_id:
+			count += 1
+	for weapon in weapons:
+		var weapon_data: Dictionary = weapon
+		if String(weapon_data.get("id", "")) == item_id:
+			count += 1
+	return count
+
+func weapon_indexes_for_item(item_id: String) -> Array:
+	var indexes: Array = []
+	for i in weapons.size():
+		var weapon_data: Dictionary = weapons[i]
+		if String(weapon_data.get("id", "")) == item_id:
+			indexes.append(i)
+	return indexes
+
+func first_weapon_index_for_item(item_id: String) -> int:
+	for i in weapons.size():
+		var weapon_data: Dictionary = weapons[i]
+		if String(weapon_data.get("id", "")) == item_id:
+			return i
+	return -1
+
+func has_weapon_family(weapon_id: String) -> bool:
+	for weapon in weapons:
+		var weapon_data: Dictionary = weapon
+		if String(weapon_data.get("weapon_id", weapon_data.get("id", ""))) == weapon_id:
+			return true
+	return false
+
+func weapon_families() -> Array:
+	var result: Array = []
+	for weapon in weapons:
+		var weapon_data: Dictionary = weapon
+		var family := String(weapon_data.get("weapon_id", weapon_data.get("id", "")))
+		if not result.has(family):
+			result.append(family)
+	return result
+
+func weapon_sets() -> Array:
+	var result: Array = []
+	for weapon in weapons:
+		var weapon_data: Dictionary = weapon
+		for set_id in weapon_data.get("sets", []):
+			var normalized := String(set_id)
+			if not result.has(normalized):
+				result.append(normalized)
+	return result
 
 func clear_temporary_stats() -> void:
 	temporary_stats.clear()
