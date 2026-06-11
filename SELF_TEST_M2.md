@@ -7,6 +7,7 @@ This pass starts M2 by moving the combat demo from hard-coded values to data-dri
 - `WeaponStats`: damage, cooldown, range, target detection, crit, projectile lifetime.
 - `EnemyStats`: HP/damage/armor/speed scaling and material drop chance.
 - `WaveScheduler`: wave timing, repeated spawn groups, 60 tick spawn warnings, 3 tick spawn materialization queue.
+- `CombatRuntime`: player damage intake, armor/dodge/iframes, enemy knockback, material drop and pickup resolution, wave cleanup, and run win/loss state.
 - Starter data rows for 3 weapons, 5 enemies, and area 1 waves 1-5 primary groups.
 - Main scene now uses those data rows for the playable combat slice.
 
@@ -22,11 +23,17 @@ Expected:
 
 - M1 data/effect/formula tests still pass.
 - M2 weapon, enemy, targeting, and wave scheduler tests pass.
+- M2C pickup, iframe, knockback, drop, wave completion, and win/loss tests pass.
+
+Main scene smoke:
+
+```powershell
+& 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --quit-after 2
+```
 
 ## Remaining M2 Work
 
 - Ingest all 20 waves and all area 1 enemy rows.
 - Add projectile node behavior for piercing, bounce, spread, and lifetime.
 - Add melee thrust/sweep hit windows instead of direct target damage.
-- Add enemy contact damage, player damage/iframes, knockback, and death/drop probabilities in runtime nodes.
 - Complete Danger 0 20-wave playthrough validation.

@@ -98,6 +98,12 @@ func damage_after_crit(base_hit_damage: int, critical: bool) -> int:
 		return maxi(1, roundi(float(base_hit_damage) * crit_damage))
 	return base_hit_damage
 
+func resolved_knockback(player: Variant) -> float:
+	var amount: float = knockback + player.get_stat("knockback")
+	if player.get_stat("negative_knockback") > 0.0:
+		amount *= -1.0
+	return amount
+
 func projectile_lifetime_seconds(player: Variant, manual_aim: bool = false) -> float:
 	if projectile_speed <= 0.0:
 		return 0.0

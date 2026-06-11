@@ -82,6 +82,7 @@ func instantiate(wave: int, position: Vector2, player: Variant = null, speed_rol
 		"speed": speed_for_roll(speed_roll),
 		"knockback_resistance": knockback_resistance,
 		"value": value,
+		"can_drop_material": can_drop_material,
 		"movement_mode": movement_mode,
 		"priority_clear": priority_clear,
 		"texture": texture_path,

@@ -23,3 +23,15 @@
 - Question: Chapter 07 states the post-wave material chance lower bound and the horde-wave 0.65 multiplier, but the wording is ambiguous about whether the 0.5 lower bound is re-applied after the horde multiplier.
 - Document locations: `game_mechanics_docs/07_波次难度与生成系统.md` §4.2.
 - Conservative handling: The current formula applies the wave lower bound first, then the horde multiplier, matching the literal reading used in the M2 review; revisit if later documentation clarifies a post-horde clamp.
+
+## Starter Enemy Contact Radius
+
+- Question: Chapter 06 documents the player collision radius (24) and hurt radius (21), but the M2 starter enemy JSON does not yet include per-enemy body/contact radii.
+- Document locations: `game_mechanics_docs/06_敌人与实体系统.md` §9 and `game_mechanics_docs/10_输入操控与玩家手感.md` §7.
+- Conservative handling: The M2C runtime uses player hurt radius 21 plus a starter enemy body radius 24 for contact damage until full enemy hitbox data is imported.
+
+## Starter Weapon Knockback Bounds
+
+- Question: Chapter 01 says weapon knockback is `clamp(base + player knockback, min, max)`, but the M2 starter weapon rows do not yet include per-weapon knockback min/max bounds.
+- Document locations: `game_mechanics_docs/01_核心属性与数值系统.md` §5.5 and `game_mechanics_docs/06_敌人与实体系统.md` §3.5.
+- Conservative handling: The M2C runtime resolves knockback as `base + player knockback`, applies `negative_knockback` sign reversal, and leaves bound clamping for the future full weapon data import.
