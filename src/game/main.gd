@@ -19,6 +19,7 @@ const PlayerDataScript = preload("res://src/core/player_data.gd")
 const EffectEntryScript = preload("res://src/core/effect_entry.gd")
 const FormulasScript = preload("res://src/core/formulas.gd")
 const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
+const WeaponAttackRuntimeScript = preload("res://src/combat/weapon_attack_runtime.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
@@ -186,6 +187,8 @@ var player_position := Vector2.ZERO
 var enemies: Array = []
 var materials: Array = []
 var weapon_cooldown_ticks := 0.0
+var weapon_attack_runtime: Variant = WeaponAttackRuntimeScript.new()
+var weapon_attack_sequence: int = 0
 var current_wave := 1
 var current_danger := 0
 var current_health_invuln := 0.0
@@ -1061,27 +1064,68 @@ func _update_contact_damage() -> void:
 		return
 
 func _update_weapon(delta: float) -> void:
-	weapon_cooldown_ticks -= delta * 60.0
-	if weapon_cooldown_ticks > 0.0:
+	weapon_cooldown_ticks = weapon_attack_runtime.tick_cooldown(weapon_cooldown_ticks, delta)
+	var readiness: Dictionary = weapon_attack_runtime.can_start_attack(weapon_stats, player_data, enemies, player_position, weapon_cooldown_ticks)
+	if not bool(readiness["can_attack"]):
 		return
-	var target: Variant = TargetingScript.nearest_enemy(enemies, player_position, weapon_stats.detection_range(player_data), weapon_stats.min_range)
-	if target == null:
-		return
-	var target_distance := player_position.distance_to(target["position"])
-	if not weapon_stats.can_attack_target(target_distance, player_data):
-		return
-	var damage: int = weapon_stats.resolved_damage(player_data)
-	var critical: bool = randf() <= weapon_stats.effective_crit_chance(player_data)
-	damage = weapon_stats.damage_after_crit(damage, critical)
-	damage = formulas.enemy_damage_after_armor(damage, int(target.get("armor", 0)))
-	var hit_result: Dictionary = combat_runtime.apply_enemy_damage(target, damage, player_position, weapon_stats.resolved_knockback(player_data))
-	target["flash_seconds"] = PresentationRulesScript.FLASH_DURATION_SECONDS
-	_request_screen_shake(PresentationRulesScript.screen_shake_for_enemy_damage(damage))
-	_queue_sound("enemy_crit" if critical else "enemy_hit", target["position"])
+	var target: Variant = readiness["target"]
+	var target_distance: float = player_position.distance_to(target["position"])
+	var aim_angle: float = (target["position"] - player_position).angle()
+	weapon_attack_sequence += 1
+	var attack: Dictionary = weapon_attack_runtime.start_attack(weapon_stats, player_data, player_position, aim_angle, target_distance, weapon_attack_sequence)
+	weapon_cooldown_ticks = float(attack["cooldown_ticks"])
 	var weapon_visual: Dictionary = asset_manifest.weapon_visual(weapon_stats.weapon_id)
 	_queue_sound(String(weapon_visual.get("shooting_sound_event", "")), player_position)
-	weapon_cooldown_ticks = weapon_stats.resolved_cooldown_ticks(player_data)
-	_spawn_floating_text(str(int(hit_result.get("damage", damage))), target["position"] + Vector2(0, -36), "enemy_critical" if critical else "enemy_damage")
+	if weapon_stats.type == WeaponStatsScript.TYPE_RANGED:
+		for projectile in attack["projectiles"]:
+			_resolve_projectile_chain(projectile, target)
+	else:
+		_apply_weapon_hit(weapon_attack_runtime.apply_attack_to_target(attack, target, player_data), target)
+
+func _resolve_projectile_chain(projectile: Dictionary, initial_target: Dictionary) -> void:
+	var target: Variant = initial_target
+	while target != null and not bool(projectile.get("stopped", false)):
+		_apply_weapon_hit(weapon_attack_runtime.apply_projectile_hit(projectile, target, player_data, enemies), target)
+		if bool(projectile.get("stopped", false)):
+			return
+		target = _nearest_projectile_target(projectile)
+
+func _nearest_projectile_target(projectile: Dictionary) -> Variant:
+	var ignored: Array = projectile.get("ignored_enemy_ids", [])
+	var best: Variant = null
+	var best_distance := INF
+	var origin: Vector2 = projectile.get("position", player_position)
+	for enemy in enemies:
+		var enemy_data: Dictionary = enemy
+		var enemy_id := String(enemy_data.get("id", enemy_data.get("instance_id", "")))
+		if bool(enemy_data.get("dead", false)) or ignored.has(enemy_id):
+			continue
+		var distance := origin.distance_to(enemy_data.get("position", origin))
+		if distance < best_distance:
+			best = enemy_data
+			best_distance = distance
+	return best
+
+func _apply_weapon_hit(result: Dictionary, target: Dictionary) -> void:
+	var explosion = result.get("explosion", null)
+	if explosion != null:
+		var explosion_packet: Dictionary = explosion.get("hit_packet", {}).duplicate(true)
+		explosion_packet["damage"] = int(explosion.get("damage", explosion_packet.get("damage", 1)))
+		explosion_packet["explosion_chance"] = 0.0
+		result = weapon_attack_runtime.apply_hit_packet(explosion_packet, target, player_data)
+	if not bool(result.get("hit", false)):
+		return
+	var direct_damage := int(result.get("direct_damage", 0))
+	if direct_damage <= 0:
+		return
+	var knockback_origin: Vector2 = result.get("knockback_origin", player_position)
+	var hit_result: Dictionary = combat_runtime.apply_enemy_damage(target, direct_damage, knockback_origin, float(result.get("knockback", 0.0)))
+	var resolved_damage := int(hit_result.get("damage", direct_damage))
+	var critical := bool(result.get("critical", false))
+	target["flash_seconds"] = PresentationRulesScript.FLASH_DURATION_SECONDS
+	_request_screen_shake(PresentationRulesScript.screen_shake_for_enemy_damage(resolved_damage))
+	_spawn_floating_text(str(resolved_damage), target["position"] + Vector2(0, -36), "enemy_critical" if critical else "enemy_damage")
+	_queue_sound("enemy_crit" if critical else "enemy_hit", target["position"])
 	if bool(hit_result.get("dead", false)):
 		var before_count := materials.size()
 		var dropped: bool = combat_runtime.spawn_material_from_enemy(target, materials, current_wave)

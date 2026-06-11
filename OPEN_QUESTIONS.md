@@ -65,3 +65,27 @@
 - Question: Chapter 04 lists level-up rows for fixed `damage` and `crit_damage`, but the current 234-key effect dictionary has no global `stat_damage` or `crit_damage` stat key.
 - Document locations: `game_mechanics_docs/04_商店经济与升级系统.md` §3.4 and `game_mechanics_docs/08_效果系统.md` §1.6.
 - Conservative handling: The M3B level-up fixture pool omits those two rows until the full content import defines their exact effect mapping, rather than inventing keys outside the documented effect dictionary.
+
+## Melee Hitbox Geometry
+
+- Question: Chapter 03 defines thrust/sweep timing, range, and sweep arc, while Chapter 12 says attack areas carry hit parameters, but neither document gives numeric collision-shape dimensions for the melee weapon texture hitboxes.
+- Document locations: `game_mechanics_docs/03_武器系统.md` §§5.1-5.2, `game_mechanics_docs/12_表现层与底层系统.md` attack-area / hitbox notes.
+- Conservative handling: `WeaponAttackRuntime` now computes documented timing windows, reach, sweep arc, and hit packets, but does not invent melee hitbox width/shape constants. Scene collision shapes should come from source assets or confirmed upstream data.
+
+## Sweep Windup Duration
+
+- Question: Chapter 03 says sweep attacks begin with a no-damage rotation setup, then two active quarters of `atk_duration`, but it does not state a separate duration for that setup phase.
+- Document locations: `game_mechanics_docs/03_武器系统.md` §5.2.
+- Conservative handling: The runtime records the setup as a zero-duration orientation phase and models the documented active half plus return phase. Revisit if upstream data exposes a separate sweep windup duration.
+
+## Endless Factor Formula Cross-Doc Off-by-One
+
+- Question: Chapter 07 defines `endless_wave = max(0, wave - 20)` and uses `endless_wave * (endless_wave + 1) / 2`, while chapter 09 shows `(w-20)(w-21)/2`, which makes wave 21 produce 0 instead of the chapter 07/current M2 value of 0.02.
+- Document locations: `game_mechanics_docs/07_波次难度与生成系统.md` §8.2 and `game_mechanics_docs/09_进度挑战与联机系统.md` §6.
+- Conservative handling: The formula keeps the already-tested chapter 07 interpretation (`wave 21 -> 0.02`) so existing endless scaling behavior remains stable until original scripts or later docs settle the discrepancy.
+
+## Evil Hat Challenge Storage ID
+
+- Question: Chapter 09 lists `chal_evil_hat` and notes record name `chal_evil_mob`, but does not state whether these are one challenge with a storage alias or two registry records.
+- Document locations: `game_mechanics_docs/09_进度挑战与联机系统.md` §2.5.
+- Conservative handling: The M6 challenge registry exposes both IDs so the documented 113-entry registry count remains testable, and maps `chal_evil_hat` completion to storage id `chal_evil_mob`.

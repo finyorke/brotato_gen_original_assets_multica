@@ -6,6 +6,7 @@ const PlayerDataScript = preload("res://src/core/player_data.gd")
 const FormulasScript = preload("res://src/core/formulas.gd")
 const BurnDataScript = preload("res://src/core/burn_data.gd")
 const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
+const WeaponAttackRuntimeScript = preload("res://src/combat/weapon_attack_runtime.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
@@ -18,11 +19,17 @@ const MainScene = preload("res://scenes/main.tscn")
 const AssetManifestScript = preload("res://src/presentation/asset_manifest.gd")
 const PresentationRulesScript = preload("res://src/presentation/presentation_rules.gd")
 const AudioRulesScript = preload("res://src/presentation/audio_rules.gd")
+const ChallengeRegistryScript = preload("res://src/progression/challenge_registry.gd")
+const ProgressionStateScript = preload("res://src/progression/progression_state.gd")
+const SaveServiceScript = preload("res://src/progression/save_service.gd")
+const GameSettingsScript = preload("res://src/settings/game_settings.gd")
+const CoopStateScript = preload("res://src/coop/coop_state.gd")
 
 var failures: Array = []
 var assertions_run: int = 0
 var formulas: Variant = FormulasScript.new()
 var burn_tools: Variant = BurnDataScript.new()
+var attack_runtime: Variant = WeaponAttackRuntimeScript.new()
 
 func _initialize() -> void:
 	_run_all()
@@ -42,11 +49,15 @@ func _run_all() -> void:
 	_formula_tests()
 	_burn_tests()
 	_combat_m2_tests()
+	_weapon_runtime_m2_tests()
 	_content_m3_tests()
 	_combat_m2c_tests()
 	_economy_m3b_tests()
 	_ui_flow_m4_tests()
 	_presentation_m5_tests()
+	_progression_m6_tests()
+	_save_settings_m6_tests()
+	_coop_m6_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -157,6 +168,8 @@ func _formula_tests() -> void:
 	_assert_equal(formulas.weapon_cooldown(60, 100), 30.0, "positive attack speed cooldown")
 	_assert_equal(formulas.weapon_cooldown(60, -50), 90.0, "negative attack speed cooldown")
 	_assert_equal(formulas.weapon_cooldown(1, 0), 2.0, "cooldown lower bound")
+	_assert_approx(formulas.weapon_attack_duration_seconds(100, 0), 0.4142857143, "attack duration range factor")
+	_assert_approx(formulas.weapon_attack_duration_seconds(100, 60), 0.3185714286, "attack duration attack speed")
 	_assert_equal(formulas.ranged_weapon_range(150, 20), 170.0, "ranged range")
 	_assert_equal(formulas.melee_weapon_range(150, 20), 160.0, "melee range")
 	_assert_approx(formulas.armor_coef(15), 0.5, "positive armor coefficient")
@@ -201,6 +214,16 @@ func _formula_tests() -> void:
 	_assert_equal(formulas.pickup_flight_speed(500, 1200, 0.5), 1100.0, "pickup flight acceleration")
 	_assert_true(not formulas.generic_probability_succeeds(0.0, 0.0), "zero chance always fails")
 	_assert_true(formulas.generic_probability_succeeds(0.2, 0.2), "generic chance uses <= roll")
+	_assert_equal(formulas.danger_effects(5)["danger_enemy_damage"], 40, "danger 5 applies documented enemy damage")
+	_assert_equal(formulas.danger_elite_event_count(4), 3, "danger 4 schedules three elite events")
+	_assert_equal(formulas.danger_boss_count(5), 2, "danger 5 uses double boss")
+	_assert_approx(formulas.coop_enemy_damage_multiplier(4), 1.24, "coop damage uses eight percent per extra player")
+	_assert_approx(formulas.coop_material_value_multiplier(2), 1.430769, "coop material compensation uses documented factor", 0.00001)
+	_assert_approx(formulas.endless_hp_multiplier(formulas.endless_factor(21)), 1.045, "endless hp multiplier uses 2.25 coefficient")
+	_assert_equal(formulas.enemy_damage(10, 0, 21, 0, 1.4, formulas.endless_factor(21), 4), 18, "enemy damage combines danger coop and endless")
+	_assert_equal(formulas.enemy_speed(100, 20, 0.5, formulas.endless_factor(40)), 88, "enemy speed applies accessibility and endless cap")
+	_assert_equal(formulas.endless_max_enemies(100, 21), 135, "endless reuses wave index for enemy cap")
+	_assert_equal(formulas.endless_extra_group_count(30), 6, "endless extra group count")
 
 func _burn_tests() -> void:
 	var a: Variant = BurnDataScript.new()
@@ -687,6 +710,189 @@ func _economy_m3b_tests() -> void:
 	var repayment: Dictionary = reward.repay_bonus_gold(3, 5)
 	_assert_equal(repayment["value"], 6, "bonus gold doubles next material up to its value")
 	_assert_equal(repayment["remaining_bonus_gold"], 2, "bonus gold repayment decrements pool")
+func _weapon_runtime_m2_tests() -> void:
+	var player: Variant = PlayerDataScript.new()
+	var damage_runtime: Variant = CombatRuntimeScript.new()
+	var row := {
+		"id": "runtime_ranged",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"cooldown": 400,
+		"max_range": 200,
+		"projectiles": 2,
+		"projectile_spread": 0.2,
+		"projectile_speed": 1000,
+		"piercing": 1,
+		"piercing_dmg_reduction": 0.5,
+		"bounce": 1,
+		"bounce_dmg_reduction": 0.5,
+	}
+	var weapon: Variant = WeaponStatsScript.from_dict(row)
+	player.add_permanent_stat("projectiles", 2)
+	player.add_permanent_stat("piercing", 1)
+	player.add_permanent_stat("piercing_damage", 25)
+	player.add_permanent_stat("bounce", 1)
+	player.add_permanent_stat("bounce_damage", 25)
+	_assert_equal(weapon.effective_projectile_count(player), 4, "extra projectiles only apply when base projectiles exist")
+	_assert_approx(weapon.effective_projectile_spread(player), 0.4, "extra projectile spread adds 0.1 rad each")
+	_assert_equal(weapon.effective_piercing(player), 2, "player piercing adds to weapon piercing")
+	_assert_approx(weapon.effective_piercing_damage_reduction(player), 0.25, "piercing damage stat reduces pierce penalty")
+	_assert_equal(weapon.effective_bounce(player), 2, "player bounce adds to weapon bounce")
+	_assert_approx(weapon.effective_bounce_damage_reduction(player), 0.25, "bounce damage stat reduces bounce penalty")
+	_assert_equal(attack_runtime.opening_cooldown_ticks(weapon, player), 180.0, "opening cooldown clamps to 180 ticks")
+	_assert_equal(attack_runtime.tick_cooldown(10.0, 1.0 / 60.0), 9.0, "cooldown ticks down in frame units")
+	_assert_equal(attack_runtime.tick_cooldown(10.0, 1.0, true), 10.0, "cooldown pauses during attack windows")
+
+	var moving_player: Variant = PlayerDataScript.new()
+	moving_player.effects["can_attack_while_moving"] = 0
+	var enemy := {"id": "gate", "position": Vector2(100, 0), "hp": 10}
+	var readiness: Dictionary = attack_runtime.can_start_attack(weapon, moving_player, [enemy], Vector2.ZERO, 0.0, Vector2.RIGHT)
+	_assert_true(not bool(readiness["can_attack"]), "attack gate blocks movement when effect disables moving attacks")
+
+	var spread_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "spread",
+		"type": "ranged",
+		"damage": 4,
+		"cooldown": 10,
+		"max_range": 200,
+		"accuracy": 0.9,
+		"projectiles": 3,
+		"projectile_spread": 0.25,
+		"projectile_speed": 1000,
+	})
+	var spread_attack: Dictionary = attack_runtime.start_attack(
+		spread_weapon,
+		PlayerDataScript.new(),
+		Vector2.ZERO,
+		0.0,
+		100.0,
+		1,
+		false,
+		{"accuracy_offset": 0.1, "projectile_spread_offsets": [-0.25, 0.0, 0.25]}
+	)
+	_assert_equal(spread_attack["projectiles"].size(), 3, "ranged attack creates one projectile state per row count")
+	_assert_approx(spread_attack["projectiles"][0]["angle"], -0.15, "projectile angle includes accuracy and spread")
+	_assert_approx(spread_attack["projectiles"][2]["angle"], 0.35, "projectile spread can offset both sides")
+	_assert_approx(spread_attack["projectiles"][0]["remaining_lifetime"], 0.3, "projectile lifetime uses range plus 100 px")
+
+	var melee_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "runtime_sweep",
+		"type": "melee",
+		"damage": 8,
+		"cooldown": 13,
+		"max_range": 150,
+		"attack_type": "sweep",
+	})
+	var windows: Dictionary = attack_runtime.attack_windows(melee_weapon, PlayerDataScript.new(), 80.0)
+	_assert_approx(windows["reach"], 150.0, "sweep distance respects weapon max range")
+	_assert_approx(windows["arc_radians"], 0.9 * PI, "sweep arc uses documented 0.9 pi side angle")
+	_assert_approx(windows["active_windows"][0][1], float(windows["total_seconds"]) * 0.5, "melee active hit window closes before return by default")
+
+	var hit_player: Variant = PlayerDataScript.new()
+	hit_player.current_health = 5
+	hit_player.add_permanent_stat("stat_elemental_damage", 3)
+	hit_player.effects["enemy_percent_damage_taken"].append(["test_source", "stat_ranged_damage", 50])
+	var hit_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "hooked",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {"stat_ranged_damage": 1.0},
+		"crit_chance": 1.0,
+		"crit_damage": 2.0,
+		"lifesteal": 1.0,
+		"burning_data": {"chance": 1.0, "damage": 2, "duration": 3, "spread": 1},
+	})
+	var hit_packet: Dictionary = attack_runtime.build_hit_packet(hit_weapon, hit_player, 7)
+	var hooked_enemy := {"id": "hooked_enemy", "position": Vector2.ZERO, "hp": 50, "max_hp": 50, "armor": 2}
+	var hit_result: Dictionary = attack_runtime.apply_hit_packet(hit_packet, hooked_enemy, hit_player, {"crit_roll": 1.0, "lifesteal_roll": 0.0, "burn_roll": 0.0})
+	_assert_true(hit_result["critical"], "crit roll uses <= weapon crit chance")
+	_assert_equal(hit_result["direct_damage"], 28, "crit and vulnerability apply before enemy armor")
+	_assert_equal(hooked_enemy["hp"], 50, "hit packet leaves enemy hp for combat runtime")
+	damage_runtime.apply_enemy_damage(hooked_enemy, int(hit_result["direct_damage"]), Vector2.LEFT, float(hit_result["knockback"]))
+	_assert_equal(hooked_enemy["hp"], 22, "combat runtime applies weapon direct damage")
+	_assert_equal(hit_player.current_health, 6, "lifesteal hook heals one hp")
+	_assert_true(hit_result["burn_applied"], "burn hook applies on successful burn roll")
+	_assert_equal(hooked_enemy["burn_data"].damage, 5, "burn damage scales with elemental damage")
+	_assert_equal(hit_result["vulnerability_hooks"].size(), 1, "vulnerability hook records matching scaling stat")
+
+	var explosive_player: Variant = PlayerDataScript.new()
+	explosive_player.add_permanent_stat("explosion_damage", 50)
+	var explosive_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "explosive",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"is_exploding": true,
+		"explosion_scale": 1.25,
+	})
+	var explosive_packet: Dictionary = attack_runtime.build_hit_packet(explosive_weapon, explosive_player, 8)
+	var explosive_enemy := {"id": "explosive_enemy", "position": Vector2(4, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var explosion_result: Dictionary = attack_runtime.apply_hit_packet(explosive_packet, explosive_enemy, explosive_player, {"explosion_roll": 0.0})
+	_assert_equal(explosive_enemy["hp"], 20, "unit-side explosion cancels direct damage")
+	_assert_equal(explosion_result["explosion"]["damage"], 15, "explosion payload keeps weapon damage with explosion bonus")
+	_assert_approx(explosion_result["explosion"]["scale"], 1.25, "explosion payload keeps row scale")
+
+	var pierce_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "piercer",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"cooldown": 10,
+		"max_range": 100,
+		"projectiles": 1,
+		"projectile_speed": 1000,
+		"piercing": 1,
+		"piercing_dmg_reduction": 0.5,
+	})
+	var pierce_attack: Dictionary = attack_runtime.start_attack(pierce_weapon, PlayerDataScript.new(), Vector2.ZERO, 0.0, 50.0, 9, false, {"accuracy_offset": 0.0, "projectile_spread_offsets": [0.0]})
+	var pierce_projectile: Dictionary = pierce_attack["projectiles"][0]
+	var p1 := {"id": "p1", "position": Vector2(10, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var p2 := {"id": "p2", "position": Vector2(20, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var p1_result: Dictionary = attack_runtime.apply_projectile_hit(pierce_projectile, p1, PlayerDataScript.new(), [p1, p2], {"crit_roll": 1.0})
+	_assert_equal(p1_result["direct_damage"], 10, "first projectile hit reports full damage")
+	damage_runtime.apply_enemy_damage(p1, int(p1_result["direct_damage"]), p1_result["knockback_origin"], float(p1_result["knockback"]))
+	_assert_equal(p1["hp"], 10, "combat runtime applies first projectile damage")
+	_assert_true(not pierce_projectile["stopped"], "projectile remains alive after available pierce")
+	_assert_equal(pierce_projectile["damage"], 5, "piercing reduces damage after hit")
+	var p2_result: Dictionary = attack_runtime.apply_projectile_hit(pierce_projectile, p2, PlayerDataScript.new(), [p1, p2], {"crit_roll": 1.0})
+	_assert_equal(p2_result["direct_damage"], 5, "pierced projectile reports reduced damage")
+	damage_runtime.apply_enemy_damage(p2, int(p2_result["direct_damage"]), p2_result["knockback_origin"], float(p2_result["knockback"]))
+	_assert_equal(p2["hp"], 15, "combat runtime applies pierced projectile damage")
+	_assert_true(pierce_projectile["stopped"], "projectile stops when no pierce remains")
+
+	var bounce_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "bouncer",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"cooldown": 10,
+		"max_range": 100,
+		"projectiles": 1,
+		"projectile_speed": 1000,
+		"piercing": 3,
+		"piercing_dmg_reduction": 0.0,
+		"bounce": 1,
+		"bounce_dmg_reduction": 0.5,
+		"knockback": 15,
+	})
+	var bounce_attack: Dictionary = attack_runtime.start_attack(bounce_weapon, PlayerDataScript.new(), Vector2.ZERO, 0.0, 50.0, 10, false, {"accuracy_offset": 0.0, "projectile_spread_offsets": [0.0]})
+	var bounce_projectile: Dictionary = bounce_attack["projectiles"][0]
+	var b1 := {"id": "b1", "position": Vector2(10, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var b2 := {"id": "b2", "position": Vector2(30, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var b1_result: Dictionary = attack_runtime.apply_projectile_hit(bounce_projectile, b1, PlayerDataScript.new(), [b1, b2], {"crit_roll": 1.0, "bounce_target_id": "b2"})
+	_assert_equal(b1_result["direct_damage"], 10, "bounce hit reports current projectile damage")
+	var b1_hit: Dictionary = damage_runtime.apply_enemy_damage(b1, int(b1_result["direct_damage"]), b1_result["knockback_origin"], float(b1_result["knockback"]))
+	_assert_equal(b1["hp"], 10, "combat runtime applies bounced projectile damage")
+	_assert_true(b1_hit["knockback_vector"] != Vector2.ZERO, "pre-bounce hit still applies projectile knockback")
+	_assert_equal(bounce_projectile["damage"], 5, "bounce reduces damage after hit")
+	_assert_equal(bounce_projectile["piercing_remaining"], 3, "bounce takes priority over piercing")
+	_assert_equal(bounce_projectile["knockback"], 0.0, "bounce clears projectile knockback")
+	_assert_approx(bounce_projectile["remaining_lifetime"], 10.0, "bounce retimes projectile to 10000 px lifetime")
+	var b2_result: Dictionary = attack_runtime.apply_projectile_hit(bounce_projectile, b2, PlayerDataScript.new(), [b1, b2], {"crit_roll": 1.0})
+	var b2_hit: Dictionary = damage_runtime.apply_enemy_damage(b2, int(b2_result["direct_damage"]), b2_result["knockback_origin"], float(b2_result["knockback"]))
+	_assert_equal(b2["hp"], 15, "combat runtime applies post-bounce reduced damage")
+	_assert_equal(b2_hit["knockback_vector"], Vector2.ZERO, "post-bounce hit keeps combat knockback zero")
 
 func _ui_flow_m4_tests() -> void:
 	var main: Node = MainScene.instantiate()
@@ -817,6 +1023,101 @@ func _presentation_m5_tests() -> void:
 	_assert_equal(AudioRulesScript.next_track(next_candidates, "a")["id"], "b", "music next track avoids immediate repeat")
 	_assert_equal(AudioRulesScript.music_volume_for_state(manifest.audio_data(), "wave_failed"), -20.0, "music failure ducking follows doc")
 	_assert_equal(AudioRulesScript.music_volume_for_state(manifest.audio_data(), "shop"), -8.0, "music shop ducking follows doc")
+
+func _progression_m6_tests() -> void:
+	_assert_equal(ChallengeRegistryScript.count(), 113, "challenge registry exposes documented 113 base challenges")
+	_assert_equal(ChallengeRegistryScript.by_id("fake_item_banned_item")["reward"], "ban_system", "ban system challenge is registered")
+	_assert_equal(ChallengeRegistryScript.storage_id("chal_evil_hat"), "chal_evil_mob", "evil hat uses documented storage id")
+	var state: Variant = ProgressionStateScript.new()
+	_assert_true(state.can_select_danger("character_well_rounded", "zone_crash_site", 0), "danger 0 default unlocked")
+	_assert_true(not state.can_select_danger("character_well_rounded", "zone_crash_site", 1), "danger 1 starts locked")
+	var result: Dictionary = state.record_run_result({
+		"won": true,
+		"danger": 0,
+		"wave": 20,
+		"character_id": "character_well_rounded",
+		"zone_id": "zone_crash_site",
+		"enemy_scaling": {"health": 1.0, "damage": 1.0, "speed": 1.0},
+		"retries": 0,
+		"bans_used": 0,
+	})
+	_assert_true(result["completed_challenges"].has("unlock_difficulty_1"), "winning danger 0 completes danger unlock")
+	_assert_true(result["completed_challenges"].has("chal_difficulty_0"), "winning danger 0 completes exact difficulty challenge")
+	_assert_true(result["completed_challenges"].has("chal_well_rounded"), "winning with a character completes character win challenge")
+	_assert_true(state.can_select_danger("character_brawler", "zone_crash_site", 1), "danger unlock is shared across characters")
+	_assert_true(state.characters_unlocked.has("character_one_arm"), "danger zero challenge unlocks one arm")
+	_assert_true(state.items_unlocked.has("item_potato"), "character win reward unlocks item")
+	var worse_result: Dictionary = state.record_run_result({
+		"won": true,
+		"danger": 0,
+		"wave": 20,
+		"character_id": "character_well_rounded",
+		"zone_id": "zone_crash_site",
+		"enemy_scaling": {"health": 1.0, "damage": 1.0, "speed": 1.0},
+		"retries": 2,
+		"bans_used": 0,
+	})
+	_assert_true(not worse_result["completed_challenges"].has("chal_difficulty_0"), "completed challenges are idempotent")
+	var info: Dictionary = state.get_difficulty_info("character_well_rounded", "zone_crash_site")
+	_assert_equal(info["best_record"]["retries"], 0, "worse retry count does not replace best record")
+	state.record_run_result({
+		"won": true,
+		"danger": 1,
+		"wave": 25,
+		"endless": true,
+		"character_id": "character_well_rounded",
+		"zone_id": "zone_crash_site",
+	})
+	info = state.get_difficulty_info("character_well_rounded", "zone_crash_site")
+	_assert_equal(info["max_endless_wave_beaten"], 25, "endless wave record updates")
+	_assert_true(state.systems_unlocked.has("ban_system"), "danger >=1 win unlocks ban system")
+
+func _save_settings_m6_tests() -> void:
+	var settings: Variant = GameSettingsScript.new()
+	_assert_equal(settings.get_value("gameplay.share_coop_loot"), true, "share coop loot default")
+	_assert_equal(settings.get_value("accessibility.enemy_scaling.health"), 1.0, "enemy scaling default")
+	settings.set_value("gameplay.play_mode", "COOP")
+	settings.set_value("accessibility.enemy_scaling.health", 0.75)
+	_assert_true(settings.is_coop_enabled(), "settings can enable coop mode")
+	var restored_settings: Variant = GameSettingsScript.from_dict(settings.to_dict())
+	_assert_equal(restored_settings.enemy_scaling_snapshot()["health"], 0.75, "settings round trip keeps nested values")
+	var service: Variant = SaveServiceScript.new("user://m6_tests")
+	var progress: Variant = ProgressionStateScript.new()
+	progress.complete_challenge("chal_hourglass")
+	_assert_true(service.save_progress(0, progress), "progress save writes")
+	_assert_true(service.save_settings(settings), "settings save writes")
+	var loaded_progress: Variant = service.load_progress(0)
+	_assert_true(loaded_progress.has_completed_challenge("chal_hourglass"), "progress save loads challenge")
+	var loaded_settings: Variant = service.load_settings()
+	_assert_equal(loaded_settings.get_value("gameplay.play_mode"), "COOP", "settings save loads gameplay value")
+	_assert_true(service.save_run(0, {"wave": 9, "danger": 2, "players": [{"character_id": "character_well_rounded"}]}), "run save writes")
+	_assert_equal(service.load_run(0)["wave"], 9, "run save loads")
+
+func _coop_m6_tests() -> void:
+	var coop: Variant = CoopStateScript.new()
+	var p1: Variant = PlayerDataScript.new()
+	var p2: Variant = PlayerDataScript.new()
+	_assert_equal(coop.add_player(p1, "character_well_rounded", "weapon_pistol"), 0, "coop adds p1")
+	_assert_equal(coop.add_player(p2, "character_brawler", "weapon_fist"), 1, "coop adds p2")
+	var distributed: Dictionary = coop.pickup_material(5)
+	_assert_equal(distributed["distribution"][0]["materials"], 3, "coop material rotates first share")
+	_assert_equal(distributed["distribution"][1]["materials"], 2, "coop material rotates second share")
+	_assert_equal(p1.materials, 3, "coop pickup credits p1 wallet")
+	_assert_equal(p2.materials, 2, "coop pickup credits p2 wallet")
+	_assert_equal(coop.assign_item_box(0, 0.0), 0, "first shared box can go to first tied queue")
+	_assert_equal(coop.assign_item_box(0, 0.0), 1, "second shared box goes to shorter queue")
+	coop.set_alive(0, false)
+	_assert_true(not coop.all_players_dead(), "one living coop player keeps wave alive")
+	coop.set_alive(1, false)
+	_assert_true(coop.all_players_dead(), "all dead ends coop wave")
+	coop.start_wave()
+	_assert_equal(coop.living_player_count(), 2, "next wave respawns all players")
+	coop.set_ready(0, true)
+	_assert_true(not coop.all_ready(), "coop waits for all go states")
+	coop.set_ready(1, true)
+	_assert_true(coop.all_ready(), "coop all ready state")
+	var context: Dictionary = coop.coop_enemy_context()
+	_assert_approx(context["enemy_health_multiplier"], 1.3, "coop context exposes enemy hp scaling")
 
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1

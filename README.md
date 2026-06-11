@@ -19,8 +19,9 @@ Current M2 slice:
 - Data-driven area 1 enemy rows needed by the 20-wave Danger 0 schedule, with gated normal enemy rows encoded from the docs.
 - Full area 1 wave 1-20 scheduler data, including common groups, composite spawn groups, danger gates, immediate wave 20 boss timing, 60 tick spawn warnings, and 3 tick spawn queue cadence.
 - Combat helpers for weapon resolution, enemy stat scaling, targeting, material drop chance, pickup radius, and player iframe timing.
+- Weapon attack runtime for cooldown gating, attack duration windows, hit packet construction, crit, lifesteal, burn/vulnerability hook records, explosion conversion, projectile spread/lifetime, piercing, and bounce.
 - M2C combat runtime for player damage intake, armor/dodge/iframes, enemy knockback, material drops, pickup attraction, XP/material collection, timer-based wave cleanup, and starter-subset win/loss state.
-- Main scene now consumes the M2 data and runtime loop instead of hard-coded weapon/enemy numbers.
+- Main scene now consumes the M2 data, shared weapon attack runtime, and combat runtime loop instead of hard-coded weapon/enemy numbers.
 
 Current M3 data import:
 
@@ -41,6 +42,14 @@ Current M5 slice:
 - Main scene consumes the M5 presentation rules for weighted ground tiles, material variants, weapon offsets, flash, shake, floating damage text, and audio request throttling.
 - Tests cover representative asset audits, audio pitch/rate limiting, 11-track music queue behavior, and ground tile weighting.
 - Web export now uses selected runtime resources instead of bundling the full devkit tree.
+
+Current M6 backend slice:
+
+- Progression state for unlocks, difficulty records, challenge completion, 113 challenge registry entries, and win/endless record updates.
+- V3-style local save service for `save_v3_<slot>.json`, `run_v3_<slot>.json`, `settings.json`, atomic temp writes, and rotating progress backups.
+- Settings defaults for documented audio/video/gameplay/accessibility options that directly affect backend decisions.
+- Co-op state helper for player join slots, shared material rotation, shared item box assignment, death/ready state, and per-player shop state creation.
+- Extended danger, endless, and co-op formulas with headless coverage.
 
 ## Run Locally
 
