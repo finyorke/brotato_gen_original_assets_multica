@@ -35,6 +35,13 @@ Current M3B backend slice:
 - Level-up option generation with documented tier overrides and upgrade values for effect keys already present in the M1 dictionary.
 - Headless tests for shop probabilities, pricing, reroll/free reroll, locking, combining, recycling, XP/harvesting rewards, crates, and consumables.
 
+Current M5 slice:
+
+- M5 asset manifest built from the seven asset mapping docs, covering player, starter weapons, area 1 enemies, materials, ground themes, tier colors, VFX, audio events, and music.
+- Main scene consumes the M5 presentation rules for weighted ground tiles, material variants, weapon offsets, flash, shake, floating damage text, and audio request throttling.
+- Tests cover representative asset audits, audio pitch/rate limiting, 11-track music queue behavior, and ground tile weighting.
+- Web export now uses selected runtime resources instead of bundling the full devkit tree.
+
 ## Run Locally
 
 ```powershell
