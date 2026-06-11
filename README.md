@@ -43,6 +43,14 @@ Current M5 slice:
 - Tests cover representative asset audits, audio pitch/rate limiting, 11-track music queue behavior, and ground tile weighting.
 - Web export now uses selected runtime resources instead of bundling the full devkit tree.
 
+Current M6 backend slice:
+
+- Progression state for unlocks, difficulty records, challenge completion, 113 challenge registry entries, and win/endless record updates.
+- V3-style local save service for `save_v3_<slot>.json`, `run_v3_<slot>.json`, `settings.json`, atomic temp writes, and rotating progress backups.
+- Settings defaults for documented audio/video/gameplay/accessibility options that directly affect backend decisions.
+- Co-op state helper for player join slots, shared material rotation, shared item box assignment, death/ready state, and per-player shop state creation.
+- Extended danger, endless, and co-op formulas with headless coverage.
+
 ## Run Locally
 
 ```powershell

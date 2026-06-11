@@ -113,27 +113,74 @@ func recycle_value(shop_price_value: int, base_value: int, recycling_gains_perce
 	var rate: float = clamp(0.25 + recycling_gains_percent / 100.0, 0.01, 1.0)
 	return mini(shop_price_value, maxi(1, floori(float(shop_price_value) * rate)))
 
-func enemy_hp(base_hp: float, hp_per_wave: float, wave: int, enemy_health_percent: float = 0.0, difficulty_coefficient: float = 1.0, player_count: int = 1, endless_factor: float = 0.0) -> int:
-	var coop_multiplier := 1.0 + 0.3 * float(maxi(1, player_count) - 1)
-	var endless_multiplier := 1.0 + endless_factor
-	return roundi((base_hp + hp_per_wave * float(wave - 1)) * (1.0 + enemy_health_percent / 100.0) * difficulty_coefficient * coop_multiplier * endless_multiplier)
+func enemy_hp(base_hp: float, hp_per_wave: float, wave: int, enemy_health_percent: float = 0.0, difficulty_coefficient: float = 1.0, player_count: int = 1, endless_factor: float = 0.0, average_curse: float = 0.0, accessibility: float = 1.0) -> int:
+	return roundi(
+		(base_hp + hp_per_wave * float(wave - 1))
+		* (1.0 + enemy_health_percent / 100.0)
+		* max(0.01, difficulty_coefficient)
+		* max(0.01, accessibility)
+		* coop_enemy_health_multiplier(player_count)
+		* endless_hp_multiplier(endless_factor, average_curse)
+	)
 
-func enemy_damage(base_damage: float, damage_per_wave: float, wave: int, enemy_damage_percent: float = 0.0, difficulty_coefficient: float = 1.0, endless_factor: float = 0.0) -> int:
-	var endless_multiplier := 1.0 + endless_factor
-	return maxi(1, roundi((base_damage + damage_per_wave * float(wave - 1)) * (1.0 + enemy_damage_percent / 100.0) * difficulty_coefficient * endless_multiplier))
+func enemy_damage(base_damage: float, damage_per_wave: float, wave: int, enemy_damage_percent: float = 0.0, difficulty_coefficient: float = 1.0, endless_factor: float = 0.0, player_count: int = 1, average_curse: float = 0.0, accessibility: float = 1.0) -> int:
+	return maxi(1, roundi(
+		(base_damage + damage_per_wave * float(wave - 1))
+		* (1.0 + enemy_damage_percent / 100.0)
+		* max(0.01, difficulty_coefficient)
+		* max(0.01, accessibility)
+		* coop_enemy_damage_multiplier(player_count)
+		* endless_damage_multiplier(endless_factor, average_curse)
+	))
 
 func enemy_armor(base_armor: float, armor_per_wave: float, wave: int, armor_percent_modifier: float = 0.0) -> int:
 	return roundi((base_armor + armor_per_wave * float(wave - 1)) * (1.0 + armor_percent_modifier / 100.0))
 
 func danger_enemy_stat_multiplier(danger: int) -> float:
-	match danger:
+	return 1.0 + float(danger_effects(danger).get("danger_enemy_health", 0)) / 100.0
+
+func danger_effects(danger: int) -> Dictionary:
+	match clampi(danger, 0, 10):
 		3:
-			return 1.12
+			return {"danger_enemy_health": 12, "danger_enemy_damage": 12, "elite_events": 1, "double_boss": 0}
 		4:
-			return 1.26
+			return {"danger_enemy_health": 26, "danger_enemy_damage": 26, "elite_events": 3, "double_boss": 0}
 		5:
-			return 1.40
-	return 1.0
+			return {"danger_enemy_health": 40, "danger_enemy_damage": 40, "elite_events": 3, "double_boss": 1}
+		2:
+			return {"danger_enemy_health": 0, "danger_enemy_damage": 0, "elite_events": 1, "double_boss": 0}
+		1:
+			return {"danger_enemy_health": 0, "danger_enemy_damage": 0, "elite_events": 0, "double_boss": 0}
+	return {"danger_enemy_health": 0, "danger_enemy_damage": 0, "elite_events": 0, "double_boss": 0}
+
+func danger_enemy_damage_multiplier(danger: int) -> float:
+	return 1.0 + float(danger_effects(danger).get("danger_enemy_damage", 0)) / 100.0
+
+func danger_elite_event_count(danger: int) -> int:
+	return int(danger_effects(danger).get("elite_events", 0))
+
+func danger_boss_count(danger: int) -> int:
+	return 2 if int(danger_effects(danger).get("double_boss", 0)) > 0 else 1
+
+func coop_enemy_count_multiplier(player_count: int) -> float:
+	return 1.0 + 0.3 * float(maxi(1, player_count) - 1)
+
+func coop_enemy_health_multiplier(player_count: int) -> float:
+	return 1.0 + 0.3 * float(maxi(1, player_count) - 1)
+
+func coop_enemy_damage_multiplier(player_count: int) -> float:
+	return 1.0 + 0.08 * float(maxi(1, player_count) - 1)
+
+func coop_material_compensation_factor(player_count: int) -> float:
+	var count := maxi(1, player_count)
+	if count <= 1:
+		return 0.0
+	var enemy_multiplier := coop_enemy_count_multiplier(count)
+	return ((float(count) / enemy_multiplier) - 1.0) / float(count - 1) * 0.8
+
+func coop_material_value_multiplier(player_count: int) -> float:
+	var count := maxi(1, player_count)
+	return 1.0 + coop_material_compensation_factor(count) * float(count - 1)
 
 func enemy_material_drop_chance(wave: int, is_horde_wave: bool = false) -> float:
 	var chance: float = 1.0 if wave < 5 else max(0.5, 1.0 - float(wave) * 0.015)
@@ -172,6 +219,38 @@ func endless_factor(wave: int) -> float:
 	var endless_wave: int = max(0, wave - 20)
 	var endless_mult: float = 2.0 + max(0.0, float(wave - 35) * 0.2)
 	return float(endless_wave * (endless_wave + 1)) / 2.0 / 100.0 * endless_mult
+
+func endless_hp_multiplier(endless_factor_value: float, average_curse: float = 0.0) -> float:
+	return 1.0 + endless_factor_value * 2.25 * (1.0 + sqrt(max(0.0, average_curse)) / 10.0)
+
+func endless_damage_multiplier(endless_factor_value: float, average_curse: float = 0.0) -> float:
+	return 1.0 + endless_factor_value * (1.0 + sqrt(max(0.0, average_curse)) / 25.0)
+
+func endless_speed_multiplier(endless_factor_value: float) -> float:
+	return 1.0 + min(1.75, endless_factor_value / 13.33)
+
+func enemy_speed(base_speed: float, enemy_speed_percent: float = 0.0, accessibility: float = 1.0, endless_factor_value: float = 0.0) -> int:
+	return roundi(base_speed * (1.0 + enemy_speed_percent / 100.0) * max(0.01, accessibility) * endless_speed_multiplier(endless_factor_value))
+
+func endless_wave_index(wave: int) -> int:
+	var index := (maxi(1, wave) - 1) % 20
+	if index < 10:
+		index += 10
+	return index
+
+func endless_max_enemies(base_max_enemies: int, wave: int) -> int:
+	if wave <= 20:
+		return base_max_enemies
+	var index := endless_wave_index(wave)
+	return roundi(float(base_max_enemies) * (1.25 + float(index) * 0.01))
+
+func endless_extra_group_count(wave: int) -> int:
+	if wave <= 20:
+		return 0
+	return floori(float(wave) / 10.0 * 2.0)
+
+func is_endless_boss_wave(wave: int) -> bool:
+	return wave > 20 and wave % 10 == 0
 
 func harvest_value(harvesting_stat: float, living_enemies: int = 0, pacifist_percent: float = 0.0, living_trees: int = 0, cryptid: int = 0, materials_per_living_enemy: int = 0, charmed_enemy_materials: int = 0) -> int:
 	return roundi(harvesting_stat) + roundi(float(living_enemies) * pacifist_percent / 100.0) + living_trees * cryptid + living_enemies * materials_per_living_enemy + charmed_enemy_materials
