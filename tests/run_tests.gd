@@ -33,6 +33,7 @@ func _run_all() -> void:
 	_formula_tests()
 	_burn_tests()
 	_combat_m2_tests()
+	_qa_coverage_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -282,6 +283,30 @@ func _combat_m2_tests() -> void:
 	for i in 3:
 		queue_materialized = queue_scheduler.physics_tick()
 	_assert_equal(queue_materialized.size(), 2, "spawn queue drains up to two when backlog exceeds 100")
+
+func _qa_coverage_tests() -> void:
+	var matrix_text := FileAccess.get_file_as_string("res://docs/QA_COVERAGE_MATRIX.md")
+	_assert_true(not matrix_text.is_empty(), "QA coverage matrix exists")
+	for i in range(1, 13):
+		_assert_true(matrix_text.contains("DOC-%02d" % i), "QA matrix lists DOC-%02d" % i)
+	for i in range(1, 8):
+		_assert_true(matrix_text.contains("ASSET-%02d" % i), "QA matrix lists ASSET-%02d" % i)
+	var critical_rows := 0
+	for raw_line in matrix_text.split("\n"):
+		var line := String(raw_line).strip_edges()
+		if line.begins_with("| CT-"):
+			critical_rows += 1
+	_assert_true(critical_rows >= 30, "QA matrix lists at least 30 critical formula/behavior rows")
+	_assert_true(matrix_text.contains("Implemented"), "QA matrix records implemented status")
+	_assert_true(matrix_text.contains("Pending"), "QA matrix records pending status")
+	_assert_true(matrix_text.contains("Ambiguous"), "QA matrix records ambiguous status")
+	_assert_true(matrix_text.contains("OPEN_QUESTIONS.md"), "QA matrix links open questions")
+	var question_text := FileAccess.get_file_as_string("res://OPEN_QUESTIONS.md")
+	_assert_true(question_text.contains("OQ-001"), "open questions use stable OQ-001 id")
+	_assert_true(question_text.contains("OQ-002"), "open questions use stable OQ-002 id")
+	_assert_true(question_text.contains("OQ-003"), "open questions use stable OQ-003 id")
+	_assert_true(question_text.contains("OQ-004"), "open questions use stable OQ-004 id")
+	_assert_true(not question_text.contains("Target Repository Sync"), "open questions omit stale platform sync note")
 
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
