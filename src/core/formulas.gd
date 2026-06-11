@@ -28,6 +28,12 @@ func weapon_cooldown(base_cooldown_ticks: float, attack_speed_percent: float, at
 		return max(2.0, base / (1.0 + atk_spd))
 	return max(2.0, base * (1.0 + abs(atk_spd)))
 
+func weapon_attack_duration_seconds(distance: float, attack_speed_percent: float, attack_speed_mod_percent: float = 0.0) -> float:
+	var atk_spd: float = (attack_speed_percent + attack_speed_mod_percent) / 100.0
+	var range_denominator: float = clamp(70.0 * (1.0 + atk_spd / 3.0), 70.0, 120.0)
+	var range_factor: float = max(0.0, distance / range_denominator)
+	return max(0.01, 0.2 - atk_spd / 10.0) + range_factor * 0.15
+
 func ranged_weapon_range(base_range: float, stat_range: float) -> float:
 	return max(25.0, base_range + stat_range)
 
