@@ -119,6 +119,8 @@ func get_dodge_probability() -> float:
 
 func recalculate_linked_stats(context: Dictionary = {}) -> void:
 	linked_stats.clear()
+	invalidate_cache()
+	var computed_linked_stats := {}
 	var links: Array = effects.get("stat_links", [])
 	for link in links:
 		if not (link is Array) or link.size() < 4:
@@ -132,7 +134,8 @@ func recalculate_linked_stats(context: Dictionary = {}) -> void:
 			continue
 		var actual_scaled := _get_link_source(stat_scaled, perm_stats_only, context)
 		var amount := int(nb_to_tweak * actual_scaled / nb_stat_scaled)
-		linked_stats[stat_to_tweak] = linked_stats.get(stat_to_tweak, 0) + amount
+		computed_linked_stats[stat_to_tweak] = computed_linked_stats.get(stat_to_tweak, 0) + amount
+	linked_stats = computed_linked_stats
 	invalidate_cache()
 
 func gain_xp(value: float) -> int:
@@ -146,6 +149,7 @@ func gain_xp(value: float) -> int:
 		level += 1
 		gained_levels += 1
 		add_permanent_stat("stat_max_hp", 1)
+		current_health = mini(get_max_health(), current_health + 1)
 		_apply_stat_pairs(effects.get("stats_on_level_up", []))
 	return gained_levels
 

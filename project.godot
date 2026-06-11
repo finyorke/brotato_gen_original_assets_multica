@@ -4,7 +4,7 @@ config_version=5
 
 config/name="Brotato Original Assets Multica"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.4")
+config/features=PackedStringArray("4.6")
 config/icon="res://devkit/brotato_original_devkit/asset_pack/assets/app_icons/icon.png"
 
 [display]
