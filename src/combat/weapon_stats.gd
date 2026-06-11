@@ -64,8 +64,8 @@ var _formulas: Variant = FormulasScript.new()
 
 static func from_dict(data: Dictionary):
 	var stats = load("res://src/combat/weapon_stats.gd").new()
-	stats.weapon_id = String(data.get("id", ""))
-	stats.display_name = String(data.get("name", stats.weapon_id))
+	stats.weapon_id = String(data.get("weapon_id", data.get("family_id", data.get("id", ""))))
+	stats.display_name = _display_name(data, stats.weapon_id)
 	stats.type = String(data.get("type", TYPE_RANGED))
 	stats.tier = int(data.get("tier", 0))
 	stats.value = int(data.get("value", 0))
@@ -107,9 +107,22 @@ static func from_dict(data: Dictionary):
 	stats.bounce_on_crit = int(data.get("bounce_on_crit", 0))
 	stats.burning_data = data.get("burning_data", {}).duplicate(true)
 	stats.vulnerability_effects = data.get("vulnerability_effects", data.get("enemy_percent_damage_taken", [])).duplicate(true)
-	stats.texture_path = String(data.get("texture", ""))
-	stats.icon_path = String(data.get("icon", ""))
+	var asset_refs: Dictionary = data.get("asset_refs", {})
+	stats.texture_path = String(data.get("texture", asset_refs.get("texture", "")))
+	stats.icon_path = String(data.get("icon", asset_refs.get("icon", "")))
 	return stats
+
+static func _display_name(data: Dictionary, fallback: String) -> String:
+	var value: Variant = data.get("name", fallback)
+	var base_name := fallback
+	if value is Dictionary:
+		base_name = String(value.get("en", value.get("zh", fallback)))
+	else:
+		base_name = String(value)
+	var tier_name := String(data.get("tier_name", ""))
+	if tier_name.is_empty() or base_name.ends_with(" " + tier_name):
+		return base_name
+	return "%s %s" % [base_name, tier_name]
 
 func resolved_damage(player: Variant, set_bonus_percent: float = 0.0) -> int:
 	return _formulas.weapon_damage(base_damage, scaling_stats, player, set_bonus_percent, is_exploding)

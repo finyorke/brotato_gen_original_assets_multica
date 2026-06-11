@@ -1,29 +1,31 @@
 class_name EconomyCatalog
 extends RefCounted
 
+const EffectEntryScript = preload("res://src/core/effect_entry.gd")
+
 const DEFAULT_PATH := "res://data/m3/economy_fixtures.json"
+const M3_ITEMS_PATH := "res://data/m3/items.json"
+const M3_WEAPONS_PATH := "res://data/m3/weapons.json"
 
 var entries: Array = []
 var entries_by_id: Dictionary = {}
 
 static func from_json(path: String = DEFAULT_PATH):
 	var catalog = load("res://src/economy/economy_catalog.gd").new()
-	var text := FileAccess.get_file_as_string(path)
-	var parsed = JSON.parse_string(text)
-	if parsed == null:
-		push_error("Could not parse economy catalog: %s" % path)
-		return catalog
-	for section in ["items", "weapons", "consumables", "upgrades"]:
-		for row in parsed.get(section, []):
-			var entry: Dictionary = row.duplicate(true)
-			entry["kind"] = String(entry.get("kind", section.trim_suffix("s")))
-			catalog.add_entry(entry)
+	catalog._add_fixture_sections(path, ["items", "weapons", "consumables", "upgrades"])
+	return catalog
+
+static func from_m3_content(items_path: String = M3_ITEMS_PATH, weapons_path: String = M3_WEAPONS_PATH, fixture_path: String = DEFAULT_PATH):
+	var catalog = load("res://src/economy/economy_catalog.gd").new()
+	catalog._add_m3_items(items_path)
+	catalog._add_m3_weapons(weapons_path)
+	catalog._add_fixture_sections(fixture_path, ["consumables", "upgrades"])
 	return catalog
 
 func add_entry(entry: Dictionary) -> void:
 	var normalized := entry.duplicate(true)
 	normalized["id"] = String(normalized.get("id", ""))
-	normalized["name"] = String(normalized.get("name", normalized["id"]))
+	normalized["name"] = _localized_name(normalized.get("name", normalized["id"]), normalized["id"])
 	normalized["kind"] = String(normalized.get("kind", "item"))
 	normalized["tier"] = int(normalized.get("tier", 0))
 	normalized["value"] = int(normalized.get("value", 0))
@@ -32,7 +34,7 @@ func add_entry(entry: Dictionary) -> void:
 	normalized["is_lockable"] = bool(normalized.get("is_lockable", true))
 	normalized["unlocked_by_default"] = bool(normalized.get("unlocked_by_default", true))
 	normalized["tags"] = normalized.get("tags", []).duplicate(true)
-	normalized["effects"] = normalized.get("effects", []).duplicate(true)
+	normalized["effects"] = _normalized_effects(normalized.get("effects", []))
 	normalized["sets"] = normalized.get("sets", []).duplicate(true)
 	if not normalized.has("weapon_id"):
 		normalized["weapon_id"] = normalized["id"]
@@ -135,3 +137,98 @@ func _passes_soft_filters(entry: Dictionary, context: Dictionary) -> bool:
 		if not matched_tag:
 			return false
 	return true
+
+func _add_fixture_sections(path: String, sections: Array) -> void:
+	var parsed := _parse_json(path)
+	if parsed.is_empty():
+		return
+	for section in sections:
+		for row in parsed.get(section, []):
+			var entry: Dictionary = row.duplicate(true)
+			entry["kind"] = String(entry.get("kind", String(section).trim_suffix("s")))
+			add_entry(entry)
+
+func _add_m3_items(path: String) -> void:
+	var parsed := _parse_json(path)
+	for row in parsed.get("items", []):
+		var entry: Dictionary = row.duplicate(true)
+		entry["kind"] = "item"
+		entry["name"] = _localized_name(entry.get("name", entry.get("id", "")), String(entry.get("id", "")))
+		add_entry(entry)
+
+func _add_m3_weapons(path: String) -> void:
+	var parsed := _parse_json(path)
+	var variants_by_family_tier := {}
+	for row in parsed.get("variants", []):
+		var family_id := String(row.get("family_id", row.get("weapon_id", row.get("id", ""))))
+		var tier := int(row.get("tier", 0))
+		variants_by_family_tier["%s:%d" % [family_id, tier]] = row
+	for row in parsed.get("variants", []):
+		var entry: Dictionary = row.duplicate(true)
+		var family_id := String(entry.get("family_id", entry.get("weapon_id", entry.get("id", ""))))
+		var tier := int(entry.get("tier", 0))
+		entry["kind"] = "weapon"
+		entry["weapon_id"] = family_id
+		entry["name"] = _weapon_display_name(entry)
+		entry["can_be_looted"] = bool(entry.get("can_be_looted", true))
+		entry["unlocked_by_default"] = bool(entry.get("unlocked_by_default", true))
+		entry["is_lockable"] = bool(entry.get("is_lockable", true))
+		var asset_refs: Dictionary = entry.get("asset_refs", {})
+		entry["texture"] = String(entry.get("texture", asset_refs.get("texture", "")))
+		entry["icon"] = String(entry.get("icon", asset_refs.get("icon", "")))
+		var next_variant: Dictionary = variants_by_family_tier.get("%s:%d" % [family_id, tier + 1], {})
+		entry["upgrades_into"] = String(next_variant.get("id", ""))
+		add_entry(entry)
+
+func _parse_json(path: String) -> Dictionary:
+	var text := FileAccess.get_file_as_string(path)
+	var parsed = JSON.parse_string(text)
+	if parsed == null:
+		push_error("Could not parse economy catalog: %s" % path)
+		return {}
+	return parsed
+
+func _localized_name(value: Variant, fallback: String = "") -> String:
+	if value is Dictionary:
+		return String(value.get("en", value.get("zh", fallback)))
+	return String(value if value != null else fallback)
+
+func _weapon_display_name(entry: Dictionary) -> String:
+	var base_name := _localized_name(entry.get("name", entry.get("id", "")), String(entry.get("id", "")))
+	var tier_name := String(entry.get("tier_name", ""))
+	if tier_name.is_empty() or base_name.ends_with(" " + tier_name):
+		return base_name
+	return "%s %s" % [base_name, tier_name]
+
+func _normalized_effects(source_effects: Array) -> Array:
+	var result: Array = []
+	for effect in source_effects:
+		if not (effect is Dictionary):
+			continue
+		var effect_data: Dictionary = effect
+		var key := String(effect_data.get("key", ""))
+		if key.is_empty():
+			continue
+		var storage_method := _storage_method_id(effect_data.get("storage_method", EffectEntryScript.StorageMethod.SUM))
+		if storage_method < 0:
+			continue
+		var normalized := effect_data.duplicate(true)
+		normalized["storage_method"] = storage_method
+		result.append(normalized)
+	return result
+
+func _storage_method_id(value: Variant) -> int:
+	if value is int:
+		return int(value)
+	match String(value).to_upper():
+		"SUM":
+			return EffectEntryScript.StorageMethod.SUM
+		"KEY_VALUE":
+			return EffectEntryScript.StorageMethod.KEY_VALUE
+		"REPLACE":
+			return EffectEntryScript.StorageMethod.REPLACE
+		"APPEND_KEY":
+			return EffectEntryScript.StorageMethod.APPEND_KEY
+		"APPEND_KEY_VALUE":
+			return EffectEntryScript.StorageMethod.APPEND_KEY_VALUE
+	return -1

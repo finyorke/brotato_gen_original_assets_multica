@@ -247,9 +247,25 @@ func _effect_from_dict(data: Dictionary) -> Variant:
 	return EffectEntryScript.make(
 		String(data.get("key", "")),
 		data.get("value", 0),
-		int(data.get("storage_method", EffectEntryScript.StorageMethod.SUM)),
+		_storage_method_id(data.get("storage_method", EffectEntryScript.StorageMethod.SUM)),
 		String(data.get("custom_key", ""))
 	)
+
+func _storage_method_id(value: Variant) -> int:
+	if value is int:
+		return int(value)
+	match String(value).to_upper():
+		"SUM":
+			return EffectEntryScript.StorageMethod.SUM
+		"KEY_VALUE":
+			return EffectEntryScript.StorageMethod.KEY_VALUE
+		"REPLACE":
+			return EffectEntryScript.StorageMethod.REPLACE
+		"APPEND_KEY":
+			return EffectEntryScript.StorageMethod.APPEND_KEY
+		"APPEND_KEY_VALUE":
+			return EffectEntryScript.StorageMethod.APPEND_KEY_VALUE
+	return EffectEntryScript.StorageMethod.SUM
 
 func _specific_price_percent(player: Variant, id: String) -> float:
 	var total := 0.0

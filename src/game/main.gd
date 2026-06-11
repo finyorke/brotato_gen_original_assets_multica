@@ -46,7 +46,9 @@ const UPGRADE_ICON_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_p
 const WEAPON_DATA_PATH := "res://data/m2/starter_weapons.json"
 const ENEMY_DATA_PATH := "res://data/m2/area1_enemies.json"
 const WAVE_DATA_PATH := "res://data/m2/area1_waves.json"
+const CHARACTER_DATA_PATH := "res://data/m3/characters.json"
 const ASSET_MANIFEST_PATH := "res://data/m5/asset_manifest.json"
+const STARTER_WEAPON_IDS := ["weapon_pistol_1", "weapon_fist_1", "weapon_smg_1"]
 
 # Doc 11 section 4 fixes combat HUD at a 24 px edge margin.
 const HUD_MARGIN := 24
@@ -230,8 +232,8 @@ func _bootstrap() -> void:
 	randomize()
 	_load_m5_presentation()
 	_load_bitmap_assets()
+	economy_catalog = EconomyCatalogScript.from_m3_content()
 	_load_m2_data()
-	economy_catalog = EconomyCatalogScript.from_json()
 	reward_resolver = RewardResolverScript.new()
 	level_up_pool = LevelUpPoolScript.new()
 	_create_ui_roots()
@@ -330,7 +332,7 @@ func _draw() -> void:
 func start_new_run() -> void:
 	_bootstrap()
 	selected_character_id = ""
-	selected_weapon_id = "weapon_pistol"
+	selected_weapon_id = "weapon_pistol_1"
 	selected_weapon_row = {}
 	world_visible = false
 	_show_character_select()
@@ -343,11 +345,10 @@ func choose_character(character_id: String) -> void:
 func choose_weapon(weapon_id: String) -> void:
 	_bootstrap()
 	selected_weapon_id = weapon_id
-	for row in starter_weapons:
-		var weapon_row: Dictionary = row
-		if String(weapon_row.get("id", "")) == weapon_id:
-			selected_weapon_row = weapon_row.duplicate(true)
-			break
+	var resolved_weapon := _starter_weapon_entry_for_id(weapon_id)
+	if not resolved_weapon.is_empty():
+		selected_weapon_row = resolved_weapon
+		selected_weapon_id = String(resolved_weapon.get("id", weapon_id))
 	_show_danger_select()
 
 func choose_danger(danger: int) -> void:
@@ -459,6 +460,7 @@ func buy_shop_slot(index: int) -> void:
 		return
 	var result: Dictionary = current_shop.buy_slot(index, player_data, economy_catalog)
 	if bool(result.get("ok", false)):
+		_refresh_active_weapon_stats()
 		_spawn_floating_text("BUY", player_position + Vector2(0, -80), "material", true)
 	else:
 		_spawn_floating_text(String(result.get("reason", "NO")), player_position + Vector2(0, -80), "player_damage", true)
@@ -500,11 +502,15 @@ func _begin_run() -> void:
 	player_data.add_permanent_stat("stat_attack_speed", 20)
 	_apply_selected_character()
 	if selected_weapon_row.is_empty():
+		selected_weapon_row = _starter_weapon_entry_for_id(selected_weapon_id)
+	if selected_weapon_row.is_empty() and not starter_weapons.is_empty():
 		selected_weapon_row = starter_weapons[0].duplicate(true)
-		selected_weapon_id = String(selected_weapon_row.get("id", "weapon_pistol"))
-	weapon_stats = WeaponStatsScript.from_dict(selected_weapon_row)
-	weapon_texture = _safe_texture(weapon_stats.texture_path)
+	if not selected_weapon_row.is_empty():
+		selected_weapon_id = String(selected_weapon_row.get("id", selected_weapon_id))
+		weapon_stats = WeaponStatsScript.from_dict(selected_weapon_row)
+		weapon_texture = _safe_texture(weapon_stats.texture_path)
 	_grant_starting_weapon()
+	_refresh_active_weapon_stats()
 	current_wave = 1
 	performance_clears = 0
 	combat_runtime = CombatRuntimeScript.new()
@@ -1311,11 +1317,21 @@ func _load_m5_presentation() -> void:
 			material_textures.append(texture)
 
 func _load_m2_data() -> void:
-	var weapon_json: Dictionary = _load_json(WEAPON_DATA_PATH)
-	starter_weapons = weapon_json.get("weapons", [])
-	for weapon in starter_weapons:
-		var row: Dictionary = weapon
-		weapon_icon_by_id[String(row.get("id", ""))] = String(row.get("icon", ""))
+	starter_weapons.clear()
+	weapon_icon_by_id.clear()
+	if economy_catalog != null:
+		for weapon_id in STARTER_WEAPON_IDS:
+			var entry: Dictionary = economy_catalog.get_entry(String(weapon_id))
+			if entry.is_empty():
+				continue
+			starter_weapons.append(entry)
+			_register_weapon_icon(entry)
+	if starter_weapons.is_empty():
+		var weapon_json: Dictionary = _load_json(WEAPON_DATA_PATH)
+		starter_weapons = weapon_json.get("weapons", [])
+		for weapon in starter_weapons:
+			var row: Dictionary = weapon
+			_register_weapon_icon(row)
 	if starter_weapons.size() > 0:
 		selected_weapon_row = starter_weapons[0].duplicate(true)
 		weapon_stats = WeaponStatsScript.from_dict(starter_weapons[0])
@@ -1377,6 +1393,17 @@ func _viewport_size() -> Vector2:
 	)
 
 func _apply_selected_character() -> void:
+	var character_row := _character_row_for_id(selected_character_id)
+	if not character_row.is_empty():
+		player_data.wanted_tags = character_row.get("wanted_tags", []).duplicate(true)
+		player_data.banned_shop_ids = character_row.get("banned_items", []).duplicate(true)
+		for effect_data in character_row.get("effects", []):
+			var effect: Variant = _effect_from_dict(effect_data)
+			if effect != null:
+				player_data.apply_effect(effect)
+		for item_id in character_row.get("starting_items", []):
+			_grant_item(economy_catalog.get_entry(String(item_id)))
+		return
 	for character in CHARACTER_OPTIONS:
 		var data: Dictionary = character
 		if String(data.get("id", "")) != selected_character_id:
@@ -1386,17 +1413,9 @@ func _apply_selected_character() -> void:
 		return
 
 func _grant_starting_weapon() -> void:
-	var economy_id := ""
-	match selected_weapon_id:
-		"weapon_pistol":
-			economy_id = "weapon_pistol_t1"
-		"weapon_fist":
-			economy_id = "weapon_fist_t1"
-		"weapon_smg":
-			economy_id = "weapon_smg_t1"
-		_:
-			economy_id = "weapon_pistol_t1"
-	var entry: Dictionary = economy_catalog.get_entry(economy_id)
+	var entry: Dictionary = selected_weapon_row.duplicate(true)
+	if entry.is_empty():
+		entry = _starter_weapon_entry_for_id(selected_weapon_id)
 	if not entry.is_empty():
 		player_data.add_weapon(entry)
 
@@ -1405,13 +1424,99 @@ func _grant_item(entry: Dictionary) -> void:
 		return
 	player_data.add_item(entry)
 	for effect_data in entry.get("effects", []):
-		var data: Dictionary = effect_data
-		player_data.apply_effect(EffectEntryScript.make(
-			String(data.get("key", "")),
-			data.get("value", 0),
-			int(data.get("storage_method", EffectEntryScript.StorageMethod.SUM)),
-			String(data.get("custom_key", ""))
-		))
+		var effect: Variant = _effect_from_dict(effect_data)
+		if effect != null:
+			player_data.apply_effect(effect)
+
+func _starter_weapon_entry_for_id(weapon_id: String) -> Dictionary:
+	for row in starter_weapons:
+		var weapon_row: Dictionary = row
+		if String(weapon_row.get("id", "")) == weapon_id or String(weapon_row.get("weapon_id", "")) == weapon_id:
+			return weapon_row.duplicate(true)
+	if economy_catalog == null:
+		return {}
+	var entry: Dictionary = economy_catalog.get_entry(weapon_id)
+	if not entry.is_empty():
+		return entry
+	if not weapon_id.ends_with("_1"):
+		return economy_catalog.get_entry("%s_1" % weapon_id)
+	return {}
+
+func _refresh_active_weapon_stats() -> void:
+	var weapon_entry := _best_inventory_weapon()
+	if weapon_entry.is_empty():
+		return
+	weapon_stats = WeaponStatsScript.from_dict(weapon_entry)
+	weapon_texture = _safe_texture(weapon_stats.texture_path)
+	weapon_cooldown_ticks = min(weapon_cooldown_ticks, weapon_stats.resolved_cooldown_ticks(player_data))
+
+func _best_inventory_weapon() -> Dictionary:
+	if player_data == null:
+		return {}
+	var best: Dictionary = {}
+	for weapon in player_data.weapons:
+		var weapon_data: Dictionary = weapon
+		if best.is_empty():
+			best = weapon_data
+			continue
+		if int(weapon_data.get("tier", 0)) > int(best.get("tier", 0)):
+			best = weapon_data
+		elif int(weapon_data.get("tier", 0)) == int(best.get("tier", 0)) and int(weapon_data.get("value", 0)) > int(best.get("value", 0)):
+			best = weapon_data
+	return best.duplicate(true)
+
+func _character_row_for_id(character_id: String) -> Dictionary:
+	var lookup_id := character_id
+	if lookup_id.is_empty():
+		lookup_id = "well_rounded"
+	if not lookup_id.begins_with("character_"):
+		lookup_id = "character_%s" % lookup_id
+	var parsed: Dictionary = _load_json(CHARACTER_DATA_PATH)
+	for row in parsed.get("characters", []):
+		var character: Dictionary = row
+		if String(character.get("id", "")) == lookup_id:
+			return character
+	return {}
+
+func _effect_from_dict(data: Dictionary) -> Variant:
+	var key := String(data.get("key", ""))
+	if key.is_empty():
+		return null
+	var storage_method := _storage_method_id(data.get("storage_method", EffectEntryScript.StorageMethod.SUM))
+	if storage_method < 0:
+		return null
+	return EffectEntryScript.make(
+		key,
+		data.get("value", 0),
+		storage_method,
+		String(data.get("custom_key", ""))
+	)
+
+func _storage_method_id(value: Variant) -> int:
+	if value is int:
+		return int(value)
+	match String(value).to_upper():
+		"SUM":
+			return EffectEntryScript.StorageMethod.SUM
+		"KEY_VALUE":
+			return EffectEntryScript.StorageMethod.KEY_VALUE
+		"REPLACE":
+			return EffectEntryScript.StorageMethod.REPLACE
+		"APPEND_KEY":
+			return EffectEntryScript.StorageMethod.APPEND_KEY
+		"APPEND_KEY_VALUE":
+			return EffectEntryScript.StorageMethod.APPEND_KEY_VALUE
+	return -1
+
+func _register_weapon_icon(entry: Dictionary) -> void:
+	var icon_path := String(entry.get("icon", ""))
+	if icon_path.is_empty():
+		var asset_refs: Dictionary = entry.get("asset_refs", {})
+		icon_path = String(asset_refs.get("icon", ""))
+	if icon_path.is_empty():
+		return
+	weapon_icon_by_id[String(entry.get("id", ""))] = icon_path
+	weapon_icon_by_id[String(entry.get("weapon_id", entry.get("family_id", "")))] = icon_path
 
 func _generate_level_options() -> void:
 	current_level_options = level_up_pool.generate_options(maxi(1, player_data.level), player_data, last_level_option_ids)
@@ -1755,6 +1860,13 @@ func _tier_color(tier: int) -> Color:
 
 func _icon_for_entry(entry: Dictionary) -> String:
 	var id := String(entry.get("id", ""))
+	var icon_path := String(entry.get("icon", ""))
+	if not icon_path.is_empty():
+		return icon_path
+	var asset_refs: Dictionary = entry.get("asset_refs", {})
+	icon_path = String(asset_refs.get("icon", ""))
+	if not icon_path.is_empty():
+		return icon_path
 	if ITEM_ICON_BY_ID.has(id):
 		return String(ITEM_ICON_BY_ID[id])
 	if String(entry.get("kind", "")) == "weapon":
