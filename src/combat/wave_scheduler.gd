@@ -5,7 +5,6 @@ const FormulasScript = preload("res://src/core/formulas.gd")
 
 const WARNING_TICKS := 60
 const SPAWN_QUEUE_TICK_INTERVAL := 3
-const PLAYER_WARNING_RADIUS := 72.0
 
 var wave_number: int = 1
 var duration_seconds: float = 20.0
@@ -46,7 +45,7 @@ func enqueue_warning(request: Dictionary, position: Vector2) -> void:
 	warning["remaining_ticks"] = WARNING_TICKS
 	warning_queue.append(warning)
 
-func physics_tick(player_position: Variant = null) -> Array:
+func physics_tick(player_position: Variant = null, relocate_spawn_position: Callable = Callable()) -> Array:
 	var materialized: Array = []
 	for warning in warning_queue.duplicate():
 		var warning_data: Dictionary = warning
@@ -54,14 +53,20 @@ func physics_tick(player_position: Variant = null) -> Array:
 		if int(warning_data["remaining_ticks"]) > 0:
 			continue
 		var warning_position: Vector2 = warning_data["position"]
-		if player_position != null and warning_position.distance_to(player_position) <= PLAYER_WARNING_RADIUS:
+		if _player_blocks_warning(warning_position, player_position):
+			if relocate_spawn_position.is_valid():
+				warning_data["position"] = relocate_spawn_position.call(String(warning_data.get("spawn_area", "full")))
 			warning_data["remaining_ticks"] = WARNING_TICKS
 			continue
 		warning_queue.erase(warning)
 		spawn_queue.append(warning_data)
 	_spawn_queue_tick += 1
 	if _spawn_queue_tick % SPAWN_QUEUE_TICK_INTERVAL == 0 and not spawn_queue.is_empty():
-		materialized.append(spawn_queue.pop_front())
+		var dequeue_count := _spawn_queue_dequeue_count()
+		for i in dequeue_count:
+			if spawn_queue.is_empty():
+				break
+			materialized.append(spawn_queue.pop_front())
 	return materialized
 
 func active_warning_count() -> int:
@@ -72,8 +77,8 @@ func pending_spawn_count() -> int:
 
 func _process_second(second: int, danger: int, current_enemy_count: int, player_count: int, number_of_enemies_percent: float) -> Array:
 	var requests: Array = []
-	if current_enemy_count >= _enemy_cap(player_count):
-		return requests
+	var enemy_cap := _enemy_cap(player_count)
+	var projected_enemy_count := current_enemy_count
 	for i in groups.size():
 		var group: Dictionary = groups[i]
 		if danger < int(group.get("min_danger", 0)):
@@ -85,14 +90,16 @@ func _process_second(second: int, danger: int, current_enemy_count: int, player_
 			int(group.get("count_max", 1)),
 			float(group.get("unit_spawn_rate", 1.0)),
 			player_count,
-			number_of_enemies_percent,
-			1.0
+			number_of_enemies_percent
 		)
 		if count > 0:
+			var cull_count := mini(projected_enemy_count, maxi(0, projected_enemy_count + count - enemy_cap))
+			projected_enemy_count = projected_enemy_count - cull_count + count
 			requests.append({
 				"enemy_id": String(group.get("enemy_id", "")),
 				"count": count,
 				"spawn_area": String(group.get("spawn_area", "full")),
+				"performance_cull": cull_count,
 			})
 		_schedule_next_group_time(group)
 		groups[i] = group
@@ -111,3 +118,14 @@ func _schedule_next_group_time(group: Dictionary) -> void:
 
 func _enemy_cap(player_count: int) -> int:
 	return int(max_enemies + float(maxi(1, player_count) - 1) * float(max_enemies) / 8.0)
+
+func _player_blocks_warning(warning_position: Vector2, player_position: Variant) -> bool:
+	if not player_position is Vector2:
+		return false
+	var player_vec: Vector2 = player_position
+	return warning_position.is_equal_approx(player_vec)
+
+func _spawn_queue_dequeue_count() -> int:
+	if spawn_queue.size() <= 100:
+		return 1
+	return int(clamp(float(spawn_queue.size() - 100) / 10.0, 1.0, 2.0))

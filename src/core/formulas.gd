@@ -102,13 +102,24 @@ func enemy_material_drop_chance(wave: int, is_horde_wave: bool = false) -> float
 		chance *= 0.65
 	return chance
 
-func spawn_count(min_count: int, max_count: int, unit_spawn_rate: float = 1.0, player_count: int = 1, number_of_enemies_percent: float = 0.0, fractional_roll: float = 1.0) -> int:
-	var base_count: float = float(min_count if min_count == max_count else max_count)
+func spawn_count(min_count: int, max_count: int, unit_spawn_rate: float = 1.0, player_count: int = 1, number_of_enemies_percent: float = 0.0, fractional_roll: float = -1.0, number_roll: Variant = null) -> int:
+	var min_number := mini(min_count, max_count)
+	var max_number := maxi(min_count, max_count)
+	var rolled_number: int
+	if min_number == max_number:
+		rolled_number = min_number
+	elif number_roll == null:
+		rolled_number = randi_range(min_number, max_number)
+	else:
+		rolled_number = clampi(int(number_roll), min_number, max_number)
+	var base_count: float = float(rolled_number)
 	var coop_multiplier: float = 1.0 + 0.3 * float(maxi(1, player_count) - 1)
 	var value: float = base_count * unit_spawn_rate * coop_multiplier * (1.0 + number_of_enemies_percent / 100.0)
 	var whole: int = floori(value)
 	var fractional: float = value - float(whole)
-	return maxi(0, whole + (1 if fractional_roll <= fractional else 0))
+	var roll := randf() if fractional_roll < 0.0 else fractional_roll
+	var fractional_bonus := 1 if fractional > 0.0 and roll <= fractional else 0
+	return maxi(0, whole + fractional_bonus)
 
 func pickup_radius(pickup_range_percent: float) -> float:
 	return max(30.0, 150.0 * (1.0 + pickup_range_percent / 100.0))

@@ -26,6 +26,7 @@ var enemy_stats_by_id: Dictionary = {}
 var enemy_textures: Dictionary = {}
 var waves_by_number: Dictionary = {}
 var weapon_texture: Texture2D
+var performance_clears: int = 0
 
 func _ready() -> void:
 	Engine.physics_ticks_per_second = 60
@@ -75,7 +76,7 @@ func _draw() -> void:
 	draw_texture_rect(PLAYER_TEXTURE, Rect2(player_position - Vector2(48, 48), Vector2(96, 96)), false)
 	if weapon_texture != null:
 		draw_texture_rect(weapon_texture, Rect2(player_position + Vector2(32, -14), Vector2(56, 28)), false)
-	draw_string(ThemeDB.fallback_font, Vector2(24, 32), "M2 combat slice | Wave %d %.1fs/%ds | Materials %d | Enemies %d" % [current_wave, wave_scheduler.elapsed_seconds, int(wave_scheduler.duration_seconds), player_data.materials, enemies.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
+	draw_string(ThemeDB.fallback_font, Vector2(24, 32), "M2 combat slice | Wave %d %.1fs/%ds | Materials %d | Enemies %d | Perf clears %d" % [current_wave, wave_scheduler.elapsed_seconds, int(wave_scheduler.duration_seconds), player_data.materials, enemies.size(), performance_clears], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color.WHITE)
 	draw_string(ThemeDB.fallback_font, Vector2(24, 56), "%s | Damage %d | Cooldown %.1f ticks | Detect %.0f px" % [weapon_stats.display_name, weapon_stats.resolved_damage(player_data), weapon_stats.resolved_cooldown_ticks(player_data), weapon_stats.detection_range(player_data)], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color(0.9, 0.95, 0.9))
 
 func _update_player(delta: float) -> void:
@@ -142,11 +143,12 @@ func _update_materials(delta: float) -> void:
 func _update_wave(delta: float) -> void:
 	var requests: Array = wave_scheduler.advance(delta, current_danger, enemies.size())
 	for request in requests:
+		_performance_cull_enemies(int(request.get("performance_cull", 0)))
 		for i in int(request.get("count", 1)):
 			var single_request: Dictionary = request.duplicate(true)
 			single_request["count"] = 1
 			wave_scheduler.enqueue_warning(single_request, _random_spawn_position(String(request.get("spawn_area", "full"))))
-	var materialized: Array = wave_scheduler.physics_tick(player_position)
+	var materialized: Array = wave_scheduler.physics_tick(player_position, Callable(self, "_random_spawn_position"))
 	for request in materialized:
 		_spawn_enemy_from_request(request)
 	if wave_scheduler.elapsed_seconds >= wave_scheduler.duration_seconds and enemies.is_empty() and wave_scheduler.active_warning_count() == 0 and wave_scheduler.pending_spawn_count() == 0 and current_wave < _highest_wave_number():
@@ -168,6 +170,22 @@ func _drop_material(pos: Vector2, value: int) -> void:
 		"value": value,
 		"flight_time": 0.0,
 	})
+
+func _performance_cull_enemies(count: int) -> void:
+	for i in maxi(0, count):
+		if enemies.is_empty():
+			return
+		enemies.remove_at(_random_performance_cull_index())
+		performance_clears += 1
+
+func _random_performance_cull_index() -> int:
+	var priority_indexes: Array = []
+	for i in enemies.size():
+		if bool(enemies[i].get("priority_clear", false)):
+			priority_indexes.append(i)
+	if not priority_indexes.is_empty():
+		return int(priority_indexes[randi() % priority_indexes.size()])
+	return randi() % enemies.size()
 
 func _random_spawn_position(area: String) -> Vector2:
 	var viewport_size: Vector2 = get_viewport_rect().size

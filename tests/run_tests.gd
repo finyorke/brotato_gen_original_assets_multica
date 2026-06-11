@@ -171,9 +171,11 @@ func _formula_tests() -> void:
 	_assert_equal(formulas.danger_enemy_stat_multiplier(5), 1.40, "danger 5 enemy multiplier")
 	_assert_approx(formulas.enemy_material_drop_chance(20), 0.7, "enemy material drop after wave 5")
 	_assert_approx(formulas.enemy_material_drop_chance(20, true), 0.455, "horde wave material drop penalty")
-	_assert_equal(formulas.spawn_count(4, 5, 1.0, 1, 0, 1.0), 5, "spawn count uses documented max range row for deterministic tests")
-	_assert_equal(formulas.spawn_count(1, 1, 0.33, 1, 0, 0.2), 1, "spawn count fractional roll can add one")
-	_assert_equal(formulas.spawn_count(1, 1, 0.33, 1, 0, 0.9), 0, "spawn count fractional roll can skip")
+	_assert_equal(formulas.spawn_count(4, 5, 1.0, 1, 0, 1.0, 4), 4, "spawn count can roll the documented min")
+	_assert_equal(formulas.spawn_count(4, 5, 1.0, 1, 0, 1.0, 5), 5, "spawn count can roll the documented max")
+	_assert_equal(formulas.spawn_count(4, 5, 1.0, 1, 0, 0.0, 4), 4, "spawn count does not add a fractional enemy when there is no fraction")
+	_assert_equal(formulas.spawn_count(1, 1, 0.33, 1, 0, 0.2, 1), 1, "spawn count fractional roll can add one")
+	_assert_equal(formulas.spawn_count(1, 1, 0.33, 1, 0, 0.9, 1), 0, "spawn count fractional roll can skip")
 	_assert_equal(formulas.pickup_radius(0), 150.0, "pickup radius base")
 	_assert_equal(formulas.pickup_radius(-90), 30.0, "pickup radius minimum")
 	_assert_equal(formulas.player_iframe_seconds(2, 10), 0.4, "player iframe full clamp")
@@ -250,7 +252,7 @@ func _combat_m2_tests() -> void:
 	var requests: Array = scheduler.advance(0.01, 0, 0)
 	_assert_equal(requests.size(), 1, "wave scheduler emits first group at t1")
 	_assert_equal(requests[0]["enemy_id"], "baby_alien", "wave scheduler request enemy id")
-	_assert_equal(requests[0]["count"], 5, "wave scheduler request count")
+	_assert_true(int(requests[0]["count"]) >= 4 and int(requests[0]["count"]) <= 5, "wave scheduler request count uses min-max roll")
 	scheduler.enqueue_warning(requests[0], Vector2(300, 300))
 	for i in 59:
 		_assert_equal(scheduler.physics_tick().size(), 0, "spawn warning has not materialized before 60 ticks")
@@ -259,8 +261,27 @@ func _combat_m2_tests() -> void:
 	_assert_equal(materialized[0]["enemy_id"], "baby_alien", "materialized warning keeps enemy id")
 	scheduler.enqueue_warning({"enemy_id": "baby_alien", "count": 1}, Vector2.ZERO)
 	for i in 60:
-		_assert_equal(scheduler.physics_tick(Vector2.ZERO).size(), 0, "spawn warning resets while overlapping player")
+		_assert_equal(scheduler.physics_tick(Vector2.ZERO, func(_area: String) -> Vector2: return Vector2(100, 100)).size(), 0, "spawn warning relocates and resets while overlapping player")
 	_assert_equal(scheduler.active_warning_count(), 1, "overlapping warning remains active")
+	_assert_equal(scheduler.warning_queue[0]["position"], Vector2(100, 100), "overlapping warning moves to a new spawn point")
+	for i in 59:
+		_assert_equal(scheduler.physics_tick(Vector2.ZERO).size(), 0, "relocated warning waits through its reset timer")
+	var relocated: Array = scheduler.physics_tick(Vector2.ZERO)
+	_assert_equal(relocated.size(), 1, "relocated warning materializes after the reset timer")
+
+	var capped_scheduler: Variant = WaveSchedulerScript.from_dict(wave_json["waves"][0])
+	capped_scheduler.groups[0]["count_min"] = 5
+	capped_scheduler.groups[0]["count_max"] = 5
+	var capped_requests: Array = capped_scheduler.advance(1.0, 0, 100)
+	_assert_equal(capped_requests.size(), 1, "wave scheduler still emits requests at enemy cap")
+	_assert_equal(capped_requests[0]["performance_cull"], 5, "wave scheduler asks runtime to cull over-cap enemies")
+	var queue_scheduler: Variant = WaveSchedulerScript.from_dict(wave_json["waves"][0])
+	for i in 121:
+		queue_scheduler.spawn_queue.append({"enemy_id": "baby_alien", "count": 1})
+	var queue_materialized: Array = []
+	for i in 3:
+		queue_materialized = queue_scheduler.physics_tick()
+	_assert_equal(queue_materialized.size(), 2, "spawn queue drains up to two when backlog exceeds 100")
 
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
