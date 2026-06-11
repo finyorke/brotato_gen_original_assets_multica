@@ -1,0 +1,160 @@
+{
+  "source": "devkit game mechanics chapters 03, 04, 05; fixture subset until full M3A content data lands.",
+  "items": [
+    {
+      "id": "item_coupon",
+      "name": "Coupon",
+      "kind": "item",
+      "tier": 0,
+      "value": 15,
+      "max_nb": 5,
+      "tags": ["economy"],
+      "effects": [{"key": "items_price", "value": -5}]
+    },
+    {
+      "id": "item_fertilizer",
+      "name": "Fertilizer",
+      "kind": "item",
+      "tier": 0,
+      "value": 15,
+      "max_nb": -1,
+      "tags": ["stat_harvesting"],
+      "effects": [{"key": "stat_harvesting", "value": 8}, {"key": "stat_melee_damage", "value": -1}]
+    },
+    {
+      "id": "item_recycling_machine",
+      "name": "Recycling Machine",
+      "kind": "item",
+      "tier": 1,
+      "value": 35,
+      "max_nb": 1,
+      "tags": ["economy"],
+      "effects": [{"key": "recycling_gains", "value": 35}]
+    },
+    {
+      "id": "item_dangerous_bunny",
+      "name": "Dangerous Bunny",
+      "kind": "item",
+      "tier": 1,
+      "value": 30,
+      "max_nb": 3,
+      "tags": ["economy"],
+      "effects": [{"key": "free_rerolls", "value": 1}]
+    },
+    {
+      "id": "item_crown",
+      "name": "Crown",
+      "kind": "item",
+      "tier": 2,
+      "value": 70,
+      "max_nb": 1,
+      "tags": ["stat_harvesting"],
+      "effects": [{"key": "harvesting_growth", "value": 8}]
+    },
+    {
+      "id": "item_axolotl",
+      "name": "Axolotl",
+      "kind": "item",
+      "tier": 3,
+      "value": 100,
+      "max_nb": 1,
+      "tags": ["stat_max_hp"],
+      "effects": []
+    }
+  ],
+  "weapons": [
+    {
+      "id": "weapon_pistol_t1",
+      "weapon_id": "weapon_pistol",
+      "name": "Pistol I",
+      "kind": "weapon",
+      "type": "ranged",
+      "sets": ["gun"],
+      "tier": 0,
+      "value": 10,
+      "upgrades_into": "weapon_pistol_t2"
+    },
+    {
+      "id": "weapon_pistol_t2",
+      "weapon_id": "weapon_pistol",
+      "name": "Pistol II",
+      "kind": "weapon",
+      "type": "ranged",
+      "sets": ["gun"],
+      "tier": 1,
+      "value": 22,
+      "upgrades_into": "weapon_pistol_t3"
+    },
+    {
+      "id": "weapon_pistol_t3",
+      "weapon_id": "weapon_pistol",
+      "name": "Pistol III",
+      "kind": "weapon",
+      "type": "ranged",
+      "sets": ["gun"],
+      "tier": 2,
+      "value": 45,
+      "upgrades_into": "weapon_pistol_t4"
+    },
+    {
+      "id": "weapon_pistol_t4",
+      "weapon_id": "weapon_pistol",
+      "name": "Pistol IV",
+      "kind": "weapon",
+      "type": "ranged",
+      "sets": ["gun"],
+      "tier": 3,
+      "value": 91,
+      "upgrades_into": ""
+    },
+    {
+      "id": "weapon_fist_t1",
+      "weapon_id": "weapon_fist",
+      "name": "Fist I",
+      "kind": "weapon",
+      "type": "melee",
+      "sets": ["unarmed"],
+      "tier": 0,
+      "value": 10,
+      "upgrades_into": "weapon_fist_t2"
+    },
+    {
+      "id": "weapon_smg_t1",
+      "weapon_id": "weapon_smg",
+      "name": "SMG I",
+      "kind": "weapon",
+      "type": "ranged",
+      "sets": ["gun"],
+      "tier": 0,
+      "value": 20,
+      "upgrades_into": "weapon_smg_t2"
+    }
+  ],
+  "consumables": [
+    {
+      "id": "consumable_fruit",
+      "name": "Fruit",
+      "kind": "consumable",
+      "tier": 0,
+      "value": 3,
+      "to_be_processed_at_end_of_wave": false
+    },
+    {
+      "id": "consumable_item_box",
+      "name": "Item Box",
+      "kind": "consumable",
+      "tier": 1,
+      "value": 3,
+      "to_be_processed_at_end_of_wave": true
+    },
+    {
+      "id": "consumable_legendary_item_box",
+      "name": "Legendary Item Box",
+      "kind": "consumable",
+      "tier": 3,
+      "value": 100,
+      "to_be_processed_at_end_of_wave": true
+    }
+  ],
+  "upgrades": []
+}

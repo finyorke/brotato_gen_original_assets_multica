@@ -35,3 +35,15 @@
 - Question: Chapter 01 says weapon knockback is `clamp(base + player knockback, min, max)`, but the M2 starter weapon rows do not yet include per-weapon knockback min/max bounds.
 - Document locations: `game_mechanics_docs/01_核心属性与数值系统.md` §5.5 and `game_mechanics_docs/06_敌人与实体系统.md` §3.5.
 - Conservative handling: The M2C runtime resolves knockback as `base + player knockback`, applies `negative_knockback` sign reversal, and leaves bound clamping for the future full weapon data import.
+
+## Integer Rounding for Shop and Recycle Prices
+
+- Question: Chapter 04 gives exact shop/recycle price formulas and explicitly says HP-shop and reroll prices use `ceil`, but it does not state how normal fractional material prices are displayed/deducted.
+- Document locations: `game_mechanics_docs/04_商店经济与升级系统.md` §2.3, §2.7, §6.
+- Conservative handling: The economy API exposes `shop_price_raw` for the exact formula, uses `ceil` for material shop deductions so the runtime does not undercharge fractional prices, and uses floor after the documented recycle rate so recycling does not overpay. Revisit if full M3A data or original scripts specify a different integer cast.
+
+## Level-up Fixed Damage and Crit Damage Effect Keys
+
+- Question: Chapter 04 lists level-up rows for fixed `damage` and `crit_damage`, but the current 234-key effect dictionary has no global `stat_damage` or `crit_damage` stat key.
+- Document locations: `game_mechanics_docs/04_商店经济与升级系统.md` §3.4 and `game_mechanics_docs/08_效果系统.md` §1.6.
+- Conservative handling: The M3B level-up fixture pool omits those two rows until the full content import defines their exact effect mapping, rather than inventing keys outside the documented effect dictionary.
