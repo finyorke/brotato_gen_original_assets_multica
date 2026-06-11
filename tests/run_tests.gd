@@ -5,6 +5,10 @@ const EffectKeysScript = preload("res://src/core/effect_keys.gd")
 const PlayerDataScript = preload("res://src/core/player_data.gd")
 const FormulasScript = preload("res://src/core/formulas.gd")
 const BurnDataScript = preload("res://src/core/burn_data.gd")
+const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
+const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
+const TargetingScript = preload("res://src/combat/targeting.gd")
+const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
 
 var failures: Array = []
 var assertions_run: int = 0
@@ -14,7 +18,7 @@ var burn_tools: Variant = BurnDataScript.new()
 func _initialize() -> void:
 	_run_all()
 	if failures.is_empty():
-		print("M1 tests passed: %d assertions" % assertions_run)
+		print("Tests passed: %d assertions" % assertions_run)
 		quit(0)
 	else:
 		for failure in failures:
@@ -28,6 +32,7 @@ func _run_all() -> void:
 	_stat_pipeline_tests()
 	_formula_tests()
 	_burn_tests()
+	_combat_m2_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -111,19 +116,29 @@ func _stat_pipeline_tests() -> void:
 	linked.effects["stat_links"].append(["stat_armor", 1, "stat_max_hp", 5, true])
 	linked.recalculate_linked_stats()
 	_assert_equal(linked.get_stat("stat_armor"), 2.0, "stat_links perm-only ignores temporary source")
+	linked.effects["stat_links"].clear()
+	linked.effects["stat_links"].append(["stat_armor", 1, "stat_max_hp", 5, false])
+	linked.effects["stat_links"].append(["stat_dodge", 1, "stat_armor", 1, false])
+	linked.recalculate_linked_stats()
+	_assert_equal(linked.get_stat("stat_armor"), 3.0, "stat_links still computes first link")
+	_assert_equal(linked.get_stat("stat_dodge"), 0.0, "stat_links do not see linked layer outputs")
 	var xp_player: Variant = PlayerDataScript.new()
 	xp_player.apply_effect(EffectEntryScript.make("xp_gain", 100))
 	var levels = xp_player.gain_xp(8)
 	_assert_equal(levels, 1, "xp_gain modifies gained XP")
 	_assert_equal(xp_player.level, 1, "level increments")
 	_assert_equal(xp_player.effects["stat_max_hp"], 11, "level up grants max hp")
+	_assert_equal(xp_player.current_health, 11, "level up max hp also heals current hp by one")
 
 func _formula_tests() -> void:
 	var player: Variant = PlayerDataScript.new()
 	player.add_permanent_stat("stat_ranged_damage", 5)
 	player.add_permanent_stat("stat_percent_damage", 20)
 	_assert_equal(formulas.weapon_damage(10, {"stat_ranged_damage": 1.0}, player), 18, "weapon damage formula")
+	player.add_permanent_stat("stat_ranged_damage", -20)
+	_assert_equal(formulas.weapon_damage(10, {"stat_ranged_damage": 1.0}, player), 1, "weapon damage lower bound applies after scaling")
 	player.add_permanent_stat("explosion_damage", 50)
+	player.add_permanent_stat("stat_ranged_damage", 20)
 	_assert_equal(formulas.explosion_damage(10, {"stat_ranged_damage": 1.0}, player), 26, "explosion damage formula")
 	_assert_equal(formulas.weapon_cooldown(60, 100), 30.0, "positive attack speed cooldown")
 	_assert_equal(formulas.weapon_cooldown(60, -50), 90.0, "negative attack speed cooldown")
@@ -151,6 +166,17 @@ func _formula_tests() -> void:
 	_assert_equal(formulas.reroll_price(10, 2, 0), 19, "reroll price")
 	_assert_equal(formulas.enemy_hp(10, 2, 6), 20, "enemy hp wave scaling")
 	_assert_equal(formulas.enemy_hp(10, 2, 6, 50, 1.0, 2), 39, "enemy hp percent and coop scaling")
+	_assert_equal(formulas.enemy_damage(1, 0.6, 3), 2, "enemy damage wave scaling")
+	_assert_equal(formulas.enemy_armor(2, 0.5, 5), 4, "enemy armor wave scaling")
+	_assert_equal(formulas.danger_enemy_stat_multiplier(5), 1.40, "danger 5 enemy multiplier")
+	_assert_approx(formulas.enemy_material_drop_chance(20), 0.7, "enemy material drop after wave 5")
+	_assert_approx(formulas.enemy_material_drop_chance(20, true), 0.455, "horde wave material drop penalty")
+	_assert_equal(formulas.spawn_count(4, 5, 1.0, 1, 0, 1.0), 5, "spawn count uses documented max range row for deterministic tests")
+	_assert_equal(formulas.spawn_count(1, 1, 0.33, 1, 0, 0.2), 1, "spawn count fractional roll can add one")
+	_assert_equal(formulas.spawn_count(1, 1, 0.33, 1, 0, 0.9), 0, "spawn count fractional roll can skip")
+	_assert_equal(formulas.pickup_radius(0), 150.0, "pickup radius base")
+	_assert_equal(formulas.pickup_radius(-90), 30.0, "pickup radius minimum")
+	_assert_equal(formulas.player_iframe_seconds(2, 10), 0.4, "player iframe full clamp")
 	_assert_approx(formulas.endless_factor(20), 0.0, "no endless factor at wave 20")
 	_assert_approx(formulas.endless_factor(21), 0.02, "endless factor wave 21")
 	_assert_equal(formulas.harvest_value(10, 5, 100, 2, 3, 1, 4), 30, "harvest settlement value")
@@ -181,6 +207,61 @@ func _burn_tests() -> void:
 	_assert_equal(burn_tools.tick_interval(50, 0), 0.25, "burn tick reduction")
 	_assert_equal(burn_tools.tick_interval(200, 0), 0.1, "burn tick lower bound")
 
+func _combat_m2_tests() -> void:
+	var weapon_json := _load_json("res://data/m2/starter_weapons.json")
+	_assert_equal(weapon_json.get("weapons", []).size(), 3, "starter weapon subset row count")
+	var pistol: Variant = WeaponStatsScript.from_dict(weapon_json["weapons"][0])
+	var fist: Variant = WeaponStatsScript.from_dict(weapon_json["weapons"][1])
+	var player: Variant = PlayerDataScript.new()
+	player.add_permanent_stat("stat_ranged_damage", 4)
+	player.add_permanent_stat("stat_range", 20)
+	player.add_permanent_stat("stat_attack_speed", 20)
+	_assert_equal(pistol.resolved_damage(player), 16, "pistol I damage from ranged scaling")
+	_assert_equal(pistol.resolved_cooldown_ticks(player), 50.0, "pistol I cooldown uses attack speed")
+	_assert_equal(pistol.resolved_range(player), 420.0, "ranged range gets full stat range")
+	_assert_equal(pistol.detection_range(player), 620.0, "weapon detection adds 200 px")
+	_assert_true(pistol.can_attack_target(470.0, player), "weapon attack range allows +50 px grace")
+	_assert_true(not pistol.can_attack_target(471.0, player), "weapon attack range rejects past grace")
+	_assert_approx(pistol.projectile_lifetime_seconds(player), 520.0 / 3000.0, "projectile lifetime uses range + 100")
+	player.add_permanent_stat("stat_crit_chance", 10)
+	_assert_approx(pistol.effective_crit_chance(player), 0.15, "weapon crit adds capped player crit")
+	_assert_equal(pistol.damage_after_crit(16, true), 32, "weapon crit damage multiplier")
+	_assert_equal(fist.resolved_range(player), 160.0, "melee range gets half stat range")
+
+	var enemies := [
+		{"id": "near", "position": Vector2(100, 0), "hp": 1},
+		{"id": "far", "position": Vector2(200, 0), "hp": 1},
+	]
+	_assert_equal(TargetingScript.nearest_enemy(enemies, Vector2.ZERO, 150.0)["id"], "near", "targeting chooses nearest enemy in detection range")
+	_assert_equal(TargetingScript.nearest_enemy(enemies, Vector2.ZERO, 90.0), null, "targeting rejects enemies outside detection range")
+
+	var enemy_json := _load_json("res://data/m2/area1_enemies.json")
+	var baby: Variant = EnemyStatsScript.from_dict(enemy_json["enemies"][0])
+	_assert_equal(baby.max_health_for_wave(5), 11, "baby alien hp wave scaling")
+	player.add_permanent_stat("enemy_health", 50)
+	_assert_equal(baby.max_health_for_wave(5, player), 17, "enemy_health effect scales enemy hp")
+	_assert_equal(baby.contact_damage_for_wave(3), 2, "baby alien damage wave scaling")
+	_assert_equal(baby.speed_for_roll(1.0), 300.0, "enemy speed randomization upper bound")
+	_assert_equal(baby.instantiate(1, Vector2(12, 24))["hp"], 3, "enemy instantiate carries hp")
+
+	var wave_json := _load_json("res://data/m2/area1_waves.json")
+	var scheduler: Variant = WaveSchedulerScript.from_dict(wave_json["waves"][0])
+	_assert_equal(scheduler.advance(0.99, 0, 0).size(), 0, "wave scheduler waits until first whole second")
+	var requests: Array = scheduler.advance(0.01, 0, 0)
+	_assert_equal(requests.size(), 1, "wave scheduler emits first group at t1")
+	_assert_equal(requests[0]["enemy_id"], "baby_alien", "wave scheduler request enemy id")
+	_assert_equal(requests[0]["count"], 5, "wave scheduler request count")
+	scheduler.enqueue_warning(requests[0], Vector2(300, 300))
+	for i in 59:
+		_assert_equal(scheduler.physics_tick().size(), 0, "spawn warning has not materialized before 60 ticks")
+	var materialized: Array = scheduler.physics_tick()
+	_assert_equal(materialized.size(), 1, "spawn queue materializes on 60th warning tick and queue cadence")
+	_assert_equal(materialized[0]["enemy_id"], "baby_alien", "materialized warning keeps enemy id")
+	scheduler.enqueue_warning({"enemy_id": "baby_alien", "count": 1}, Vector2.ZERO)
+	for i in 60:
+		_assert_equal(scheduler.physics_tick(Vector2.ZERO).size(), 0, "spawn warning resets while overlapping player")
+	_assert_equal(scheduler.active_warning_count(), 1, "overlapping warning remains active")
+
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
 	if actual != expected:
@@ -195,3 +276,11 @@ func _assert_true(value: bool, label: String) -> void:
 	assertions_run += 1
 	if not value:
 		failures.append("%s: expected true" % label)
+
+func _load_json(path: String) -> Dictionary:
+	var text := FileAccess.get_file_as_string(path)
+	var parsed = JSON.parse_string(text)
+	if parsed == null:
+		failures.append("could not parse JSON: %s" % path)
+		return {}
+	return parsed

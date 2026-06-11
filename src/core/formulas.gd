@@ -9,9 +9,10 @@ const SHOP_TIER_PARAMS := {
 }
 
 func weapon_damage(base_damage: float, scaling_stats: Dictionary, player: Variant, set_bonus_percent: float = 0.0, include_explosion_bonus: bool = false) -> int:
-	var scaled: float = max(1.0, float(base_damage))
+	var scaled: float = float(base_damage)
 	for stat_key in scaling_stats.keys():
 		scaled += player.get_stat(String(stat_key)) * float(scaling_stats[stat_key])
+	scaled = max(1.0, scaled)
 	var multiplier: float = 1.0 + player.get_stat("stat_percent_damage") / 100.0 + set_bonus_percent / 100.0
 	if include_explosion_bonus:
 		multiplier += player.get_stat("explosion_damage") / 100.0
@@ -77,6 +78,45 @@ func enemy_hp(base_hp: float, hp_per_wave: float, wave: int, enemy_health_percen
 	var coop_multiplier := 1.0 + 0.3 * float(maxi(1, player_count) - 1)
 	var endless_multiplier := 1.0 + endless_factor
 	return roundi((base_hp + hp_per_wave * float(wave - 1)) * (1.0 + enemy_health_percent / 100.0) * difficulty_coefficient * coop_multiplier * endless_multiplier)
+
+func enemy_damage(base_damage: float, damage_per_wave: float, wave: int, enemy_damage_percent: float = 0.0, difficulty_coefficient: float = 1.0, endless_factor: float = 0.0) -> int:
+	var endless_multiplier := 1.0 + endless_factor
+	return maxi(1, roundi((base_damage + damage_per_wave * float(wave - 1)) * (1.0 + enemy_damage_percent / 100.0) * difficulty_coefficient * endless_multiplier))
+
+func enemy_armor(base_armor: float, armor_per_wave: float, wave: int, armor_percent_modifier: float = 0.0) -> int:
+	return roundi((base_armor + armor_per_wave * float(wave - 1)) * (1.0 + armor_percent_modifier / 100.0))
+
+func danger_enemy_stat_multiplier(danger: int) -> float:
+	match danger:
+		3:
+			return 1.12
+		4:
+			return 1.26
+		5:
+			return 1.40
+	return 1.0
+
+func enemy_material_drop_chance(wave: int, is_horde_wave: bool = false) -> float:
+	var chance: float = 1.0 if wave < 5 else max(0.5, 1.0 - float(wave) * 0.015)
+	if is_horde_wave:
+		chance *= 0.65
+	return chance
+
+func spawn_count(min_count: int, max_count: int, unit_spawn_rate: float = 1.0, player_count: int = 1, number_of_enemies_percent: float = 0.0, fractional_roll: float = 1.0) -> int:
+	var base_count: float = float(min_count if min_count == max_count else max_count)
+	var coop_multiplier: float = 1.0 + 0.3 * float(maxi(1, player_count) - 1)
+	var value: float = base_count * unit_spawn_rate * coop_multiplier * (1.0 + number_of_enemies_percent / 100.0)
+	var whole: int = floori(value)
+	var fractional: float = value - float(whole)
+	return maxi(0, whole + (1 if fractional_roll <= fractional else 0))
+
+func pickup_radius(pickup_range_percent: float) -> float:
+	return max(30.0, 150.0 * (1.0 + pickup_range_percent / 100.0))
+
+func player_iframe_seconds(damage_taken: int, max_health: int, endless_strength: float = 1.0) -> float:
+	var clamped_endless: float = max(0.0001, endless_strength)
+	var ratio: float = float(maxi(0, damage_taken)) / max(1.0, float(max_health))
+	return clamp(ratio * 0.4 / 0.15, 0.2, 0.4) / clamped_endless
 
 func endless_factor(wave: int) -> float:
 	var endless_wave: int = max(0, wave - 20)

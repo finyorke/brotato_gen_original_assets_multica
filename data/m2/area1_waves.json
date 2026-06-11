@@ -1,0 +1,56 @@
+{
+  "source": "devkit game mechanics chapter 07",
+  "scope": "M2 starter subset: area 1 waves 1-5 primary groups.",
+  "waves": [
+    {
+      "wave": 1,
+      "duration": 20,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "baby_alien", "count_min": 4, "count_max": 5, "spawn_timing": 1, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"}
+      ]
+    },
+    {
+      "wave": 2,
+      "duration": 25,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "chaser", "count_min": 3, "count_max": 4, "spawn_timing": 1, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "full"},
+        {"enemy_id": "baby_alien", "count_min": 4, "count_max": 5, "spawn_timing": 10, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "edge"}
+      ]
+    },
+    {
+      "wave": 3,
+      "duration": 30,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "baby_alien", "count_min": 5, "count_max": 6, "spawn_timing": 1, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "edge"},
+        {"enemy_id": "chaser", "count_min": 3, "count_max": 4, "spawn_timing": 10, "repeating": 999, "repeat_interval": 7, "interval_decrease": 1, "min_repeat_interval": 3, "spawn_area": "cluster_200"},
+        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 0, "repeat_interval": 0, "spawn_area": "cluster_100", "min_danger": 1},
+        {"enemy_id": "fly", "count_min": 1, "count_max": 1, "spawn_timing": 10, "repeating": 0, "repeat_interval": 0, "spawn_area": "cluster_100", "min_danger": 2}
+      ]
+    },
+    {
+      "wave": 4,
+      "duration": 35,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 2, "spawn_timing": 1, "repeating": 999, "repeat_interval": 5, "interval_decrease": 0, "min_repeat_interval": 5, "spawn_area": "full"},
+        {"enemy_id": "baby_alien", "count_min": 6, "count_max": 7, "spawn_timing": 4, "repeating": 999, "repeat_interval": 3, "interval_decrease": 0, "min_repeat_interval": 3, "spawn_area": "cluster_300"},
+        {"enemy_id": "spitter", "count_min": 2, "count_max": 2, "spawn_timing": 25, "repeating": 999, "repeat_interval": 7, "interval_decrease": 0, "min_repeat_interval": 7, "spawn_area": "full"},
+        {"enemy_id": "fly", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 0, "repeat_interval": 0, "spawn_area": "full", "min_danger": 1}
+      ]
+    },
+    {
+      "wave": 5,
+      "duration": 40,
+      "max_enemies": 100,
+      "groups": [
+        {"enemy_id": "baby_alien", "count_min": 8, "count_max": 8, "spawn_timing": 1, "repeating": 999, "repeat_interval": 4, "interval_decrease": 0, "min_repeat_interval": 4, "spawn_area": "edge"},
+        {"enemy_id": "chaser", "count_min": 3, "count_max": 4, "spawn_timing": 3, "repeating": 999, "repeat_interval": 5, "interval_decrease": 1, "min_repeat_interval": 2, "spawn_area": "cluster_200"},
+        {"enemy_id": "spitter", "count_min": 1, "count_max": 2, "spawn_timing": 25, "repeating": 999, "repeat_interval": 6, "interval_decrease": 0, "min_repeat_interval": 6, "spawn_area": "full"},
+        {"enemy_id": "charger", "count_min": 2, "count_max": 2, "spawn_timing": 15, "repeating": 999, "repeat_interval": 4, "interval_decrease": 0, "min_repeat_interval": 4, "spawn_area": "edge", "min_danger": 1}
+      ]
+    }
+  ]
+}
