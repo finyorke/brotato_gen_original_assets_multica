@@ -14,6 +14,7 @@ const EconomyCatalogScript = preload("res://src/economy/economy_catalog.gd")
 const ShopStateScript = preload("res://src/economy/shop_state.gd")
 const LevelUpPoolScript = preload("res://src/economy/level_up_pool.gd")
 const RewardResolverScript = preload("res://src/economy/reward_resolver.gd")
+const MainScene = preload("res://scenes/main.tscn")
 
 var failures: Array = []
 var assertions_run: int = 0
@@ -41,6 +42,7 @@ func _run_all() -> void:
 	_content_m3_tests()
 	_combat_m2c_tests()
 	_economy_m3b_tests()
+	_ui_flow_m4_tests()
 
 func _effect_key_tests() -> void:
 	var defaults = EffectKeysScript.defaults()
@@ -652,6 +654,36 @@ func _economy_m3b_tests() -> void:
 	var repayment: Dictionary = reward.repay_bonus_gold(3, 5)
 	_assert_equal(repayment["value"], 6, "bonus gold doubles next material up to its value")
 	_assert_equal(repayment["remaining_bonus_gold"], 2, "bonus gold repayment decrements pool")
+
+func _ui_flow_m4_tests() -> void:
+	var main: Node = MainScene.instantiate()
+	root.add_child(main)
+	_assert_equal(main.ui_state_name(), "title", "M4 UI starts at title")
+	main.start_new_run()
+	_assert_equal(main.ui_state_name(), "character_select", "new run opens character selection")
+	main.choose_character("well_rounded")
+	_assert_equal(main.ui_state_name(), "weapon_select", "character selection opens weapon selection")
+	main.choose_weapon("weapon_pistol")
+	_assert_equal(main.ui_state_name(), "danger_select", "weapon selection opens danger selection")
+	main.choose_danger(0)
+	_assert_equal(main.ui_state_name(), "combat", "danger selection starts combat")
+	main.force_wave_complete_for_smoke()
+	_assert_equal(main.ui_state_name(), "wave_complete", "combat can enter wave-complete flow")
+	main.continue_wave_end()
+	_assert_equal(main.ui_state_name(), "crate_reward", "wave-complete flow processes crate rewards before level-ups")
+	main.accept_crate_reward()
+	_assert_equal(main.ui_state_name(), "level_up", "crate reward advances to level-up screen")
+	_assert_true(main.current_level_options.size() > 0, "level-up screen has generated options")
+	main.choose_level_option(0)
+	_assert_equal(main.ui_state_name(), "shop", "level-up flow advances to shop")
+	_assert_true(main.current_shop.slots.size() > 0, "shop opens with fixture slots")
+	var previous_wave: int = main.current_wave
+	main.leave_shop()
+	_assert_equal(main.ui_state_name(), "combat", "GO starts the next combat wave")
+	_assert_equal(main.current_wave, previous_wave + 1, "GO increments the wave")
+	_assert_true(bool(main.floating_text_rule("enemy_damage")["uses_damage_toggle"]), "enemy damage numbers obey damage_display setting")
+	_assert_true(bool(main.floating_text_rule("material")["always_display"]), "material floating text is an always-display HUD contract")
+	main.queue_free()
 
 func _assert_equal(actual: Variant, expected: Variant, label: String) -> void:
 	assertions_run += 1
