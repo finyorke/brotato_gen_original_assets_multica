@@ -570,6 +570,20 @@ func _economy_m3b_tests() -> void:
 	max_player.add_item(catalog.get_entry("item_recycling_machine"))
 	_assert_equal(catalog.pool("item", 1, max_player).size(), 1, "max_nb filters owned shop items")
 
+	var full_catalog: Variant = EconomyCatalogScript.from_m3_content()
+	_assert_true(full_catalog.entries.size() >= 413, "full M3 economy catalog combines imported items and weapons")
+	_assert_true(full_catalog.pool("item", 0, PlayerDataScript.new()).size() >= 50, "full M3 catalog exposes tier I item pool")
+	_assert_true(full_catalog.pool("weapon", 0, PlayerDataScript.new()).size() >= 38, "full M3 catalog exposes documented tier I weapon pool")
+	var full_coupon: Dictionary = full_catalog.get_entry("item_coupon")
+	_assert_equal(full_coupon["effects"].size(), 1, "full M3 catalog omits raw unmapped item effects from runtime buys")
+	_assert_equal(int(full_coupon["effects"][0]["storage_method"]), EffectEntryScript.StorageMethod.SUM, "full M3 catalog maps string storage methods")
+	var full_pistol: Dictionary = full_catalog.get_entry("weapon_pistol_1")
+	_assert_equal(String(full_pistol.get("weapon_id", "")), "weapon_pistol", "full M3 weapon keeps family id for runtime visuals")
+	_assert_equal(String(full_pistol.get("upgrades_into", "")), "weapon_pistol_2", "full M3 weapon links next quality")
+	var full_pistol_stats: Variant = WeaponStatsScript.from_dict(full_pistol)
+	_assert_equal(full_pistol_stats.weapon_id, "weapon_pistol", "runtime weapon stats use M3 family id")
+	_assert_true(full_pistol_stats.texture_path.ends_with("assets/weapons/pistol/pistol.png"), "runtime weapon stats read M3 asset_refs texture")
+
 	var shop_player: Variant = PlayerDataScript.new()
 	shop_player.materials = 999
 	var shop: Variant = ShopStateScript.open(shop_player, catalog, 1, true, {

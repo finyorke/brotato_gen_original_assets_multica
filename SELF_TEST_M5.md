@@ -26,4 +26,5 @@ Automated tests:
 Preview/export:
 
 - `export_presets.cfg` uses selected runtime resources rather than `all_resources`, so the Web pck no longer intentionally packages the full devkit docs and unused asset tree.
-- The runtime export file list includes the main scene, source scripts, M2/M5 data, current visual assets, audio event groups, six ground themes, and 11 music tracks.
+- The runtime export file list includes the main scene, source scripts, M2 enemy/wave data, M3 character/item/weapon economy data, M5 data, current visual assets, audio event groups, six ground themes, and 11 music tracks.
+- SHA-107 main-scene smoke uses the exported path with the M3 Well Rounded character, M3 Pistol I starter variant, M3-backed shop/economy scripts, M2 Danger 0 waves, and M5 presentation hooks.

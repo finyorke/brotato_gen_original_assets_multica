@@ -31,10 +31,17 @@ Current M3 data import:
 
 Current M3B backend slice:
 
-- Fixture economy catalog for a small documented subset of items, weapons, and consumables until full M3A content data is merged.
+- Economy catalog support for both the legacy fixture subset and the full M3 imported item/weapon data.
 - Shop/economy APIs for tier rolls, prices, rerolls, locking, item purchase, weapon buy-combine, recycling, and reward settlement.
 - Level-up option generation with documented tier overrides and upgrade values for effect keys already present in the M1 dictionary.
-- Headless tests for shop probabilities, pricing, reroll/free reroll, locking, combining, recycling, XP/harvesting rewards, crates, and consumables.
+- Headless tests for shop probabilities, pricing, reroll/free reroll, locking, combining, recycling, XP/harvesting rewards, crates, consumables, full M3 catalog normalization, and runtime weapon variant compatibility.
+
+Current integration preview:
+
+- Main scene starts from the M3 Well Rounded character row, uses the full M3 Pistol I weapon variant, and keeps active weapon stats in sync with inventory purchases/upgrades.
+- Danger 0 combat still uses the M2 area 1 enemy and 20-wave schedule runtime, with M5 presentation hooks for ground, materials, weapons, enemies, flash, shake, floating text, and sound requests.
+- Between waves, the playable path opens the M3-backed shop, supports M3 item/weapon buys and rerolls through `ShopState`, applies generated level-up upgrades through `LevelUpPool`, and advances to the next wave from the shop phase.
+- A 20-wave Danger 0 run remains technically reachable through the current main scene path; unresolved source-data uncertainties remain tracked in `OPEN_QUESTIONS.md`.
 
 Current M5 slice:
 
@@ -62,10 +69,11 @@ Current M6 backend slice:
 ```powershell
 python tools\import_m3_static_content.py
 & 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/run_tests.gd
+& 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --quit-after 3
 ```
 
 ## Preview
 
-`.github/workflows/godot-pages.yml` exports the Godot Web build and deploys it to GitHub Pages after the PR is merged to `main`, or manually via `workflow_dispatch`.
+`.github/workflows/godot-pages.yml` exports the Godot Web build and deploys it to GitHub Pages after the PR is merged to `main`, or manually via `workflow_dispatch`. The export preset now includes the M2 schedule/enemy data, M3 character/item/weapon catalog data, economy scripts, M5 manifest, and selected runtime assets needed by the integrated preview.
 
 Known external blocker: GitHub returned 422 for Pages on the private repository plan during M1. The workflow remains ready; Pages needs repo/plan support or another preview host before a public URL can be maintained.
