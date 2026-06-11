@@ -65,3 +65,15 @@
 - Question: Chapter 04 lists level-up rows for fixed `damage` and `crit_damage`, but the current 234-key effect dictionary has no global `stat_damage` or `crit_damage` stat key.
 - Document locations: `game_mechanics_docs/04_商店经济与升级系统.md` §3.4 and `game_mechanics_docs/08_效果系统.md` §1.6.
 - Conservative handling: The M3B level-up fixture pool omits those two rows until the full content import defines their exact effect mapping, rather than inventing keys outside the documented effect dictionary.
+
+## Melee Hitbox Geometry
+
+- Question: Chapter 03 defines thrust/sweep timing, range, and sweep arc, while Chapter 12 says attack areas carry hit parameters, but neither document gives numeric collision-shape dimensions for the melee weapon texture hitboxes.
+- Document locations: `game_mechanics_docs/03_武器系统.md` §§5.1-5.2, `game_mechanics_docs/12_表现层与底层系统.md` attack-area / hitbox notes.
+- Conservative handling: `WeaponAttackRuntime` now computes documented timing windows, reach, sweep arc, and hit packets, but does not invent melee hitbox width/shape constants. Scene collision shapes should come from source assets or confirmed upstream data.
+
+## Sweep Windup Duration
+
+- Question: Chapter 03 says sweep attacks begin with a no-damage rotation setup, then two active quarters of `atk_duration`, but it does not state a separate duration for that setup phase.
+- Document locations: `game_mechanics_docs/03_武器系统.md` §5.2.
+- Conservative handling: The runtime records the setup as a zero-duration orientation phase and models the documented active half plus return phase. Revisit if upstream data exposes a separate sweep windup duration.

@@ -6,6 +6,7 @@ const PlayerDataScript = preload("res://src/core/player_data.gd")
 const FormulasScript = preload("res://src/core/formulas.gd")
 const BurnDataScript = preload("res://src/core/burn_data.gd")
 const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
+const WeaponAttackRuntimeScript = preload("res://src/combat/weapon_attack_runtime.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
@@ -22,6 +23,7 @@ var failures: Array = []
 var assertions_run: int = 0
 var formulas: Variant = FormulasScript.new()
 var burn_tools: Variant = BurnDataScript.new()
+var attack_runtime: Variant = WeaponAttackRuntimeScript.new()
 
 func _initialize() -> void:
 	_run_all()
@@ -41,6 +43,7 @@ func _run_all() -> void:
 	_formula_tests()
 	_burn_tests()
 	_combat_m2_tests()
+	_weapon_runtime_m2_tests()
 	_content_m3_tests()
 	_combat_m2c_tests()
 	_economy_m3b_tests()
@@ -155,6 +158,8 @@ func _formula_tests() -> void:
 	_assert_equal(formulas.weapon_cooldown(60, 100), 30.0, "positive attack speed cooldown")
 	_assert_equal(formulas.weapon_cooldown(60, -50), 90.0, "negative attack speed cooldown")
 	_assert_equal(formulas.weapon_cooldown(1, 0), 2.0, "cooldown lower bound")
+	_assert_approx(formulas.weapon_attack_duration_seconds(100, 0), 0.4142857143, "attack duration range factor")
+	_assert_approx(formulas.weapon_attack_duration_seconds(100, 60), 0.3185714286, "attack duration attack speed")
 	_assert_equal(formulas.ranged_weapon_range(150, 20), 170.0, "ranged range")
 	_assert_equal(formulas.melee_weapon_range(150, 20), 160.0, "melee range")
 	_assert_approx(formulas.armor_coef(15), 0.5, "positive armor coefficient")
@@ -685,6 +690,189 @@ func _economy_m3b_tests() -> void:
 	var repayment: Dictionary = reward.repay_bonus_gold(3, 5)
 	_assert_equal(repayment["value"], 6, "bonus gold doubles next material up to its value")
 	_assert_equal(repayment["remaining_bonus_gold"], 2, "bonus gold repayment decrements pool")
+func _weapon_runtime_m2_tests() -> void:
+	var player: Variant = PlayerDataScript.new()
+	var damage_runtime: Variant = CombatRuntimeScript.new()
+	var row := {
+		"id": "runtime_ranged",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"cooldown": 400,
+		"max_range": 200,
+		"projectiles": 2,
+		"projectile_spread": 0.2,
+		"projectile_speed": 1000,
+		"piercing": 1,
+		"piercing_dmg_reduction": 0.5,
+		"bounce": 1,
+		"bounce_dmg_reduction": 0.5,
+	}
+	var weapon: Variant = WeaponStatsScript.from_dict(row)
+	player.add_permanent_stat("projectiles", 2)
+	player.add_permanent_stat("piercing", 1)
+	player.add_permanent_stat("piercing_damage", 25)
+	player.add_permanent_stat("bounce", 1)
+	player.add_permanent_stat("bounce_damage", 25)
+	_assert_equal(weapon.effective_projectile_count(player), 4, "extra projectiles only apply when base projectiles exist")
+	_assert_approx(weapon.effective_projectile_spread(player), 0.4, "extra projectile spread adds 0.1 rad each")
+	_assert_equal(weapon.effective_piercing(player), 2, "player piercing adds to weapon piercing")
+	_assert_approx(weapon.effective_piercing_damage_reduction(player), 0.25, "piercing damage stat reduces pierce penalty")
+	_assert_equal(weapon.effective_bounce(player), 2, "player bounce adds to weapon bounce")
+	_assert_approx(weapon.effective_bounce_damage_reduction(player), 0.25, "bounce damage stat reduces bounce penalty")
+	_assert_equal(attack_runtime.opening_cooldown_ticks(weapon, player), 180.0, "opening cooldown clamps to 180 ticks")
+	_assert_equal(attack_runtime.tick_cooldown(10.0, 1.0 / 60.0), 9.0, "cooldown ticks down in frame units")
+	_assert_equal(attack_runtime.tick_cooldown(10.0, 1.0, true), 10.0, "cooldown pauses during attack windows")
+
+	var moving_player: Variant = PlayerDataScript.new()
+	moving_player.effects["can_attack_while_moving"] = 0
+	var enemy := {"id": "gate", "position": Vector2(100, 0), "hp": 10}
+	var readiness: Dictionary = attack_runtime.can_start_attack(weapon, moving_player, [enemy], Vector2.ZERO, 0.0, Vector2.RIGHT)
+	_assert_true(not bool(readiness["can_attack"]), "attack gate blocks movement when effect disables moving attacks")
+
+	var spread_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "spread",
+		"type": "ranged",
+		"damage": 4,
+		"cooldown": 10,
+		"max_range": 200,
+		"accuracy": 0.9,
+		"projectiles": 3,
+		"projectile_spread": 0.25,
+		"projectile_speed": 1000,
+	})
+	var spread_attack: Dictionary = attack_runtime.start_attack(
+		spread_weapon,
+		PlayerDataScript.new(),
+		Vector2.ZERO,
+		0.0,
+		100.0,
+		1,
+		false,
+		{"accuracy_offset": 0.1, "projectile_spread_offsets": [-0.25, 0.0, 0.25]}
+	)
+	_assert_equal(spread_attack["projectiles"].size(), 3, "ranged attack creates one projectile state per row count")
+	_assert_approx(spread_attack["projectiles"][0]["angle"], -0.15, "projectile angle includes accuracy and spread")
+	_assert_approx(spread_attack["projectiles"][2]["angle"], 0.35, "projectile spread can offset both sides")
+	_assert_approx(spread_attack["projectiles"][0]["remaining_lifetime"], 0.3, "projectile lifetime uses range plus 100 px")
+
+	var melee_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "runtime_sweep",
+		"type": "melee",
+		"damage": 8,
+		"cooldown": 13,
+		"max_range": 150,
+		"attack_type": "sweep",
+	})
+	var windows: Dictionary = attack_runtime.attack_windows(melee_weapon, PlayerDataScript.new(), 80.0)
+	_assert_approx(windows["reach"], 150.0, "sweep distance respects weapon max range")
+	_assert_approx(windows["arc_radians"], 0.9 * PI, "sweep arc uses documented 0.9 pi side angle")
+	_assert_approx(windows["active_windows"][0][1], float(windows["total_seconds"]) * 0.5, "melee active hit window closes before return by default")
+
+	var hit_player: Variant = PlayerDataScript.new()
+	hit_player.current_health = 5
+	hit_player.add_permanent_stat("stat_elemental_damage", 3)
+	hit_player.effects["enemy_percent_damage_taken"].append(["test_source", "stat_ranged_damage", 50])
+	var hit_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "hooked",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {"stat_ranged_damage": 1.0},
+		"crit_chance": 1.0,
+		"crit_damage": 2.0,
+		"lifesteal": 1.0,
+		"burning_data": {"chance": 1.0, "damage": 2, "duration": 3, "spread": 1},
+	})
+	var hit_packet: Dictionary = attack_runtime.build_hit_packet(hit_weapon, hit_player, 7)
+	var hooked_enemy := {"id": "hooked_enemy", "position": Vector2.ZERO, "hp": 50, "max_hp": 50, "armor": 2}
+	var hit_result: Dictionary = attack_runtime.apply_hit_packet(hit_packet, hooked_enemy, hit_player, {"crit_roll": 1.0, "lifesteal_roll": 0.0, "burn_roll": 0.0})
+	_assert_true(hit_result["critical"], "crit roll uses <= weapon crit chance")
+	_assert_equal(hit_result["direct_damage"], 28, "crit and vulnerability apply before enemy armor")
+	_assert_equal(hooked_enemy["hp"], 50, "hit packet leaves enemy hp for combat runtime")
+	damage_runtime.apply_enemy_damage(hooked_enemy, int(hit_result["direct_damage"]), Vector2.LEFT, float(hit_result["knockback"]))
+	_assert_equal(hooked_enemy["hp"], 22, "combat runtime applies weapon direct damage")
+	_assert_equal(hit_player.current_health, 6, "lifesteal hook heals one hp")
+	_assert_true(hit_result["burn_applied"], "burn hook applies on successful burn roll")
+	_assert_equal(hooked_enemy["burn_data"].damage, 5, "burn damage scales with elemental damage")
+	_assert_equal(hit_result["vulnerability_hooks"].size(), 1, "vulnerability hook records matching scaling stat")
+
+	var explosive_player: Variant = PlayerDataScript.new()
+	explosive_player.add_permanent_stat("explosion_damage", 50)
+	var explosive_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "explosive",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"is_exploding": true,
+		"explosion_scale": 1.25,
+	})
+	var explosive_packet: Dictionary = attack_runtime.build_hit_packet(explosive_weapon, explosive_player, 8)
+	var explosive_enemy := {"id": "explosive_enemy", "position": Vector2(4, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var explosion_result: Dictionary = attack_runtime.apply_hit_packet(explosive_packet, explosive_enemy, explosive_player, {"explosion_roll": 0.0})
+	_assert_equal(explosive_enemy["hp"], 20, "unit-side explosion cancels direct damage")
+	_assert_equal(explosion_result["explosion"]["damage"], 15, "explosion payload keeps weapon damage with explosion bonus")
+	_assert_approx(explosion_result["explosion"]["scale"], 1.25, "explosion payload keeps row scale")
+
+	var pierce_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "piercer",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"cooldown": 10,
+		"max_range": 100,
+		"projectiles": 1,
+		"projectile_speed": 1000,
+		"piercing": 1,
+		"piercing_dmg_reduction": 0.5,
+	})
+	var pierce_attack: Dictionary = attack_runtime.start_attack(pierce_weapon, PlayerDataScript.new(), Vector2.ZERO, 0.0, 50.0, 9, false, {"accuracy_offset": 0.0, "projectile_spread_offsets": [0.0]})
+	var pierce_projectile: Dictionary = pierce_attack["projectiles"][0]
+	var p1 := {"id": "p1", "position": Vector2(10, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var p2 := {"id": "p2", "position": Vector2(20, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var p1_result: Dictionary = attack_runtime.apply_projectile_hit(pierce_projectile, p1, PlayerDataScript.new(), [p1, p2], {"crit_roll": 1.0})
+	_assert_equal(p1_result["direct_damage"], 10, "first projectile hit reports full damage")
+	damage_runtime.apply_enemy_damage(p1, int(p1_result["direct_damage"]), p1_result["knockback_origin"], float(p1_result["knockback"]))
+	_assert_equal(p1["hp"], 10, "combat runtime applies first projectile damage")
+	_assert_true(not pierce_projectile["stopped"], "projectile remains alive after available pierce")
+	_assert_equal(pierce_projectile["damage"], 5, "piercing reduces damage after hit")
+	var p2_result: Dictionary = attack_runtime.apply_projectile_hit(pierce_projectile, p2, PlayerDataScript.new(), [p1, p2], {"crit_roll": 1.0})
+	_assert_equal(p2_result["direct_damage"], 5, "pierced projectile reports reduced damage")
+	damage_runtime.apply_enemy_damage(p2, int(p2_result["direct_damage"]), p2_result["knockback_origin"], float(p2_result["knockback"]))
+	_assert_equal(p2["hp"], 15, "combat runtime applies pierced projectile damage")
+	_assert_true(pierce_projectile["stopped"], "projectile stops when no pierce remains")
+
+	var bounce_weapon: Variant = WeaponStatsScript.from_dict({
+		"id": "bouncer",
+		"type": "ranged",
+		"damage": 10,
+		"scaling_stats": {},
+		"cooldown": 10,
+		"max_range": 100,
+		"projectiles": 1,
+		"projectile_speed": 1000,
+		"piercing": 3,
+		"piercing_dmg_reduction": 0.0,
+		"bounce": 1,
+		"bounce_dmg_reduction": 0.5,
+		"knockback": 15,
+	})
+	var bounce_attack: Dictionary = attack_runtime.start_attack(bounce_weapon, PlayerDataScript.new(), Vector2.ZERO, 0.0, 50.0, 10, false, {"accuracy_offset": 0.0, "projectile_spread_offsets": [0.0]})
+	var bounce_projectile: Dictionary = bounce_attack["projectiles"][0]
+	var b1 := {"id": "b1", "position": Vector2(10, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var b2 := {"id": "b2", "position": Vector2(30, 0), "hp": 20, "max_hp": 20, "armor": 0}
+	var b1_result: Dictionary = attack_runtime.apply_projectile_hit(bounce_projectile, b1, PlayerDataScript.new(), [b1, b2], {"crit_roll": 1.0, "bounce_target_id": "b2"})
+	_assert_equal(b1_result["direct_damage"], 10, "bounce hit reports current projectile damage")
+	var b1_hit: Dictionary = damage_runtime.apply_enemy_damage(b1, int(b1_result["direct_damage"]), b1_result["knockback_origin"], float(b1_result["knockback"]))
+	_assert_equal(b1["hp"], 10, "combat runtime applies bounced projectile damage")
+	_assert_true(b1_hit["knockback_vector"] != Vector2.ZERO, "pre-bounce hit still applies projectile knockback")
+	_assert_equal(bounce_projectile["damage"], 5, "bounce reduces damage after hit")
+	_assert_equal(bounce_projectile["piercing_remaining"], 3, "bounce takes priority over piercing")
+	_assert_equal(bounce_projectile["knockback"], 0.0, "bounce clears projectile knockback")
+	_assert_approx(bounce_projectile["remaining_lifetime"], 10.0, "bounce retimes projectile to 10000 px lifetime")
+	var b2_result: Dictionary = attack_runtime.apply_projectile_hit(bounce_projectile, b2, PlayerDataScript.new(), [b1, b2], {"crit_roll": 1.0})
+	var b2_hit: Dictionary = damage_runtime.apply_enemy_damage(b2, int(b2_result["direct_damage"]), b2_result["knockback_origin"], float(b2_result["knockback"]))
+	_assert_equal(b2["hp"], 15, "combat runtime applies post-bounce reduced damage")
+	_assert_equal(b2_hit["knockback_vector"], Vector2.ZERO, "post-bounce hit keeps combat knockback zero")
 
 func _presentation_m5_tests() -> void:
 	var manifest: Variant = AssetManifestScript.load_from_path("res://data/m5/asset_manifest.json")
