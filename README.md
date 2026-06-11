@@ -19,7 +19,8 @@ Current M2 slice:
 - Data-driven starter enemy rows for the first Danger 0 wave slice.
 - Wave 1-5 scheduler data, including spawn timing, repeats, danger gates, 60 tick spawn warnings, and 3 tick spawn queue cadence.
 - Combat helpers for weapon resolution, enemy stat scaling, targeting, material drop chance, pickup radius, and player iframe timing.
-- Main scene now consumes the M2 data instead of hard-coded weapon/enemy numbers.
+- M2C combat runtime for player damage intake, armor/dodge/iframes, enemy knockback, material drops, pickup attraction, XP/material collection, timer-based wave cleanup, and starter-subset win/loss state.
+- Main scene now consumes the M2 data and runtime loop instead of hard-coded weapon/enemy numbers.
 
 Current M3B backend slice:
 
