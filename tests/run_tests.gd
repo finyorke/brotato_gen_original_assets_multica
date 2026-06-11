@@ -9,6 +9,7 @@ const WeaponStatsScript = preload("res://src/combat/weapon_stats.gd")
 const EnemyStatsScript = preload("res://src/combat/enemy_stats.gd")
 const TargetingScript = preload("res://src/combat/targeting.gd")
 const WaveSchedulerScript = preload("res://src/combat/wave_scheduler.gd")
+const CombatRuntimeScript = preload("res://src/combat/combat_runtime.gd")
 const EconomyCatalogScript = preload("res://src/economy/economy_catalog.gd")
 const ShopStateScript = preload("res://src/economy/shop_state.gd")
 const LevelUpPoolScript = preload("res://src/economy/level_up_pool.gd")
@@ -38,6 +39,7 @@ func _run_all() -> void:
 	_burn_tests()
 	_combat_m2_tests()
 	_content_m3_tests()
+	_combat_m2c_tests()
 	_economy_m3b_tests()
 
 func _effect_key_tests() -> void:
@@ -380,6 +382,100 @@ func _content_m3_tests() -> void:
 		"item_hourglass",
 	]:
 		_assert_true(self_test.contains(sample_id), "SELF_TEST_M3 includes sample %s" % sample_id)
+
+func _combat_m2c_tests() -> void:
+	var player: Variant = PlayerDataScript.new()
+	var runtime: Variant = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 2, 0)
+	player.add_permanent_stat("stat_armor", 15)
+	var hit: Dictionary = runtime.resolve_player_damage(4, false)
+	_assert_equal(hit["damage"], 2, "player contact damage uses armor coefficient")
+	_assert_equal(player.current_health, 8, "player damage subtracts health")
+	_assert_approx(runtime.iframe_seconds_remaining, 0.4, "player hit grants iframe clamp")
+	var iframe_block: Dictionary = runtime.resolve_player_damage(4, false)
+	_assert_true(not bool(iframe_block["accepted"]), "iframes block repeated contact damage")
+	runtime.advance(0.4)
+	player.add_permanent_stat("stat_dodge", 60)
+	var dodge: Dictionary = runtime.resolve_player_damage(4, true, false, false, 0.0)
+	_assert_true(bool(dodge["dodged"]), "dodge can prevent player damage")
+	_assert_equal(player.current_health, 8, "dodged damage leaves health unchanged")
+	_assert_approx(runtime.iframe_seconds_remaining, 0.2, "dodged hit grants minimum iframes")
+	runtime.advance(0.2)
+	var death: Dictionary = runtime.resolve_player_damage(99, false, true)
+	_assert_equal(death["state"], CombatRuntimeScript.STATE_LOST, "lethal player damage sets loss state")
+	_assert_equal(player.current_health, 0, "lethal player damage clamps health to zero")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 2, 0)
+	var enemy := {
+		"position": Vector2(20, 0),
+		"hp": 2,
+		"max_hp": 2,
+		"speed": 250.0,
+		"damage": 1,
+		"knockback_resistance": 0.5,
+		"value": 1,
+	}
+	var enemy_hit: Dictionary = runtime.apply_enemy_damage(enemy, 3, Vector2.ZERO, 15.0)
+	_assert_true(bool(enemy_hit["dead"]), "enemy lethal hit marks death")
+	_assert_approx(Vector2(enemy_hit["knockback_vector"]).length(), 15.0, "enemy death knockback keeps minimum amount")
+	_assert_approx(runtime.enemy_knockback_velocity(enemy).length(), 750.0, "enemy knockback velocity applies resistance")
+	_assert_true(not runtime.enemy_can_contact_damage(enemy), "strong knockback disables contact damage")
+	runtime.decay_enemy_knockback(enemy)
+	_assert_approx(Vector2(enemy["knockback_vector"]).length(), 13.5, "enemy knockback decays by 10 percent per tick")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 5, 5, 0)
+	player.add_permanent_stat("gold_drops", 100)
+	enemy = {"position": Vector2(12, 20), "value": 1, "can_drop_material": true}
+	var materials: Array = []
+	_assert_true(runtime.spawn_material_from_enemy(enemy, materials, 5, false, 0.0, 0.0), "enemy material drop can spawn")
+	_assert_equal(materials.size(), 1, "material drop appends an entity")
+	_assert_equal(materials[0]["value"], 2, "material value includes gold_drops scaling")
+	for i in CombatRuntimeScript.MATERIAL_ENTITY_LIMIT - materials.size():
+		runtime.add_material_drop(materials, Vector2.ZERO, 1)
+	var merged: Dictionary = runtime.add_material_drop(materials, Vector2.ZERO, 3, 0)
+	_assert_equal(materials.size(), CombatRuntimeScript.MATERIAL_ENTITY_LIMIT, "material cap merges excess drops")
+	_assert_equal(merged["value"], 5, "merged material accumulates value")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 1, 0)
+	player.add_permanent_stat("chance_double_gold", 100)
+	player.add_permanent_stat("heal_when_pickup_gold", 100)
+	player.current_health = 5
+	var pickup_material: Dictionary = runtime.make_material(Vector2(10, 0), 2)
+	var pickup: Dictionary = runtime.update_material_attraction(pickup_material, Vector2.ZERO, 1.0 / 60.0, 0.0, 0.0)
+	_assert_true(bool(pickup["collected"]), "material inside pickup radius collects immediately")
+	_assert_equal(pickup["value"], 4, "material pickup can double value")
+	_assert_equal(player.materials, 4, "material pickup adds money")
+	_assert_equal(player.current_xp, 4.0, "material pickup adds equal xp")
+	_assert_equal(player.current_health, 6, "heal_when_pickup_gold heals one hp")
+	var flying_material: Dictionary = runtime.make_material(Vector2(140, 0), 1)
+	runtime.update_material_attraction(flying_material, Vector2.ZERO, 1.0 / 60.0)
+	_assert_true(Vector2(flying_material["position"]).x < 140.0, "material inside pickup range attracts toward player")
+
+	player = PlayerDataScript.new()
+	runtime = CombatRuntimeScript.new()
+	runtime.start_run(player, 1, 2, 0)
+	player.add_permanent_stat("stat_harvesting", 10)
+	materials = [runtime.make_material(Vector2.ZERO, 2), runtime.make_material(Vector2.ZERO, 3)]
+	var live_enemies := [{"id": "a"}, {"id": "b"}]
+	var settlement: Dictionary = runtime.complete_wave(live_enemies, materials)
+	_assert_equal(settlement["state"], CombatRuntimeScript.STATE_RUNNING, "non-final wave keeps run active")
+	_assert_equal(runtime.current_wave, 2, "wave completion advances to next wave")
+	_assert_equal(live_enemies.size(), 0, "wave completion clears living enemies")
+	_assert_equal(materials.size(), 0, "wave completion clears ground materials")
+	_assert_equal(runtime.bonus_gold, 5, "wave completion recovers ground materials into bonus gold")
+	_assert_equal(player.materials, 10, "harvesting grants materials")
+	_assert_equal(player.current_xp, 10.0, "harvesting grants xp")
+	_assert_equal(player.effects["stat_harvesting"], 11, "harvesting grows at wave end")
+	runtime.start_wave(2)
+	runtime.complete_wave([], [])
+	_assert_equal(runtime.state, CombatRuntimeScript.STATE_WON, "final starter wave completion sets win state")
+
 func _economy_m3b_tests() -> void:
 	_assert_equal(formulas.roll_shop_tier(10, 0, 0.001), 3, "shop tier roll hits tier IV first")
 	_assert_equal(formulas.roll_shop_tier(10, 0, 0.05), 2, "shop tier roll hits tier III")

@@ -36,6 +36,18 @@
 - Document locations: `game_mechanics_docs/02_角色系统.md` §3, `game_mechanics_docs/03_武器系统.md` §10-11, `game_mechanics_docs/05_道具清单.md` §3-4, and `game_mechanics_docs/08_效果系统.md` §2.
 - Conservative handling: M3 imports parsed effect keys when deterministic and preserves the original text as `raw_effect_text` payloads with doc line traceability when the docs are not specific enough to synthesize a safe runtime object.
 
+## Starter Enemy Contact Radius
+
+- Question: Chapter 06 documents the player collision radius (24) and hurt radius (21), but the M2 starter enemy JSON does not yet include per-enemy body/contact radii.
+- Document locations: `game_mechanics_docs/06_敌人与实体系统.md` §9 and `game_mechanics_docs/10_输入操控与玩家手感.md` §7.
+- Conservative handling: The M2C runtime uses player hurt radius 21 plus a starter enemy body radius 24 for contact damage until full enemy hitbox data is imported.
+
+## Starter Weapon Knockback Bounds
+
+- Question: Chapter 01 says weapon knockback is `clamp(base + player knockback, min, max)`, but the M2 starter weapon rows do not yet include per-weapon knockback min/max bounds.
+- Document locations: `game_mechanics_docs/01_核心属性与数值系统.md` §5.5 and `game_mechanics_docs/06_敌人与实体系统.md` §3.5.
+- Conservative handling: The M2C runtime resolves knockback as `base + player knockback`, applies `negative_knockback` sign reversal, and leaves bound clamping for the future full weapon data import.
+
 ## Integer Rounding for Shop and Recycle Prices
 
 - Question: Chapter 04 gives exact shop/recycle price formulas and explicitly says HP-shop and reroll prices use `ceil`, but it does not state how normal fractional material prices are displayed/deducted.
