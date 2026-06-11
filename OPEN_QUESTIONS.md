@@ -24,6 +24,18 @@
 - Document locations: `game_mechanics_docs/07_波次难度与生成系统.md` §4.2.
 - Conservative handling: The current formula applies the wave lower bound first, then the horde multiplier, matching the literal reading used in the M2 review; revisit if later documentation clarifies a post-horde clamp.
 
+## M3 Weapon Quality Slots
+
+- Question: Chapter 03 describes "61 weapons x each grade" but the weapon tables list 201 concrete grade rows, leaving 43 family/quality slots without stats.
+- Document locations: `game_mechanics_docs/03_武器系统.md` §10 and the 10.1/10.2 weapon tables.
+- Conservative handling: M3 data keeps all 61 families with four quality slots each, marks undocumented slots as `available=false`, and only creates stat-bearing variants for documented rows.
+
+## M3 Complex Effect Serialization
+
+- Question: Several character, weapon, and item effects are described behaviorally but do not include every serialized effect-class field needed for a complete runtime implementation, especially pet/structure/projectile/explosion wrapper objects.
+- Document locations: `game_mechanics_docs/02_角色系统.md` §3, `game_mechanics_docs/03_武器系统.md` §10-11, `game_mechanics_docs/05_道具清单.md` §3-4, and `game_mechanics_docs/08_效果系统.md` §2.
+- Conservative handling: M3 imports parsed effect keys when deterministic and preserves the original text as `raw_effect_text` payloads with doc line traceability when the docs are not specific enough to synthesize a safe runtime object.
+
 ## Starter Enemy Contact Radius
 
 - Question: Chapter 06 documents the player collision radius (24) and hurt radius (21), but the M2 starter enemy JSON does not yet include per-enemy body/contact radii.

@@ -22,6 +22,12 @@ Current M2 slice:
 - M2C combat runtime for player damage intake, armor/dodge/iframes, enemy knockback, material drops, pickup attraction, XP/material collection, timer-based wave cleanup, and starter-subset win/loss state.
 - Main scene now consumes the M2 data and runtime loop instead of hard-coded weapon/enemy numbers.
 
+Current M3 data import:
+
+- `tools/import_m3_static_content.py` imports docs 02, 03, 05, and 08 into `data/m3/`.
+- The generated data covers 49 characters, 61 weapon families with four quality slots, 201 documented weapon variant rows, 209 item data rows, tags/sets, unlock metadata, asset refs, and effect payloads.
+- Complex effects without full serialized fields are preserved as raw source-text payloads with doc line traceability; see `OPEN_QUESTIONS.md`.
+
 Current M3B backend slice:
 
 - Fixture economy catalog for a small documented subset of items, weapons, and consumables until full M3A content data is merged.
@@ -38,6 +44,7 @@ Current M3B backend slice:
 ## Test
 
 ```powershell
+python tools\import_m3_static_content.py
 & 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/run_tests.gd
 ```
 
