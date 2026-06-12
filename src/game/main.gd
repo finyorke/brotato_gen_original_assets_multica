@@ -39,7 +39,11 @@ const MATERIAL_UI_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pa
 const MATERIAL_BAG_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/materials/material_bag.png"
 const SHOP_BACKGROUND_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/shop/shop_background.png"
 const TITLE_BACKGROUND_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_bg.png"
+const TITLE_MIST_BACK_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_mist_back.png"
+const TITLE_MIST_MID_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_mist_mid.png"
 const TITLE_BROTATO_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_brotato.png"
+const TITLE_MIST_FRONT_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_mist_front.png"
+const TITLE_POST_PROCESS_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/splash_art_post_processing.png"
 const TITLE_LOGO_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/title_screen/title_screen_background/ui_logo.png"
 const UPGRADE_ICON_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/upgrade_icons/upgrade_icon.png"
 const UI_PANEL_NORMAL_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/hud/ui_panel_normal.png"
@@ -54,9 +58,18 @@ const MENU_OPTIONS_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack
 const MENU_RESUME_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/resume_icons.png"
 const MENU_EXIT_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/exit_icon.png"
 const MENU_CODEX_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/codex_icon.png"
+const MENU_PROFILE_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/profil_icon.png"
+const MENU_RESET_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/reset_icon.png"
+const MENU_AUDIO_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/audio_icon.png"
+const MENU_VIDEO_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/video_icon.png"
+const MENU_GAMEPLAY_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/gameplay_icon.png"
+const MENU_ACCESSIBILITY_ICON_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/accessibility_icon.png"
 const BIG_CHECKMARK_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/big_checkmark.png"
 const KEY_SPACE_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/key_space.png"
 const KEY_E_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/key_e.png"
+const KEY_R_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/key_r.png"
+const ARROW_LEFT_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/arrow_left.png"
+const ARROW_RIGHT_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/common/arrow_right.png"
 const CROSSHAIR_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/crosshair.png"
 const CUSTOM_CURSOR_TEXTURE_PATH := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/custom_cursor.png"
 const DIFFICULTY_ICON_DIR := "res://devkit/brotato_original_devkit/asset_pack/assets/ui/menus/run/difficulty_selection/difficulty_icons"
@@ -71,6 +84,14 @@ const CHARACTER_ICON_ROOT := "res://devkit/brotato_original_devkit/asset_pack/as
 
 # Doc 11 section 4 fixes combat HUD at a 24 px edge margin.
 const HUD_MARGIN := 24
+# Updated doc 13 fixes all menu coordinates against the 1920x1080 UI design surface.
+const UI_DESIGN_SIZE := Vector2(1920, 1080)
+const SELECTION_MAIN_MARGIN := {"left": 25, "top": 75, "right": 25, "bottom": 25}
+const SELECTION_GRID_CELL := Vector2(96, 96)
+const SHOP_ITEM_CARD_SIZE := Vector2(465, 603)
+const SHOP_RIGHT_COLUMN_WIDTH := 414
+const UPGRADE_CARD_DOC_SIZE := Vector2(361, 512)
+const RESULT_PANEL_SIZE := Vector2(1268, 856)
 # Docs 07 §2.1/quick ref and 12 §12.10.1 define the Area 1 zone as 32x24 64px cells, modified by map_size.
 const MAP_TILE_SIZE := 64.0
 const BASE_ZONE_GRID := Vector2(32, 24)
@@ -170,6 +191,44 @@ const TIER_COLORS := [
 	Color(0.78, 0.37, 1.0),
 	Color(1.0, 0.32, 0.24),
 ]
+const DIFFICULTY_COLORS := [
+	Color(0.86, 0.86, 0.78),
+	Color(0.37, 0.62, 1.0),
+	Color(0.58, 0.42, 0.92),
+	Color(0.92, 0.43, 0.30),
+	Color(1.0, 0.75, 0.18),
+	Color(0.95, 0.18, 0.18),
+]
+const MAIN_STAT_KEYS := [
+	"stat_max_hp",
+	"stat_hp_regeneration",
+	"stat_lifesteal",
+	"stat_percent_damage",
+	"stat_melee_damage",
+	"stat_ranged_damage",
+	"stat_elemental_damage",
+	"stat_attack_speed",
+	"stat_crit_chance",
+	"stat_engineering",
+	"stat_range",
+	"stat_armor",
+	"stat_dodge",
+	"stat_speed",
+	"stat_luck",
+	"stat_harvesting",
+]
+const SECONDARY_STAT_KEYS := [
+	"weapon_slot",
+	"map_size",
+	"pickup_range",
+	"consumable_heal",
+	"xp_gain",
+	"enemy_speed",
+	"enemy_health",
+	"enemy_damage",
+	"reroll_price",
+	"shop_price",
+]
 
 var ui_state: UIState = UIState.TITLE
 var previous_state: UIState = UIState.TITLE
@@ -203,7 +262,11 @@ var material_ui_texture: Texture2D
 var material_bag_texture: Texture2D
 var shop_background_texture: Texture2D
 var title_background_texture: Texture2D
+var title_mist_back_texture: Texture2D
+var title_mist_mid_texture: Texture2D
 var title_brotato_texture: Texture2D
+var title_mist_front_texture: Texture2D
+var title_post_process_texture: Texture2D
 var title_logo_texture: Texture2D
 var upgrade_icon_texture: Texture2D
 var ui_panel_normal_texture: Texture2D
@@ -216,6 +279,9 @@ var button_physic_pressed_texture: Texture2D
 var big_checkmark_texture: Texture2D
 var key_space_texture: Texture2D
 var key_e_texture: Texture2D
+var key_r_texture: Texture2D
+var arrow_left_texture: Texture2D
+var arrow_right_texture: Texture2D
 var crosshair_texture: Texture2D
 var menu_font: Font
 
@@ -664,95 +730,145 @@ func _show_title_screen() -> void:
 	_clear_hud_refs()
 	var root := _screen_container("TitleScreen")
 	_add_title_background(root)
-	var margin := _margin_container(root, 52)
-	var row := HBoxContainer.new()
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	row.add_theme_constant_override("separation", 34)
-	margin.add_child(row)
-	var menu_panel := PanelContainer.new()
-	menu_panel.custom_minimum_size = Vector2(440, 620)
-	menu_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.10, 0.10, 0.09, 0.92)))
-	row.add_child(menu_panel)
-	var menu := VBoxContainer.new()
-	menu.custom_minimum_size = Vector2(400, 0)
-	menu.alignment = BoxContainer.ALIGNMENT_CENTER
-	menu.add_theme_constant_override("separation", 18)
-	menu_panel.add_child(menu)
+	var main_menu := VBoxContainer.new()
+	main_menu.set_anchors_preset(Control.PRESET_FULL_RECT)
+	main_menu.offset_top = 47
+	main_menu.mouse_filter = Control.MOUSE_FILTER_PASS
+	root.add_child(main_menu)
+	var logo_holder := CenterContainer.new()
+	logo_holder.custom_minimum_size = Vector2(1920, 330)
+	logo_holder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_menu.add_child(logo_holder)
 	var logo := TextureRect.new()
 	logo.texture = title_logo_texture
 	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	logo.custom_minimum_size = Vector2(390, 176)
-	menu.add_child(logo)
-	menu.add_child(_make_button("NEW RUN", Callable(self, "start_new_run"), "Start a new run.", Vector2(330, 64), MENU_START_ICON_PATH))
-	menu.add_child(_make_button("SETTINGS", Callable(self, "_show_settings_from_title"), "Open settings.", Vector2(330, 64), MENU_OPTIONS_ICON_PATH))
-	menu.add_child(_make_button("RESULTS", Callable(self, "_show_result_preview"), "Open run results.", Vector2(330, 64), MENU_CODEX_ICON_PATH))
-	menu.add_child(_make_button("QUIT", Callable(self, "_quit_game"), "Exit the application.", Vector2(330, 64), MENU_EXIT_ICON_PATH))
-	var filler := Control.new()
-	filler.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(filler)
-	var status_panel := PanelContainer.new()
-	status_panel.custom_minimum_size = Vector2(360, 330)
-	status_panel.size_flags_vertical = Control.SIZE_SHRINK_END
-	status_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.11, 0.11, 0.10, 0.88)))
-	row.add_child(status_panel)
-	var status_box := VBoxContainer.new()
-	status_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	status_box.add_theme_constant_override("separation", 12)
-	status_panel.add_child(status_box)
-	status_box.add_child(_make_texture_icon(player_texture, Vector2(112, 112)))
-	status_box.add_child(_make_label("RUN READY", 30, HORIZONTAL_ALIGNMENT_CENTER))
-	status_box.add_child(_make_label("DANGER 0  /  WAVE 1", 22, HORIZONTAL_ALIGNMENT_CENTER))
-	var hint_row := HBoxContainer.new()
-	hint_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	hint_row.add_theme_constant_override("separation", 10)
-	status_box.add_child(hint_row)
-	hint_row.add_child(_make_texture_icon(key_space_texture, Vector2(48, 48)))
-	hint_row.add_child(_make_label("MOVE", 18, HORIZONTAL_ALIGNMENT_CENTER))
-	hint_row.add_child(_make_texture_icon(key_e_texture, Vector2(48, 48)))
-	hint_row.add_child(_make_label("BUY", 18, HORIZONTAL_ALIGNMENT_CENTER))
+	logo.custom_minimum_size = Vector2(1122, 330)
+	logo_holder.add_child(logo)
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	main_menu.add_child(spacer)
+	var button_margin := MarginContainer.new()
+	button_margin.custom_minimum_size = Vector2(1920, 548)
+	button_margin.add_theme_constant_override("margin_left", 40)
+	button_margin.add_theme_constant_override("margin_right", 40)
+	button_margin.add_theme_constant_override("margin_bottom", 0)
+	main_menu.add_child(button_margin)
+	var content_col := VBoxContainer.new()
+	content_col.alignment = BoxContainer.ALIGNMENT_END
+	content_col.add_theme_constant_override("separation", 25)
+	button_margin.add_child(content_col)
+	var button_row := HBoxContainer.new()
+	button_row.custom_minimum_size = Vector2(1840, 492)
+	button_row.alignment = BoxContainer.ALIGNMENT_END
+	button_row.add_theme_constant_override("separation", 4)
+	content_col.add_child(button_row)
+	var left_col := VBoxContainer.new()
+	left_col.custom_minimum_size = Vector2(332, 492)
+	left_col.alignment = BoxContainer.ALIGNMENT_END
+	left_col.add_theme_constant_override("separation", 10)
+	button_row.add_child(left_col)
+	var continue_button := _make_button("CONTINUE", Callable(self, "_open_shop"), "Continue the current run.", Vector2(332, 80), MENU_RESUME_ICON_PATH)
+	continue_button.disabled = player_data == null
+	left_col.add_child(continue_button)
+	left_col.add_child(_make_button("START", Callable(self, "start_new_run"), "Start a new run.", Vector2(332, 80), MENU_START_ICON_PATH))
+	var gap := Control.new()
+	gap.custom_minimum_size = Vector2(0, 12)
+	left_col.add_child(gap)
+	left_col.add_child(_make_button("PROFILE 1", Callable(self, "_show_profile_screen"), "Open profile.", Vector2(332, 65), MENU_PROFILE_ICON_PATH))
+	left_col.add_child(_make_button("CODEX", Callable(self, "_show_codex_screen"), "Open codex.", Vector2(332, 65), MENU_CODEX_ICON_PATH))
+	left_col.add_child(_make_button("OPTIONS", Callable(self, "_show_settings_from_title"), "Open settings.", Vector2(332, 65), MENU_OPTIONS_ICON_PATH))
+	left_col.add_child(_make_button("QUIT", Callable(self, "_quit_game"), "Exit the application.", Vector2(332, 65), MENU_EXIT_ICON_PATH))
+	var row_filler := Control.new()
+	row_filler.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button_row.add_child(row_filler)
+	var right_col := VBoxContainer.new()
+	right_col.custom_minimum_size = Vector2(698, 492)
+	right_col.alignment = BoxContainer.ALIGNMENT_END
+	right_col.add_theme_constant_override("separation", 25)
+	button_row.add_child(right_col)
+	right_col.add_child(_make_right_menu_button("MODS", Callable(self, "_show_placeholder_menu").bind("MODS"), 275))
+	right_col.add_child(_make_right_menu_button("MORE GAMES", Callable(self, "_show_placeholder_menu").bind("MORE GAMES"), 698))
+	right_col.add_child(_make_right_menu_button("NEWSLETTER", Callable(self, "_show_placeholder_menu").bind("NEWSLETTER"), 415))
+	right_col.add_child(_make_right_menu_button("COMMUNITY", Callable(self, "_show_placeholder_menu").bind("COMMUNITY"), 400))
+	right_col.add_child(_make_right_menu_button("CREDITS", Callable(self, "_show_credits_screen"), 322))
+	var bottom_info := HBoxContainer.new()
+	bottom_info.custom_minimum_size = Vector2(1840, 31)
+	content_col.add_child(bottom_info)
+	var error_label := _make_label("", 22)
+	error_label.custom_minimum_size = Vector2(1200, 24)
+	bottom_info.add_child(error_label)
+	var info_filler := Control.new()
+	info_filler.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bottom_info.add_child(info_filler)
+	bottom_info.add_child(_make_label("version preview-ui", 22, HORIZONTAL_ALIGNMENT_RIGHT))
 
 func _show_character_select() -> void:
 	ui_state = UIState.CHARACTER_SELECT
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("CharacterSelect")
-	_add_screen_title(root, "CHARACTER", "Choose a character.")
-	var layout := _selection_layout(root, 4, true)
-	_add_info_panel_content(layout["info_box"], "CHOOSE A POTATO", PLAYER_TEXTURE_PATH, [
-		"%d documented characters loaded." % character_rows.size(),
-		"All entries come from chapter 02 data.",
-		"Unlocked defaults are playable in preview."
-	])
-	var grid: GridContainer = layout["grid"]
+	_add_back_button(root, Callable(self, "_show_title_screen"))
+	var main := _selection_main_column(root)
+	var title := _make_label("CHARACTER SELECTION", 60, HORIZONTAL_ALIGNMENT_CENTER)
+	title.custom_minimum_size = Vector2(0, 73)
+	main.add_child(title)
+	var desc := HBoxContainer.new()
+	desc.custom_minimum_size = Vector2(0, 500)
+	desc.alignment = BoxContainer.ALIGNMENT_CENTER
+	desc.add_theme_constant_override("separation", 47)
+	main.add_child(desc)
+	var preview_character := _character_option(selected_character_id)
+	desc.add_child(_make_character_preview_panel(preview_character, Vector2(854, 500)))
+	desc.add_child(_make_character_record_panel(preview_character))
+	desc.add_child(_make_run_options_panel())
+	var scroll := _selection_scroll()
+	main.add_child(scroll)
+	var grid := GridContainer.new()
+	grid.columns = 17
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	scroll.add_child(grid)
 	for character in character_rows:
 		var data: Dictionary = character
-		grid.add_child(_make_selection_card(
+		grid.add_child(_make_grid_icon_button(
 			_character_display_name(data),
-			_character_effect_summary(data),
 			_character_icon_path(data),
 			int(data.get("tier", 0)),
 			Callable(self, "choose_character").bind(String(data["id"])),
-			"Character data from M3 catalog."
+			_character_effect_summary(data)
 		))
-	_add_back_button(root, Callable(self, "_show_title_screen"))
 
 func _show_weapon_select() -> void:
 	ui_state = UIState.WEAPON_SELECT
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("WeaponSelect")
-	_add_screen_title(root, "WEAPON", "Choose a starting weapon.")
-	var layout := _selection_layout(root, 4, true)
+	_add_back_button(root, Callable(self, "_show_character_select"))
 	var selected_character := _character_option(selected_character_id)
 	var starting_weapon_entries := _starting_weapon_entries_for_character(selected_character)
-	_add_info_panel_content(layout["info_box"], "STARTING LOADOUT", String(selected_character.get("icon", PLAYER_TEXTURE_PATH)), [
-		"Character: %s" % _character_display_name(selected_character),
-		"%d documented starting choices." % starting_weapon_entries.size(),
-		"Weapon rows come from chapter 03 data."
-	])
-	var grid: GridContainer = layout["grid"]
+	var main := _selection_main_column(root)
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(0, 11)
+	main.add_child(spacer)
+	var desc := HBoxContainer.new()
+	desc.custom_minimum_size = Vector2(0, 500)
+	desc.alignment = BoxContainer.ALIGNMENT_CENTER
+	desc.add_theme_constant_override("separation", 15)
+	main.add_child(desc)
+	desc.add_child(_make_character_preview_panel(selected_character, Vector2(854, 500)))
+	var detail_entry: Dictionary = starting_weapon_entries[0] if not starting_weapon_entries.is_empty() else {}
+	desc.add_child(_make_entry_detail_panel(detail_entry, Vector2(359, 500), "STARTING WEAPON"))
+	var hint := _make_key_hint_row("HOLD", [key_e_texture], "VIEW CHARACTER")
+	hint.custom_minimum_size = Vector2(0, 40)
+	main.add_child(hint)
+	var scroll := _selection_scroll()
+	main.add_child(scroll)
+	var grid := GridContainer.new()
+	grid.columns = 15
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	scroll.add_child(grid)
 	for weapon in starting_weapon_entries:
 		var data: Dictionary = weapon
 		var subtitle := "%s  Damage %s  Cooldown %s" % [
@@ -760,104 +876,119 @@ func _show_weapon_select() -> void:
 			str(data.get("damage", 0)),
 			str(data.get("cooldown", 0)),
 		]
-		grid.add_child(_make_selection_card(
+		grid.add_child(_make_grid_icon_button(
 			String(data.get("name", data.get("id", ""))),
-			subtitle,
 			String(data.get("icon", "")),
 			int(data.get("tier", 0)),
 			Callable(self, "choose_weapon").bind(String(data.get("id", ""))),
-			"Combat uses WeaponStats from the selected row."
+			subtitle
 		))
-	_add_back_button(root, Callable(self, "_show_character_select"))
 
 func _show_danger_select() -> void:
 	ui_state = UIState.DANGER_SELECT
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("DangerSelect")
-	_add_screen_title(root, "DANGER", "Choose a danger level.")
-	var layout := _selection_layout(root, 3)
+	_add_back_button(root, Callable(self, "_show_weapon_select"))
 	var weapon_name := String(selected_weapon_row.get("name", "No starting weapon"))
 	var selected_character := _character_option(selected_character_id)
 	var setup_icon := _icon_for_entry(selected_weapon_row)
 	if setup_icon.is_empty():
 		setup_icon = _character_icon_path(selected_character)
-	_add_info_panel_content(layout["info_box"], "RUN SETUP", setup_icon, [
-		"Character: %s" % _character_display_name(selected_character),
-		"Weapon: %s" % weapon_name,
-		"Map: %dx%d px" % [int(_current_world_size().x), int(_current_world_size().y)]
-	])
-	var grid: GridContainer = layout["grid"]
+	var main := _selection_main_column(root)
+	var title := _make_label("DANGER SELECTION", 60, HORIZONTAL_ALIGNMENT_CENTER)
+	title.custom_minimum_size = Vector2(0, 73)
+	main.add_child(title)
+	var desc := HBoxContainer.new()
+	desc.custom_minimum_size = Vector2(0, 500)
+	desc.alignment = BoxContainer.ALIGNMENT_CENTER
+	desc.add_theme_constant_override("separation", 15)
+	main.add_child(desc)
+	desc.add_child(_make_character_preview_panel(selected_character, Vector2(854, 500)))
+	desc.add_child(_make_entry_detail_panel(selected_weapon_row, Vector2(359, 500), "WEAPON"))
+	desc.add_child(_make_danger_detail_panel())
+	var scroll := _selection_scroll()
+	main.add_child(scroll)
+	var grid := GridContainer.new()
+	grid.columns = 15
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	scroll.add_child(grid)
 	for danger in range(0, 6):
-		grid.add_child(_make_danger_card(danger))
-	_add_back_button(root, Callable(self, "_show_weapon_select"))
+		grid.add_child(_make_danger_icon_button(danger, setup_icon, weapon_name))
 
 func _show_combat_hud() -> void:
 	_clear_screen_ui()
 	_clear_hud_refs()
 	var root := _full_rect_control("CombatHud")
 	hud_root.add_child(root)
-	var top_left := PanelContainer.new()
+	var darken := ColorRect.new()
+	darken.color = Color(0, 0, 0, 0.0)
+	darken.set_anchors_preset(Control.PRESET_FULL_RECT)
+	darken.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(darken)
+	hud_refs["darken"] = darken
+	var top_left := VBoxContainer.new()
 	top_left.position = Vector2(HUD_MARGIN, HUD_MARGIN)
-	top_left.custom_minimum_size = Vector2(378, 196)
-	top_left.add_theme_stylebox_override("panel", _ui_panel_style())
+	top_left.custom_minimum_size = Vector2(320, 230)
+	top_left.add_theme_constant_override("separation", 4)
 	root.add_child(top_left)
-	var left_box := VBoxContainer.new()
-	left_box.add_theme_constant_override("separation", 8)
-	top_left.add_child(left_box)
-	hud_refs["hp_label"] = _make_label("", 24)
-	left_box.add_child(hud_refs["hp_label"])
-	var hp_bar := ProgressBar.new()
-	_apply_progress_theme(hp_bar, Color(0.721, 0.0, 0.0))
-	hp_bar.custom_minimum_size = Vector2(332, 28)
-	left_box.add_child(hp_bar)
-	hud_refs["hp_bar"] = hp_bar
-	hud_refs["xp_label"] = _make_label("", 20)
-	left_box.add_child(hud_refs["xp_label"])
-	var xp_bar := ProgressBar.new()
-	_apply_progress_theme(xp_bar, Color(0.19, 0.58, 1.0))
-	xp_bar.custom_minimum_size = Vector2(332, 20)
-	left_box.add_child(xp_bar)
-	hud_refs["xp_bar"] = xp_bar
+	top_left.add_child(_make_labeled_progress("hp_bar", "hp_label", Color(0.721, 0.0, 0.0), Vector2(320, 48), 26))
+	top_left.add_child(_make_labeled_progress("xp_bar", "xp_label", Color(0.251, 0.851, 0.251), Vector2(320, 48), 24))
 	var material_row := HBoxContainer.new()
-	material_row.add_theme_constant_override("separation", 8)
-	left_box.add_child(material_row)
-	material_row.add_child(_make_texture_icon(material_ui_texture, Vector2(36, 36), MATERIAL_UI_COLOR))
-	hud_refs["materials_label"] = _make_label("", 28)
+	material_row.custom_minimum_size = Vector2(320, 64)
+	material_row.add_theme_constant_override("separation", 4)
+	top_left.add_child(material_row)
+	material_row.add_child(_make_texture_icon(material_ui_texture, Vector2(64, 64), MATERIAL_UI_COLOR))
+	hud_refs["materials_label"] = _make_label("", 50)
 	material_row.add_child(hud_refs["materials_label"])
-	var queue_label := _make_label("", 18)
+	var queue_label := _make_label("", 22)
 	hud_refs["queue_label"] = queue_label
-	left_box.add_child(queue_label)
+	top_left.add_child(queue_label)
 	_attach_tooltip(material_row, "Materials collected this run.")
 
-	var timer_panel := PanelContainer.new()
-	timer_panel.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	timer_panel.offset_left = 560
-	timer_panel.offset_right = -560
-	timer_panel.offset_top = HUD_MARGIN
-	timer_panel.custom_minimum_size = Vector2(0, 108)
-	timer_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.12, 0.12, 0.108, 0.96)))
-	root.add_child(timer_panel)
 	var timer_box := VBoxContainer.new()
+	timer_box.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	timer_box.offset_left = 873
+	timer_box.offset_right = -873
+	timer_box.offset_top = HUD_MARGIN
+	timer_box.custom_minimum_size = Vector2(174, 122)
 	timer_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	timer_box.add_theme_constant_override("separation", 8)
-	timer_panel.add_child(timer_box)
-	hud_refs["wave_label"] = _make_label("", 38, HORIZONTAL_ALIGNMENT_CENTER)
+	timer_box.add_theme_constant_override("separation", 4)
+	root.add_child(timer_box)
+	hud_refs["wave_title_label"] = _make_label("", 40, HORIZONTAL_ALIGNMENT_CENTER)
+	timer_box.add_child(hud_refs["wave_title_label"])
+	hud_refs["wave_label"] = _make_label("", 60, HORIZONTAL_ALIGNMENT_CENTER)
 	timer_box.add_child(hud_refs["wave_label"])
 	var timeline := ProgressBar.new()
 	_apply_progress_theme(timeline, Color(1.0, 0.87, 0.22))
-	timeline.custom_minimum_size = Vector2(528, 18)
+	timeline.custom_minimum_size = Vector2(320, 16)
 	timer_box.add_child(timeline)
 	hud_refs["timeline"] = timeline
 
+	var queue_region := MarginContainer.new()
+	queue_region.set_anchors_preset(Control.PRESET_FULL_RECT)
+	queue_region.add_theme_constant_override("margin_left", 348)
+	queue_region.add_theme_constant_override("margin_top", 150)
+	queue_region.add_theme_constant_override("margin_right", 0)
+	queue_region.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(queue_region)
+	var queue_stack := VBoxContainer.new()
+	queue_stack.add_theme_constant_override("separation", 12)
+	queue_region.add_child(queue_stack)
+	hud_refs["upgrade_queue_row"] = _make_queue_row("UPGRADES", pending_level_ups)
+	queue_stack.add_child(hud_refs["upgrade_queue_row"])
+	hud_refs["crate_queue_row"] = _make_queue_row("BOXES", pending_crates.size())
+	queue_stack.add_child(hud_refs["crate_queue_row"])
+
 	var top_right := VBoxContainer.new()
 	top_right.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	top_right.offset_left = -340
+	top_right.offset_left = -430
 	top_right.offset_top = HUD_MARGIN
 	top_right.offset_right = -HUD_MARGIN
 	top_right.add_theme_constant_override("separation", 10)
 	root.add_child(top_right)
-	top_right.add_child(_make_button("PAUSE", Callable(self, "_show_pause_menu"), "Pause the wave.", Vector2(210, 54), MENU_RESUME_ICON_PATH))
+	top_right.add_child(_make_button("PAUSE", Callable(self, "_show_pause_menu"), "Pause the wave.", Vector2(210, 65), MENU_RESUME_ICON_PATH))
 	var stat_panel := _make_stat_panel()
 	top_right.add_child(stat_panel)
 	hud_refs["stat_panel"] = stat_panel
@@ -916,90 +1047,128 @@ func _show_crate_reward_screen() -> void:
 	ui_state = UIState.CRATE_REWARD
 	_clear_screen_ui()
 	var root := _menu_background("CrateReward")
-	_add_screen_title(root, "ITEM BOX", "Open an item box.")
-	var panel := _center_panel(root, Vector2(520, 470))
+	var panel := _center_panel(root, Vector2(600, 760))
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 14)
+	box.add_theme_constant_override("separation", 50)
 	panel.add_child(box)
-	var icon := TextureRect.new()
-	icon.texture = _safe_texture(_icon_for_entry(crate_reward_entry))
-	icon.custom_minimum_size = Vector2(132, 132)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	box.add_child(icon)
-	box.add_child(_make_label(String(crate_reward_entry.get("name", "Reward")), 34, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_label(_effects_text(crate_reward_entry), 20, HORIZONTAL_ALIGNMENT_CENTER))
-	var buttons := HBoxContainer.new()
+	box.add_child(_make_label("ITEM BOX", 60, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_entry_detail_panel(crate_reward_entry, Vector2(361, 416), "FOUND ITEM"))
+	var buttons := VBoxContainer.new()
 	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	buttons.add_theme_constant_override("separation", 12)
+	buttons.add_theme_constant_override("separation", 9)
 	box.add_child(buttons)
-	buttons.add_child(_make_button("TAKE", Callable(self, "accept_crate_reward"), "Apply item effects to PlayerData.", Vector2(150, 52)))
-	buttons.add_child(_make_button("RECYCLE", Callable(self, "recycle_crate_reward"), "Recycle this item for materials.", Vector2(150, 52)))
+	buttons.add_child(_make_button("TAKE", Callable(self, "accept_crate_reward"), "Apply item effects to PlayerData.", Vector2(600, 65)))
+	buttons.add_child(_make_button("RECYCLE", Callable(self, "recycle_crate_reward"), "Recycle this item for materials.", Vector2(600, 65), KEY_R_TEXTURE_PATH))
 
 func _show_level_up_screen() -> void:
 	ui_state = UIState.LEVEL_UP
 	_clear_screen_ui()
-	var root := _menu_background("LevelUp")
-	_add_screen_title(root, "LEVEL UP", "Choose an upgrade.")
-	var grid := _centered_grid(root, 4, Vector2(0, 34))
+	var root := _screen_container("LevelUp")
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.48)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+	var margins := MarginContainer.new()
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", 32)
+	margins.add_theme_constant_override("margin_top", 32)
+	margins.add_theme_constant_override("margin_right", 32)
+	margins.add_theme_constant_override("margin_bottom", 32)
+	root.add_child(margins)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 15)
+	margins.add_child(row)
+	var upgrade_col := VBoxContainer.new()
+	upgrade_col.custom_minimum_size = Vector2(0, 780)
+	upgrade_col.alignment = BoxContainer.ALIGNMENT_CENTER
+	upgrade_col.add_theme_constant_override("separation", 50)
+	row.add_child(upgrade_col)
+	upgrade_col.add_child(_make_label("LEVEL UP", 60, HORIZONTAL_ALIGNMENT_CENTER))
+	var grid := HBoxContainer.new()
+	grid.add_theme_constant_override("separation", 8)
+	upgrade_col.add_child(grid)
 	for i in current_level_options.size():
 		var option: Dictionary = current_level_options[i]
 		grid.add_child(_make_upgrade_card(option, Callable(self, "choose_level_option").bind(i)))
-	var bottom := HBoxContainer.new()
-	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bottom.offset_left = 260
-	bottom.offset_right = -260
-	bottom.offset_bottom = -HUD_MARGIN
-	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
-	bottom.add_theme_constant_override("separation", 16)
-	root.add_child(bottom)
-	bottom.add_child(_make_button("REROLL", Callable(self, "reroll_level_options"), "Reroll upgrade choices.", Vector2(170, 52)))
-	bottom.add_child(_make_label("Materials %d" % player_data.materials, 24, HORIZONTAL_ALIGNMENT_CENTER))
+	upgrade_col.add_child(_make_button("REROLL  %d" % formulas.reroll_price(current_wave, 0, player_data.get_stat("reroll_price"), formulas.endless_factor(current_wave)), Callable(self, "reroll_level_options"), "Reroll upgrade choices.", Vector2(500, 65), KEY_R_TEXTURE_PATH))
+	row.add_child(_make_stat_panel(Vector2(384, 740)))
 
 func _show_shop_screen() -> void:
 	ui_state = UIState.SHOP
 	world_visible = false
 	_clear_screen_ui()
 	var root := _menu_background("Shop")
-	_add_screen_title(root, "SHOP", "Buy items and prepare for the next wave.")
+	var margins := MarginContainer.new()
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", 25)
+	margins.add_theme_constant_override("margin_top", 25)
+	margins.add_theme_constant_override("margin_right", 25)
+	margins.add_theme_constant_override("margin_bottom", 25)
+	root.add_child(margins)
 	var content := HBoxContainer.new()
-	content.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content.offset_left = 46
-	content.offset_top = 124
-	content.offset_right = -46
-	content.offset_bottom = -100
-	content.add_theme_constant_override("separation", 18)
-	root.add_child(content)
-	var shop_grid := GridContainer.new()
-	shop_grid.columns = 4
-	shop_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	shop_grid.add_theme_constant_override("h_separation", 12)
-	content.add_child(shop_grid)
-	for i in current_shop.slots.size():
-		var slot: Dictionary = current_shop.slots[i]
-		shop_grid.add_child(_make_shop_card(i, slot))
-	var side := VBoxContainer.new()
-	side.custom_minimum_size = Vector2(280, 0)
-	side.add_theme_constant_override("separation", 12)
-	content.add_child(side)
-	side.add_child(_make_wallet_panel())
-	side.add_child(_make_stat_panel())
-	side.add_child(_make_inventory_panel())
-	var bottom := HBoxContainer.new()
-	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bottom.offset_left = 220
-	bottom.offset_right = -220
-	bottom.offset_top = -124
-	bottom.offset_bottom = -HUD_MARGIN - 36
-	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
-	bottom.add_theme_constant_override("separation", 16)
-	root.add_child(bottom)
+	content.add_theme_constant_override("separation", 25)
+	margins.add_child(content)
+	var left := VBoxContainer.new()
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left.add_theme_constant_override("separation", 35)
+	content.add_child(left)
+	var title_row := HBoxContainer.new()
+	title_row.custom_minimum_size = Vector2(0, 82)
+	left.add_child(title_row)
+	var title := _make_label("SHOP", 40)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_row.add_child(title)
+	var wallet := HBoxContainer.new()
+	wallet.alignment = BoxContainer.ALIGNMENT_CENTER
+	wallet.add_theme_constant_override("separation", 4)
+	wallet.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_row.add_child(wallet)
+	wallet.add_child(_make_texture_icon(material_ui_texture, Vector2(64, 64), MATERIAL_UI_COLOR))
+	wallet.add_child(_make_label("%d" % player_data.materials, 60, HORIZONTAL_ALIGNMENT_CENTER))
 	var reroll_cost: int = formulas.reroll_price(current_wave, current_shop.paid_rerolls, player_data.get_stat("reroll_price"), formulas.endless_factor(current_wave))
 	if current_shop.free_rerolls > 0 or current_shop.next_reroll_is_free:
 		reroll_cost = 0
-	bottom.add_child(_make_button("REROLL - %d" % reroll_cost, Callable(self, "reroll_shop"), "Reroll shop slots.", Vector2(210, 56)))
-	bottom.add_child(_make_button("CONTINUE (WAVE %d)" % (current_wave + 1), Callable(self, "leave_shop"), "Start the next wave.", Vector2(280, 56), MENU_START_ICON_PATH))
+	title_row.add_child(_make_button("REROLL %d" % reroll_cost, Callable(self, "reroll_shop"), "Reroll shop slots.", Vector2(260, 82), KEY_R_TEXTURE_PATH))
+	var shop_row := HBoxContainer.new()
+	shop_row.custom_minimum_size = Vector2(0, 603)
+	shop_row.add_theme_constant_override("separation", 5)
+	left.add_child(shop_row)
+	for i in current_shop.slots.size():
+		var slot: Dictionary = current_shop.slots[i]
+		shop_row.add_child(_make_shop_card(i, slot))
+	var equipment := HBoxContainer.new()
+	equipment.custom_minimum_size = Vector2(0, 287)
+	equipment.add_theme_constant_override("separation", 25)
+	left.add_child(equipment)
+	equipment.add_child(_make_equipment_grid_panel("ITEMS", player_data.items, 9, 2))
+	var eq_spacer := Control.new()
+	eq_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	equipment.add_child(eq_spacer)
+	equipment.add_child(_make_equipment_grid_panel("WEAPONS (%d/%d)" % [player_data.weapons.size(), int(player_data.get_stat("weapon_slot"))], player_data.weapons, 3, 2))
+	var side := VBoxContainer.new()
+	side.custom_minimum_size = Vector2(SHOP_RIGHT_COLUMN_WIDTH, 0)
+	side.add_theme_constant_override("separation", 9)
+	content.add_child(side)
+	var stat_panel := _make_stat_panel(Vector2(400, 620))
+	side.add_child(stat_panel)
+	var side_spacer := Control.new()
+	side_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	side.add_child(side_spacer)
+	side.add_child(_make_label("NEXT WAVE %d" % (current_wave + 1), 22, HORIZONTAL_ALIGNMENT_CENTER))
+	if current_wave >= _highest_wave_number():
+		side.add_child(_make_button("ENDLESS MODE", Callable(self, "leave_shop"), "Continue after wave 20.", Vector2(414, 65)))
+	var continue_row := HBoxContainer.new()
+	continue_row.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	continue_row.offset_left = -25 - SHOP_RIGHT_COLUMN_WIDTH
+	continue_row.offset_right = -25
+	continue_row.offset_top = -90
+	continue_row.offset_bottom = -25
+	continue_row.alignment = BoxContainer.ALIGNMENT_END
+	root.add_child(continue_row)
+	continue_row.add_child(_make_button("CONTINUE (WAVE %d)" % (current_wave + 1), Callable(self, "leave_shop"), "Start the next wave.", Vector2(414, 65), MENU_START_ICON_PATH))
 
 func _show_pause_menu(from_settings: bool = false) -> void:
 	if ui_state != UIState.COMBAT and not from_settings:
@@ -1010,19 +1179,44 @@ func _show_pause_menu(from_settings: bool = false) -> void:
 	var root := _full_rect_control("PauseMenu")
 	screen_root.add_child(root)
 	var shade := ColorRect.new()
-	shade.color = Color(0, 0, 0, 0.55)
+	shade.color = Color(0, 0, 0, 0.78)
 	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(shade)
-	var panel := _center_panel(root, Vector2(380, 390))
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
-	panel.add_child(box)
-	box.add_child(_make_label("PAUSED", 42, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_button("RESUME", Callable(self, "_resume_combat"), "Return to combat.", Vector2(220, 54)))
-	box.add_child(_make_button("SETTINGS", Callable(self, "_show_settings_from_pause"), "Settings entry point shared with title.", Vector2(220, 54)))
-	box.add_child(_make_button("END RUN", Callable(self, "_end_run_from_pause"), "End this run and show the result screen.", Vector2(220, 54)))
-	box.add_child(_make_button("TITLE", Callable(self, "_show_title_screen"), "Return to title.", Vector2(220, 54)))
+	var margins := MarginContainer.new()
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", 50)
+	margins.add_theme_constant_override("margin_right", 50)
+	margins.add_theme_constant_override("margin_bottom", 10)
+	root.add_child(margins)
+	var page := VBoxContainer.new()
+	page.alignment = BoxContainer.ALIGNMENT_END
+	page.add_theme_constant_override("separation", 17)
+	margins.add_child(page)
+	var content := HBoxContainer.new()
+	content.custom_minimum_size = Vector2(1820, 850)
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_theme_constant_override("separation", 40)
+	page.add_child(content)
+	var buttons := VBoxContainer.new()
+	buttons.custom_minimum_size = Vector2(600, 500)
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	buttons.add_theme_constant_override("separation", 25)
+	content.add_child(buttons)
+	buttons.add_child(_make_button("RESUME", Callable(self, "_resume_combat"), "Return to combat.", Vector2(600, 65)))
+	buttons.add_child(_make_button("RESTART", Callable(self, "_begin_run"), "Restart this run.", Vector2(600, 65)))
+	buttons.add_child(_make_button("END RUN", Callable(self, "_end_run_from_pause"), "End this run and show the result screen.", Vector2(600, 65)))
+	buttons.add_child(_make_button("CODEX", Callable(self, "_show_codex_screen"), "Open codex.", Vector2(600, 65), MENU_CODEX_ICON_PATH))
+	buttons.add_child(_make_button("OPTIONS", Callable(self, "_show_settings_from_pause"), "Open settings.", Vector2(600, 65), MENU_OPTIONS_ICON_PATH))
+	buttons.add_child(_make_button("MAIN MENU", Callable(self, "_show_title_screen"), "Return to title.", Vector2(600, 65)))
+	var inventory_col := VBoxContainer.new()
+	inventory_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inventory_col.alignment = BoxContainer.ALIGNMENT_END
+	inventory_col.add_theme_constant_override("separation", 18)
+	content.add_child(inventory_col)
+	inventory_col.add_child(_make_equipment_grid_panel("WEAPONS", player_data.weapons if player_data != null else [], 6, 1))
+	inventory_col.add_child(_make_equipment_grid_panel("ITEMS", player_data.items if player_data != null else [], 7, 5))
+	content.add_child(_make_stat_panel(Vector2(400, 760)))
+	page.add_child(_make_wave_timeline())
 
 func _resume_combat() -> void:
 	ui_state = UIState.COMBAT
@@ -1041,47 +1235,60 @@ func _show_settings_screen() -> void:
 	ui_state = UIState.SETTINGS
 	_clear_screen_ui()
 	var root := _menu_background("Settings")
-	_add_screen_title(root, "SETTINGS", "Adjust settings.")
-	_add_back_button(root, Callable(self, "_close_settings"))
+	var margins := MarginContainer.new()
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", 125)
+	margins.add_theme_constant_override("margin_top", 25)
+	margins.add_theme_constant_override("margin_right", 125)
+	margins.add_theme_constant_override("margin_bottom", 10)
+	root.add_child(margins)
+	var main := VBoxContainer.new()
+	main.custom_minimum_size = Vector2(1670, 1045)
+	main.add_theme_constant_override("separation", 25)
+	margins.add_child(main)
 	var tabs := HBoxContainer.new()
-	tabs.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	tabs.offset_left = 120
-	tabs.offset_top = 112
-	tabs.offset_right = -120
-	tabs.add_theme_constant_override("separation", 10)
-	root.add_child(tabs)
-	for tab in ["Audio", "Video", "Gameplay", "Accessibility", "DLC"]:
-		tabs.add_child(_make_button(tab.to_upper(), Callable(self, "_set_settings_tab").bind(tab), "Open %s settings." % tab, Vector2(160, 46)))
-	var panel := _center_panel(root, Vector2(760, 430), Vector2(0, 54))
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 12)
-	panel.add_child(box)
-	box.add_child(_make_label(settings_tab.to_upper(), 32, HORIZONTAL_ALIGNMENT_CENTER))
-	match settings_tab:
-		"Audio":
-			box.add_child(_make_label("Music Volume 100%    SFX Volume 100%", 24, HORIZONTAL_ALIGNMENT_CENTER))
-		"Video":
-			box.add_child(_make_setting_check("darken_screen", "Darken Screen"))
-			box.add_child(_make_setting_check("pause_on_focus_lost", "Pause On Focus Lost"))
-		"Gameplay":
-			box.add_child(_make_setting_check("damage_display", "Damage Display"))
-			box.add_child(_make_setting_check("optimize_end_waves", "Optimize End Waves"))
-			box.add_child(_make_setting_check("retry_wave", "Retry Wave"))
-			box.add_child(_make_setting_check("keep_lock", "Keep Lock"))
-		"Accessibility":
-			box.add_child(_make_setting_check("manual_aim", "Manual Aim"))
-			box.add_child(_make_setting_check("manual_aim_on_mouse_press", "Manual Aim On Mouse Press"))
-			box.add_child(_make_setting_check("movement_with_gamepad", "Movement With Gamepad"))
-		_:
-			box.add_child(_make_label("No DLC options available.", 22, HORIZONTAL_ALIGNMENT_CENTER))
-	var bottom := HBoxContainer.new()
-	bottom.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bottom.offset_left = 480
-	bottom.offset_right = -480
-	bottom.offset_bottom = -HUD_MARGIN
-	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
-	root.add_child(bottom)
-	bottom.add_child(_make_button("BACK", Callable(self, "_close_settings"), "Save settings and return.", Vector2(180, 52)))
+	tabs.custom_minimum_size = Vector2(1670, 65)
+	tabs.add_theme_constant_override("separation", 4)
+	main.add_child(tabs)
+	var left_spacer := Control.new()
+	left_spacer.custom_minimum_size = Vector2(64, 65)
+	tabs.add_child(left_spacer)
+	tabs.add_child(_make_settings_tab_button("Audio", MENU_AUDIO_ICON_PATH, 353))
+	tabs.add_child(_make_settings_tab_button("Video", MENU_VIDEO_ICON_PATH, 354))
+	tabs.add_child(_make_settings_tab_button("Gameplay", MENU_GAMEPLAY_ICON_PATH, 370))
+	tabs.add_child(_make_settings_tab_button("Accessibility", MENU_ACCESSIBILITY_ICON_PATH, 445))
+	var right_spacer := Control.new()
+	right_spacer.custom_minimum_size = Vector2(64, 65)
+	tabs.add_child(right_spacer)
+	var content_row := CenterContainer.new()
+	content_row.custom_minimum_size = Vector2(1670, 865)
+	content_row.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	main.add_child(content_row)
+	var content_panel := PanelContainer.new()
+	content_panel.custom_minimum_size = Vector2(1000, 865)
+	content_panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.08, 0.08, 0.075, 0.86)))
+	content_row.add_child(content_panel)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.follow_focus = true
+	content_panel.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.custom_minimum_size = Vector2(960, 0)
+	content.alignment = BoxContainer.ALIGNMENT_CENTER
+	content.add_theme_constant_override("separation", 10)
+	scroll.add_child(content)
+	_build_settings_content(content)
+	var return_row := HBoxContainer.new()
+	return_row.custom_minimum_size = Vector2(1670, 65)
+	main.add_child(return_row)
+	var return_left := Control.new()
+	return_left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return_row.add_child(return_left)
+	return_row.add_child(_make_button("BACK", Callable(self, "_close_settings"), "Save settings and return.", Vector2(554, 65)))
+	var return_right := Control.new()
+	return_right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return_row.add_child(return_right)
 
 func _set_settings_tab(tab: String) -> void:
 	settings_tab = tab
@@ -1095,6 +1302,114 @@ func _close_settings() -> void:
 		_show_pause_menu(true)
 	else:
 		_show_title_screen()
+
+func _show_placeholder_menu(title: String) -> void:
+	_clear_screen_ui()
+	var root := _menu_background(title)
+	_add_back_button(root, Callable(self, "_show_title_screen"))
+	var panel := _center_panel(root, Vector2(625, 225))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 25)
+	panel.add_child(box)
+	box.add_child(_make_label(title.to_upper(), 45, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_button("BACK", Callable(self, "_show_title_screen"), "", Vector2(600, 65)))
+
+func _show_codex_screen() -> void:
+	_clear_screen_ui()
+	var root := _menu_background("Codex")
+	_add_back_button(root, Callable(self, "_show_title_screen"))
+	var shade := ColorRect.new()
+	shade.color = Color(0.2, 0.2, 0.2, 0.82)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+	var panel := _center_panel(root, Vector2(1426, 750), Vector2(0, 40))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 20)
+	panel.add_child(box)
+	var tabs := HBoxContainer.new()
+	tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+	tabs.add_theme_constant_override("separation", -1)
+	box.add_child(tabs)
+	for tab in ["CHALLENGES", "ITEMS", "WEAPONS", "ENEMIES"]:
+		tabs.add_child(_make_button(tab, Callable(self, "_show_placeholder_menu").bind(tab), "", Vector2(237, 65)))
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 20)
+	box.add_child(body)
+	var grid := GridContainer.new()
+	grid.columns = 7
+	grid.custom_minimum_size = Vector2(720, 610)
+	grid.add_theme_constant_override("h_separation", 4)
+	grid.add_theme_constant_override("v_separation", 4)
+	body.add_child(grid)
+	var entries: Array = economy_catalog.entries if economy_catalog != null else []
+	for i in mini(35, entries.size()):
+		var entry: Dictionary = entries[i]
+		grid.add_child(_make_grid_icon_button(String(entry.get("name", entry.get("id", ""))), _icon_for_entry(entry), int(entry.get("tier", 0)), Callable(self, "_show_placeholder_menu").bind("ENTRY"), _effects_text(entry)))
+	body.add_child(_make_entry_detail_panel(entries[0] if not entries.is_empty() else {}, Vector2(618, 610), "DETAILS"))
+
+func _show_profile_screen() -> void:
+	_clear_screen_ui()
+	var root := _menu_background("Profile")
+	_add_back_button(root, Callable(self, "_show_title_screen"))
+	var panel := _center_panel(root, Vector2(904, 560), Vector2(0, 80))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 18)
+	panel.add_child(box)
+	box.add_child(_make_label("PROFILE 1", 45, HORIZONTAL_ALIGNMENT_CENTER))
+	var slots := HBoxContainer.new()
+	slots.alignment = BoxContainer.ALIGNMENT_CENTER
+	slots.add_theme_constant_override("separation", 12)
+	box.add_child(slots)
+	for i in range(3):
+		var slot := PanelContainer.new()
+		slot.custom_minimum_size = Vector2(286, 260)
+		slot.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.18, 0.19, 0.23, 0.95)))
+		var slot_box := VBoxContainer.new()
+		slot_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		slot_box.add_theme_constant_override("separation", 10)
+		slot.add_child(slot_box)
+		slot_box.add_child(_make_texture_icon(player_texture, Vector2(96, 96)))
+		slot_box.add_child(_make_label("SAVE %d" % (i + 1), 30, HORIZONTAL_ALIGNMENT_CENTER))
+		slot_box.add_child(_make_label("WINS 0\nCHARACTERS %d\nRUN %s" % [character_rows.size(), "YES" if player_data != null else "NO"], 22, HORIZONTAL_ALIGNMENT_CENTER))
+		slots.add_child(slot)
+	box.add_child(_make_button("SELECT", Callable(self, "_show_title_screen"), "", Vector2(466, 85)))
+
+func _show_credits_screen() -> void:
+	_clear_screen_ui()
+	var root := _screen_container("Credits")
+	_add_title_background(root)
+	var shade := ColorRect.new()
+	shade.color = Color(0, 0, 0, 0.57)
+	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(shade)
+	var content := VBoxContainer.new()
+	content.set_anchors_preset(Control.PRESET_FULL_RECT)
+	content.offset_top = 75
+	content.offset_bottom = -72
+	content.add_theme_constant_override("separation", 79)
+	root.add_child(content)
+	var columns := HBoxContainer.new()
+	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(columns)
+	for col in ["BLOBFISH GAMES", "SUPPORT", "PORTING"]:
+		var box := VBoxContainer.new()
+		box.custom_minimum_size = Vector2(640, 800)
+		box.alignment = BoxContainer.ALIGNMENT_CENTER
+		box.add_theme_constant_override("separation", 18)
+		columns.add_child(box)
+		box.add_child(_make_label(col, 40, HORIZONTAL_ALIGNMENT_CENTER))
+		box.add_child(_make_texture_icon_from_path("res://devkit/brotato_original_devkit/asset_pack/assets/ui/blobfish_games_logo.png", Vector2(180, 180)))
+		var text := _make_label("BROTATO\nUI preview implementation\nGodot 4.x", 26, HORIZONTAL_ALIGNMENT_CENTER)
+		text.custom_minimum_size = Vector2(560, 260)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.add_child(text)
+	var return_row := CenterContainer.new()
+	content.add_child(return_row)
+	return_row.add_child(_make_button("BACK", Callable(self, "_show_title_screen"), "", Vector2(250, 54)))
 
 func _end_run_from_pause() -> void:
 	_show_result(false)
@@ -1124,17 +1439,58 @@ func _show_result(won: bool) -> void:
 	}
 	_clear_screen_ui()
 	var root := _menu_background("Result")
-	_add_screen_title(root, "RUN WON" if won else "RUN LOST", "Run summary.")
-	var panel := _center_panel(root, Vector2(640, 430))
-	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
-	panel.add_child(box)
-	box.add_child(_make_label("Wave %d  Danger %d" % [current_wave, current_danger], 30, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_label("Level %d  Materials %d" % [int(run_result["level"]), int(run_result["materials"])], 26, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_label("Items %d  Weapons %d" % [int(run_result["items"]), int(run_result["weapons"])], 24, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_label("Run summary recorded.", 20, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_button("TITLE", Callable(self, "_show_title_screen"), "Return to title.", Vector2(190, 54)))
+	var margins := MarginContainer.new()
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", 32)
+	margins.add_theme_constant_override("margin_top", 32)
+	margins.add_theme_constant_override("margin_right", 32)
+	margins.add_theme_constant_override("margin_bottom", 32)
+	root.add_child(margins)
+	var main := VBoxContainer.new()
+	main.alignment = BoxContainer.ALIGNMENT_CENTER
+	main.add_theme_constant_override("separation", 25)
+	margins.add_child(main)
+	var title_row := HBoxContainer.new()
+	title_row.custom_minimum_size = Vector2(1856, 45)
+	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_row.add_theme_constant_override("separation", 50)
+	main.add_child(title_row)
+	title_row.add_child(_make_label("%s - AREA 1" % ("VICTORY" if won else "DEFEAT"), 40, HORIZONTAL_ALIGNMENT_CENTER))
+	title_row.add_child(_make_label("WAVE %d - DANGER %d" % [current_wave, current_danger], 40, HORIZONTAL_ALIGNMENT_CENTER))
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = RESULT_PANEL_SIZE
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.08, 0.08, 0.075, 0.78)))
+	main.add_child(panel)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	panel.add_child(row)
+	row.add_child(_make_stat_panel(Vector2(400, 846)))
+	var right_margin := MarginContainer.new()
+	right_margin.custom_minimum_size = Vector2(854, 846)
+	right_margin.add_theme_constant_override("margin_left", 32)
+	right_margin.add_theme_constant_override("margin_top", 32)
+	right_margin.add_theme_constant_override("margin_right", 32)
+	right_margin.add_theme_constant_override("margin_bottom", 32)
+	row.add_child(right_margin)
+	var right := VBoxContainer.new()
+	right.add_theme_constant_override("separation", 50)
+	right_margin.add_child(right)
+	var top := HBoxContainer.new()
+	top.custom_minimum_size = Vector2(790, 281)
+	top.add_theme_constant_override("separation", 50)
+	right.add_child(top)
+	top.add_child(_make_equipment_grid_panel("WEAPONS", player_data.weapons if player_data != null else [], 6, 1))
+	var unlock_panel := _make_equipment_grid_panel("PROGRESS", [], 5, 1)
+	top.add_child(unlock_panel)
+	right.add_child(_make_equipment_grid_panel("ITEMS", player_data.items if player_data != null else [], 12, 4))
+	var buttons := HBoxContainer.new()
+	buttons.custom_minimum_size = Vector2(1856, 65)
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	buttons.add_theme_constant_override("separation", 25)
+	main.add_child(buttons)
+	buttons.add_child(_make_button("RESTART", Callable(self, "_begin_run"), "Restart with the same setup.", Vector2(300, 65)))
+	buttons.add_child(_make_button("NEW RUN", Callable(self, "start_new_run"), "Start a new run.", Vector2(300, 65), MENU_START_ICON_PATH))
+	buttons.add_child(_make_button("RETURN TO MAIN MENU", Callable(self, "_show_title_screen"), "Return to title.", Vector2(600, 65)))
 
 func _update_presentation(delta: float) -> void:
 	audio_rules.dequeue_frame()
@@ -1567,7 +1923,11 @@ func _load_bitmap_assets() -> void:
 	material_bag_texture = _safe_texture(MATERIAL_BAG_TEXTURE_PATH)
 	shop_background_texture = _safe_texture(SHOP_BACKGROUND_TEXTURE_PATH)
 	title_background_texture = _safe_texture(TITLE_BACKGROUND_TEXTURE_PATH)
+	title_mist_back_texture = _safe_texture(TITLE_MIST_BACK_TEXTURE_PATH)
+	title_mist_mid_texture = _safe_texture(TITLE_MIST_MID_TEXTURE_PATH)
 	title_brotato_texture = _safe_texture(TITLE_BROTATO_TEXTURE_PATH)
+	title_mist_front_texture = _safe_texture(TITLE_MIST_FRONT_TEXTURE_PATH)
+	title_post_process_texture = _safe_texture(TITLE_POST_PROCESS_TEXTURE_PATH)
 	title_logo_texture = _safe_texture(TITLE_LOGO_TEXTURE_PATH)
 	upgrade_icon_texture = _safe_texture(UPGRADE_ICON_TEXTURE_PATH)
 	ui_panel_normal_texture = _safe_texture(UI_PANEL_NORMAL_TEXTURE_PATH)
@@ -1580,25 +1940,33 @@ func _load_bitmap_assets() -> void:
 	big_checkmark_texture = _safe_texture(BIG_CHECKMARK_TEXTURE_PATH)
 	key_space_texture = _safe_texture(KEY_SPACE_TEXTURE_PATH)
 	key_e_texture = _safe_texture(KEY_E_TEXTURE_PATH)
+	key_r_texture = _safe_texture(KEY_R_TEXTURE_PATH)
+	arrow_left_texture = _safe_texture(ARROW_LEFT_TEXTURE_PATH)
+	arrow_right_texture = _safe_texture(ARROW_RIGHT_TEXTURE_PATH)
 	crosshair_texture = _safe_texture(CROSSHAIR_TEXTURE_PATH)
 	var cursor := _safe_texture(CUSTOM_CURSOR_TEXTURE_PATH)
 	if cursor != null:
 		Input.set_custom_mouse_cursor(cursor, Input.CURSOR_ARROW, Vector2(3, 3))
-	menu_font = null
+	var loaded_font: Resource = ResourceLoader.load(MENU_FONT_PATH) if ResourceLoader.exists(MENU_FONT_PATH) else null
+	menu_font = loaded_font if loaded_font is Font else null
 
 func _texture_from_file(path: String) -> Texture2D:
-	var imported := load(path)
+	var absolute_path := ProjectSettings.globalize_path(path)
+	if FileAccess.file_exists(absolute_path) and _is_raw_image_path(path):
+		var image := Image.new()
+		var error := image.load(absolute_path)
+		if error != OK:
+			push_warning("Could not load image asset: %s" % path)
+			return null
+		return ImageTexture.create_from_image(image)
+	var imported := ResourceLoader.load(path) if ResourceLoader.exists(path) else null
 	if imported is Texture2D:
 		return imported
-	var absolute_path := ProjectSettings.globalize_path(path)
-	if not FileAccess.file_exists(absolute_path):
-		return null
-	var image := Image.new()
-	var error := image.load(absolute_path)
-	if error != OK:
-		push_warning("Could not load image asset: %s" % path)
-		return null
-	return ImageTexture.create_from_image(image)
+	return null
+
+func _is_raw_image_path(path: String) -> bool:
+	var lower := path.to_lower()
+	return lower.ends_with(".png") or lower.ends_with(".jpg") or lower.ends_with(".jpeg") or lower.ends_with(".webp")
 
 func _load_json(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)
@@ -1900,26 +2268,28 @@ func _menu_background(name: String) -> Control:
 	return root
 
 func _add_title_background(root: Control) -> void:
-	# Doc 11 section 2.2 uses keyart plus logo for the title screen; asset map 05 section 5.5 maps these title textures.
-	var bg := TextureRect.new()
-	bg.texture = title_background_texture
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(bg)
-	var brotato := TextureRect.new()
-	brotato.texture = title_brotato_texture
-	brotato.set_anchors_preset(Control.PRESET_FULL_RECT)
-	brotato.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	brotato.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	brotato.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(brotato)
-	var shade := ColorRect.new()
-	shade.color = Color(0, 0, 0, 0.20)
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.add_child(shade)
+	# Docs 13 §1.2 and asset map 05 §5.5 order the title keyart as background, mist, character, front mist, and post-processing.
+	_add_fullscreen_texture(root, title_background_texture, Rect2(-95, -20, 2070, 1080))
+	_add_fullscreen_texture(root, title_mist_back_texture, Rect2(-150, 0, 2070, 1080))
+	_add_fullscreen_texture(root, title_mist_mid_texture, Rect2(-75, 0, 2030, 1040))
+	_add_fullscreen_texture(root, title_brotato_texture, Rect2(-75, 0, 2070, 1080))
+	_add_fullscreen_texture(root, title_mist_front_texture, Rect2(0, 0, 2070, 1080))
+	_add_fullscreen_texture(root, title_post_process_texture, Rect2(-75, 0, 2030, 1040))
+
+func _add_fullscreen_texture(root: Control, texture: Texture2D, rect: Rect2 = Rect2()) -> TextureRect:
+	var layer := TextureRect.new()
+	layer.texture = texture
+	layer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	layer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if rect.size == Vector2.ZERO:
+		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	else:
+		layer.position = rect.position
+		layer.custom_minimum_size = rect.size
+		layer.size = rect.size
+	root.add_child(layer)
+	return layer
 
 func _margin_container(parent: Control, margin: int) -> MarginContainer:
 	var container := MarginContainer.new()
@@ -1930,6 +2300,179 @@ func _margin_container(parent: Control, margin: int) -> MarginContainer:
 	container.add_theme_constant_override("margin_bottom", margin)
 	parent.add_child(container)
 	return container
+
+func _selection_main_column(root: Control) -> VBoxContainer:
+	var margins := MarginContainer.new()
+	margins.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margins.add_theme_constant_override("margin_left", int(SELECTION_MAIN_MARGIN["left"]))
+	margins.add_theme_constant_override("margin_top", int(SELECTION_MAIN_MARGIN["top"]))
+	margins.add_theme_constant_override("margin_right", int(SELECTION_MAIN_MARGIN["right"]))
+	margins.add_theme_constant_override("margin_bottom", int(SELECTION_MAIN_MARGIN["bottom"]))
+	root.add_child(margins)
+	var center := CenterContainer.new()
+	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margins.add_child(center)
+	var main := VBoxContainer.new()
+	main.alignment = BoxContainer.ALIGNMENT_CENTER
+	main.add_theme_constant_override("separation", 35)
+	center.add_child(main)
+	return main
+
+func _selection_scroll() -> ScrollContainer:
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 250)
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.follow_focus = true
+	return scroll
+
+func _make_character_preview_panel(character: Dictionary, size: Vector2) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = size
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.13, 0.13, 0.115, 0.92)))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 18)
+	panel.add_child(box)
+	box.add_child(_make_texture_icon_from_path(_character_icon_path(character), Vector2(190, 190)))
+	box.add_child(_make_label(_character_display_name(character).to_upper(), 40, HORIZONTAL_ALIGNMENT_CENTER))
+	var summary := _make_label(_character_effect_summary(character), 26, HORIZONTAL_ALIGNMENT_CENTER)
+	summary.custom_minimum_size = Vector2(size.x - 80, 88)
+	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(summary)
+	var weapon_count: int = character.get("starting_weapons", []).size()
+	box.add_child(_make_label("STARTING CHOICES %d" % weapon_count, 24, HORIZONTAL_ALIGNMENT_CENTER))
+	return panel
+
+func _make_character_record_panel(character: Dictionary) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(360, 500)
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.17, 0.16, 0.13, 0.94)))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 25)
+	panel.add_child(box)
+	box.add_child(_make_texture_icon_from_path(_character_icon_path(character), Vector2(96, 96)))
+	box.add_child(_make_label("RECORD", 26, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_label("MAX DANGER\nDANGER 0", 22, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_label("ENDLESS BEST\nWAVE 0", 22, HORIZONTAL_ALIGNMENT_CENTER))
+	return panel
+
+func _make_run_options_panel() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(320, 500)
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.11, 0.11, 0.10, 0.94)))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 25)
+	panel.add_child(box)
+	var title_row := HBoxContainer.new()
+	title_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_row.add_theme_constant_override("separation", 15)
+	box.add_child(title_row)
+	title_row.add_child(_make_texture_icon_from_path(MENU_OPTIONS_ICON_PATH, Vector2(48, 48)))
+	title_row.add_child(_make_label("RUN OPTIONS", 26, HORIZONTAL_ALIGNMENT_CENTER))
+	var options := VBoxContainer.new()
+	options.add_theme_constant_override("separation", 10)
+	box.add_child(options)
+	options.add_child(_make_button("AREA 1", Callable(self, "_show_placeholder_menu").bind("AREA"), "Current zone.", Vector2(260, 62)))
+	options.add_child(_make_setting_check("endless_preview", "Endless Mode"))
+	options.add_child(_make_setting_check("ban_preview", "Ban Mode"))
+	options.add_child(_make_setting_check("coop_preview", "Co-op Mode"))
+	return panel
+
+func _make_entry_detail_panel(entry: Dictionary, size: Vector2, heading: String) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = size
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.12, 0.12, 0.105, 0.95)))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 16)
+	panel.add_child(box)
+	var icon_path := _icon_for_entry(entry)
+	if icon_path.is_empty():
+		icon_path = PLAYER_TEXTURE_PATH
+	box.add_child(_make_texture_icon_from_path(icon_path, Vector2(96, 96)))
+	box.add_child(_make_label(heading, 26, HORIZONTAL_ALIGNMENT_CENTER))
+	var name := String(entry.get("name", entry.get("id", "NONE")))
+	box.add_child(_make_label(name.to_upper(), 30, HORIZONTAL_ALIGNMENT_CENTER))
+	var body := _make_label(_entry_detail_text(entry), 22, HORIZONTAL_ALIGNMENT_CENTER)
+	body.custom_minimum_size = Vector2(size.x - 42, 220)
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(body)
+	return panel
+
+func _make_danger_detail_panel() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(369, 500)
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.12, 0.12, 0.105, 0.95)))
+	var box := VBoxContainer.new()
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.add_theme_constant_override("separation", 18)
+	panel.add_child(box)
+	box.add_child(_make_texture_icon_from_path("%s/%d.png" % [DIFFICULTY_ICON_DIR, current_danger], Vector2(96, 96)))
+	box.add_child(_make_label("DANGER", 26, HORIZONTAL_ALIGNMENT_CENTER))
+	box.add_child(_make_label("0 - 5", 44, HORIZONTAL_ALIGNMENT_CENTER))
+	var body := _make_label("Enemy scaling is applied when a danger tile is selected. Locked tiers remain visible in the final ruleset.", 22, HORIZONTAL_ALIGNMENT_CENTER)
+	body.custom_minimum_size = Vector2(310, 170)
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(body)
+	return panel
+
+func _make_grid_icon_button(title: String, icon_path: String, tier: int, callback: Callable, tooltip: String = "") -> Button:
+	var button := _make_button("", callback, "", SELECTION_GRID_CELL)
+	button.icon = _safe_texture(icon_path)
+	button.expand_icon = true
+	button.modulate = Color.WHITE
+	button.add_theme_stylebox_override("normal", _button_texture_style(_tier_color(tier)))
+	button.add_theme_stylebox_override("hover", _button_texture_style(_tier_color(tier).lightened(0.2)))
+	button.add_theme_stylebox_override("pressed", _button_texture_style(_tier_color(tier), true))
+	_attach_tooltip(button, "%s\n%s" % [title, tooltip])
+	return button
+
+func _make_danger_icon_button(danger: int, _setup_icon: String, weapon_name: String) -> Button:
+	var tooltip := "DANGER %d\n%s\nEnemy multiplier %.0f%%" % [danger, weapon_name, formulas.danger_enemy_stat_multiplier(danger) * 100.0]
+	var button := _make_grid_icon_button("DANGER %d" % danger, "%s/%d.png" % [DIFFICULTY_ICON_DIR, danger], danger, Callable(self, "choose_danger").bind(danger), tooltip)
+	button.add_theme_stylebox_override("normal", _button_texture_style(DIFFICULTY_COLORS[danger]))
+	button.add_theme_stylebox_override("hover", _button_texture_style(DIFFICULTY_COLORS[danger].lightened(0.2)))
+	return button
+
+func _make_key_hint_row(prefix: String, icons: Array, suffix: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 13)
+	row.add_child(_make_label(prefix, 22, HORIZONTAL_ALIGNMENT_CENTER))
+	for icon in icons:
+		row.add_child(_make_texture_icon(icon, Vector2(50, 50)))
+	row.add_child(_make_label(suffix, 22, HORIZONTAL_ALIGNMENT_CENTER))
+	return row
+
+func _make_right_menu_button(text: String, callback: Callable, width: int) -> Button:
+	var button := _make_button(text, callback, "", Vector2(width, 65))
+	button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	return button
+
+func _entry_detail_text(entry: Dictionary) -> String:
+	if entry.is_empty():
+		return "No entry."
+	var parts: Array = []
+	if entry.has("type"):
+		parts.append("Type: %s" % String(entry.get("type", "")).capitalize())
+	if entry.has("damage"):
+		parts.append("Damage: %s" % str(entry.get("damage", 0)))
+	if entry.has("cooldown"):
+		parts.append("Cooldown: %s frames" % str(entry.get("cooldown", 0)))
+	if entry.has("range"):
+		parts.append("Range: %s" % str(entry.get("range", 0)))
+	var effects := _effects_text(entry)
+	if not effects.is_empty() and effects != "No stat effect.":
+		parts.append(effects)
+	if parts.is_empty():
+		parts.append("Detailed data is loaded from the catalog.")
+	return "\n".join(parts)
 
 func _add_screen_title(root: Control, title: String, tooltip: String) -> void:
 	var label := _make_label(title, 46, HORIZONTAL_ALIGNMENT_CENTER)
@@ -1942,8 +2485,9 @@ func _add_screen_title(root: Control, title: String, tooltip: String) -> void:
 	_attach_tooltip(label, tooltip)
 
 func _add_back_button(root: Control, callback: Callable) -> void:
-	var back := _make_button("BACK", callback, "Return to the previous screen.", Vector2(140, 50))
-	back.position = Vector2(HUD_MARGIN, HUD_MARGIN)
+	var back := _make_button("BACK", callback, "Return to the previous screen.", Vector2(239, 51), ARROW_LEFT_TEXTURE_PATH)
+	back.position = Vector2(32, 32)
+	back.modulate.a = 0.86
 	root.add_child(back)
 
 func _centered_grid(root: Control, columns: int, offset: Vector2 = Vector2.ZERO) -> GridContainer:
@@ -2076,71 +2620,86 @@ func _make_upgrade_card(option: Dictionary, callback: Callable) -> PanelContaine
 	var title := _stat_display_name(key)
 	var value := int(option.get("value", 0))
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(254, 314)
-	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.16, 0.16, 0.145, 0.96)))
+	panel.custom_minimum_size = UPGRADE_CARD_DOC_SIZE
+	panel.add_theme_stylebox_override("panel", _panel_style(Color(0.08, 0.08, 0.075, 0.90), _tier_color(tier), 5, 12))
 	_attach_tooltip(panel, "Tier %d upgrade generated by LevelUpPool." % (tier + 1))
 	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 9)
+	box.add_theme_constant_override("separation", 15)
 	panel.add_child(box)
-	var tier_line := ColorRect.new()
-	tier_line.color = _tier_color(tier)
-	tier_line.custom_minimum_size = Vector2(206, 7)
-	box.add_child(tier_line)
-	var icon := TextureRect.new()
-	icon.texture = _safe_texture(String(UPGRADE_ICON_BY_KEY.get(key, "")))
-	if icon.texture == null:
-		icon.texture = upgrade_icon_texture
-	icon.custom_minimum_size = Vector2(108, 108)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	box.add_child(icon)
-	box.add_child(_make_label(title, 24, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_label("%+d" % value, 34, HORIZONTAL_ALIGNMENT_CENTER))
-	box.add_child(_make_button("CHOOSE", callback, "Apply this upgrade.", Vector2(150, 48)))
+	var head := HBoxContainer.new()
+	head.custom_minimum_size = Vector2(321, 96)
+	head.add_theme_constant_override("separation", 15)
+	box.add_child(head)
+	var icon_texture := _safe_texture(String(UPGRADE_ICON_BY_KEY.get(key, "")))
+	if icon_texture == null:
+		icon_texture = upgrade_icon_texture
+	head.add_child(_make_texture_icon(icon_texture, Vector2(96, 96)))
+	var title_label := _make_label(title, 26)
+	title_label.custom_minimum_size = Vector2(210, 96)
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	head.add_child(title_label)
+	var body := _make_label("%+d %s\nTier %d upgrade" % [value, title, tier + 1], 25, HORIZONTAL_ALIGNMENT_CENTER)
+	body.custom_minimum_size = Vector2(321, 265)
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(body)
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(spacer)
+	box.add_child(_make_button("SELECT", callback, "Apply this upgrade.", Vector2(321, 51)))
 	return panel
 
 func _make_shop_card(index: int, slot: Dictionary) -> PanelContainer:
 	var tier := int(slot.get("tier", 0))
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = SHOP_CARD_SIZE
+	panel.custom_minimum_size = SHOP_ITEM_CARD_SIZE
 	var border := Color.WHITE if bool(slot.get("locked", false)) else _tier_color(tier)
-	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.15, 0.15, 0.135, 0.97)))
+	panel.add_theme_stylebox_override("panel", _panel_style(Color(0.08, 0.08, 0.075, 0.90), border, 5, 12))
 	_attach_tooltip(panel, _effects_text(slot))
 	var box := VBoxContainer.new()
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 7)
+	box.add_theme_constant_override("separation", 10)
 	panel.add_child(box)
-	var tier_line := ColorRect.new()
-	tier_line.color = border
-	tier_line.custom_minimum_size = Vector2(214, 7)
-	box.add_child(tier_line)
-	var icon := TextureRect.new()
-	icon.texture = _safe_texture(_icon_for_entry(slot))
-	icon.custom_minimum_size = Vector2(104, 104)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	box.add_child(icon)
+	var head := HBoxContainer.new()
+	head.custom_minimum_size = Vector2(0, 96)
+	head.add_theme_constant_override("separation", 15)
+	box.add_child(head)
+	var icon_panel := PanelContainer.new()
+	icon_panel.custom_minimum_size = Vector2(96, 96)
+	icon_panel.add_theme_stylebox_override("panel", _panel_style(Color(0.31, 0.31, 0.31, 0.35), Color.TRANSPARENT, 0, 8))
+	head.add_child(icon_panel)
+	icon_panel.add_child(_make_texture_icon_from_path(_icon_for_entry(slot), Vector2(88, 88)))
+	var title_box := VBoxContainer.new()
+	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(title_box)
 	var name_label := _make_label(String(slot.get("name", slot.get("id", ""))), 22, HORIZONTAL_ALIGNMENT_CENTER)
-	name_label.custom_minimum_size = Vector2(190, 44)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	name_label.custom_minimum_size = Vector2(210, 58)
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(name_label)
+	title_box.add_child(name_label)
+	title_box.add_child(_make_label(String(slot.get("kind", "item")).capitalize(), 22))
+	var effects := _make_label(_effects_text(slot), 25)
+	effects.custom_minimum_size = Vector2(400, 265)
+	effects.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(effects)
+	var card_spacer := Control.new()
+	card_spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	box.add_child(card_spacer)
 	var price: int = current_shop.slot_price(index, player_data)
 	var status := "SOLD" if bool(slot.get("sold", false)) else ("LOCKED" if bool(slot.get("locked", false)) else "Price %d" % price)
-	box.add_child(_make_label(status, 20, HORIZONTAL_ALIGNMENT_CENTER))
-	var row := HBoxContainer.new()
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_theme_constant_override("separation", 6)
-	box.add_child(row)
-	var buy := _make_button("BUY", Callable(self, "buy_shop_slot").bind(index), "Purchase through ShopState.buy_slot.", Vector2(70, 40))
+	var buy := _make_button(status.to_upper(), Callable(self, "buy_shop_slot").bind(index), "Purchase through ShopState.buy_slot.", Vector2(190, 68), MATERIAL_UI_TEXTURE_PATH)
 	buy.disabled = bool(slot.get("sold", false))
-	row.add_child(buy)
-	var lock := _make_button("LOCK", Callable(self, "lock_shop_slot").bind(index), "Keep this slot on reroll.", Vector2(76, 40))
+	box.add_child(_centered_control(buy))
+	var action_row := HBoxContainer.new()
+	action_row.custom_minimum_size = Vector2(0, 56)
+	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	action_row.add_theme_constant_override("separation", 10)
+	box.add_child(action_row)
+	action_row.add_child(_make_button("STEAL 0%", Callable(self, "_show_placeholder_menu").bind("STEAL"), "", Vector2(160, 56)))
+	var lock := _make_button("LOCK", Callable(self, "lock_shop_slot").bind(index), "Keep this slot on reroll.", Vector2(160, 56))
 	lock.disabled = bool(slot.get("sold", false))
-	row.add_child(lock)
-	var ban := _make_button("BAN", Callable(self, "ban_shop_slot").bind(index), "Remove this item from future shop rolls.", Vector2(70, 40))
+	action_row.add_child(lock)
+	var ban := _make_button("BAN", Callable(self, "ban_shop_slot").bind(index), "Remove this item from future shop rolls.", Vector2(385, 45))
 	ban.disabled = bool(slot.get("sold", false))
-	row.add_child(ban)
+	box.add_child(_centered_control(ban))
 	if bool(slot.get("sold", false)):
 		panel.modulate = Color(1, 1, 1, 0.45)
 	return panel
@@ -2173,22 +2732,87 @@ func _make_inventory_panel() -> PanelContainer:
 	box.add_child(_make_label("Items %d" % player_data.items.size(), 20))
 	return panel
 
-func _make_stat_panel() -> PanelContainer:
+func _make_equipment_grid_panel(title: String, entries: Array, columns: int, rows: int) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(260, 250)
-	panel.add_theme_stylebox_override("panel", _ui_panel_style())
+	panel.custom_minimum_size = Vector2(columns * 106 + 10, 287)
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.10, 0.10, 0.09, 0.86)))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 25)
+	panel.add_child(box)
+	var head := HBoxContainer.new()
+	head.custom_minimum_size = Vector2(0, 51)
+	box.add_child(head)
+	var label := _make_label(title, 26)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(label)
+	head.add_child(_make_button("SORT", Callable(self, "_show_placeholder_menu").bind(title), "", Vector2(110, 45)))
+	var grid := GridContainer.new()
+	grid.columns = columns
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	box.add_child(grid)
+	var max_cells := columns * rows
+	for i in max_cells:
+		var entry: Dictionary = entries[i] if i < entries.size() else {}
+		grid.add_child(_make_inventory_cell(entry))
+	return panel
+
+func _make_inventory_cell(entry: Dictionary) -> PanelContainer:
+	var cell := PanelContainer.new()
+	cell.custom_minimum_size = Vector2(96, 96)
+	cell.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.08, 0.08, 0.075, 0.70)))
+	if not entry.is_empty():
+		cell.add_child(_make_texture_icon_from_path(_icon_for_entry(entry), Vector2(88, 88)))
+		_attach_tooltip(cell, "%s\n%s" % [String(entry.get("name", entry.get("id", ""))), _effects_text(entry)])
+	return cell
+
+func _make_wave_timeline() -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(1820, 100)
+	panel.modulate.a = 0.78
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.08, 0.08, 0.075, 0.48)))
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 4)
+	panel.add_child(row)
+	var highest := maxi(1, _highest_wave_number())
+	for wave in range(1, highest + 1):
+		var slot := VBoxContainer.new()
+		slot.custom_minimum_size = Vector2(maxi(42, floori(1740.0 / float(highest))), 90)
+		slot.alignment = BoxContainer.ALIGNMENT_CENTER
+		var dot := ColorRect.new()
+		dot.custom_minimum_size = Vector2(32, 32)
+		dot.color = Color(1.0, 0.87, 0.22) if wave == current_wave else Color(0.5, 0.5, 0.45)
+		slot.add_child(dot)
+		slot.add_child(_make_label(str(wave), 18, HORIZONTAL_ALIGNMENT_CENTER))
+		row.add_child(slot)
+	return panel
+
+func _make_stat_panel(size: Vector2 = Vector2(260, 250)) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = size
+	panel.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.08, 0.08, 0.075, 0.78)))
 	_attach_tooltip(panel, "Current character stats.")
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 5)
+	box.add_theme_constant_override("separation", 6)
 	panel.add_child(box)
-	box.add_child(_make_label("STATS", 22, HORIZONTAL_ALIGNMENT_CENTER))
-	for key in ["stat_max_hp", "stat_ranged_damage", "stat_melee_damage", "stat_percent_damage", "stat_attack_speed", "stat_speed", "stat_harvesting", "stat_luck", "stat_armor", "stat_dodge"]:
+	box.add_child(_make_label("STATS", 32 if size.x >= 380 else 22, HORIZONTAL_ALIGNMENT_CENTER))
+	if size.x >= 380:
+		var tabs := HBoxContainer.new()
+		tabs.alignment = BoxContainer.ALIGNMENT_CENTER
+		tabs.add_theme_constant_override("separation", 10)
+		box.add_child(tabs)
+		tabs.add_child(_make_button("MAIN", Callable(self, "_show_placeholder_menu").bind("MAIN STATS"), "", Vector2(150, 51)))
+		tabs.add_child(_make_button("SECONDARY", Callable(self, "_show_placeholder_menu").bind("SECONDARY STATS"), "", Vector2(180, 51)))
+	var keys := MAIN_STAT_KEYS if size.x >= 380 else ["stat_max_hp", "stat_ranged_damage", "stat_melee_damage", "stat_percent_damage", "stat_attack_speed", "stat_speed", "stat_harvesting", "stat_luck", "stat_armor", "stat_dodge"]
+	for key in keys:
 		box.add_child(_make_stat_row(key))
 	return panel
 
 func _make_stat_row(key: String) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
+	row.custom_minimum_size = Vector2(0, 26)
 	var icon := TextureRect.new()
 	icon.texture = _safe_texture(String(STAT_ICON_BY_KEY.get(key, "")))
 	icon.custom_minimum_size = Vector2(22, 22)
@@ -2198,14 +2822,99 @@ func _make_stat_row(key: String) -> HBoxContainer:
 	row.add_child(_make_label("%s %s" % [_stat_display_name(key), _format_stat_value(key)], 17))
 	return row
 
+func _centered_control(control: Control) -> CenterContainer:
+	var center := CenterContainer.new()
+	center.add_child(control)
+	return center
+
+func _make_settings_tab_button(tab: String, icon_path: String, width: int) -> Button:
+	var button := _make_button(tab.to_upper(), Callable(self, "_set_settings_tab").bind(tab), "Open %s settings." % tab, Vector2(width, 65), icon_path)
+	if settings_tab == tab:
+		button.add_theme_stylebox_override("normal", _button_texture_style(BUTTON_PRESSED_TINT, true))
+	return button
+
+func _build_settings_content(box: VBoxContainer) -> void:
+	box.add_child(_make_label(settings_tab.to_upper(), 40, HORIZONTAL_ALIGNMENT_CENTER))
+	match settings_tab:
+		"Audio":
+			box.add_child(_make_setting_slider("Master Volume", 100))
+			box.add_child(_make_setting_slider("SFX Volume", 100))
+			box.add_child(_make_setting_slider("Music Volume", 100))
+			box.add_child(_make_setting_check("mute_focus_lost", "Mute On Focus Lost"))
+			box.add_child(_make_setting_check("pause_on_focus_lost", "Pause On Focus Lost"))
+			box.add_child(_make_setting_check("new_music", "New Tracks"))
+			box.add_child(_make_setting_check("old_music", "Old Tracks"))
+			box.add_child(_make_setting_check("dlc_music", "DLC Tracks"))
+		"Video":
+			box.add_child(_make_setting_row_label("Language", "English"))
+			box.add_child(_make_setting_row_label("Main Screen Art", "Latest"))
+			box.add_child(_make_setting_check("screen_shake", "Screen Shake"))
+			box.add_child(_make_setting_check("fullscreen", "Fullscreen"))
+			box.add_child(_make_setting_check("visual_effects", "Visual Effects"))
+			box.add_child(_make_setting_check("damage_display", "Damage Numbers"))
+			box.add_child(_make_setting_check("optimize_end_waves", "Optimize End Waves"))
+			box.add_child(_make_setting_check("fps_limit", "FPS Limit"))
+		"Gameplay":
+			box.add_child(_make_setting_check("manual_aim", "Manual Aim"))
+			box.add_child(_make_setting_check("manual_aim_on_mouse_press", "Aim While Pressed"))
+			box.add_child(_make_setting_check("movement_with_gamepad", "Gamepad Movement"))
+			box.add_child(_make_setting_check("hp_bar_on_character", "Character HP Bar"))
+			box.add_child(_make_setting_check("boss_hp_bar", "Boss HP Bar"))
+			box.add_child(_make_setting_check("keep_lock", "Keep Lock"))
+			box.add_child(_make_setting_check("coop_lock_camera", "Co-op Locked Camera"))
+			box.add_child(_make_setting_check("share_coop_loot", "Co-op Shared Loot"))
+			box.add_child(_make_setting_check("hide_appearance", "Hide Appearance"))
+			box.add_child(_make_setting_check("retry_wave", "Retry Wave"))
+		"Accessibility":
+			box.add_child(_make_setting_slider("Enemy HP", 100))
+			box.add_child(_make_setting_slider("Enemy Damage", 100))
+			box.add_child(_make_setting_slider("Enemy Speed", 100))
+			box.add_child(_make_setting_slider("Explosion Opacity", 100))
+			box.add_child(_make_setting_slider("Projectile Opacity", 100))
+			box.add_child(_make_setting_slider("Pet Opacity", 100))
+			box.add_child(_make_setting_slider("Font Size", 100))
+			box.add_child(_make_setting_check("highlight_interactables", "Highlight Interactables"))
+			box.add_child(_make_setting_check("description_icons", "Description Icons"))
+			box.add_child(_make_setting_check("coin_sound", "Coin Sound"))
+			box.add_child(_make_setting_check("darken_screen", "Darken Screen"))
+			box.add_child(_make_setting_row_label("Positive Text Color", "Green"))
+			box.add_child(_make_setting_row_label("Negative Text Color", "Red"))
+
+func _make_setting_slider(title: String, value: int) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size = Vector2(1000, 45)
+	row.add_theme_constant_override("separation", 50)
+	var label := _make_label(title, 26)
+	label.custom_minimum_size = Vector2(610, 45)
+	row.add_child(label)
+	var slider := HSlider.new()
+	slider.custom_minimum_size = Vector2(200, 45)
+	slider.min_value = 0
+	slider.max_value = 100
+	slider.value = value
+	row.add_child(slider)
+	var value_label := _make_label("%d%%" % value, 26, HORIZONTAL_ALIGNMENT_RIGHT)
+	value_label.custom_minimum_size = Vector2(90, 45)
+	row.add_child(value_label)
+	return row
+
+func _make_setting_row_label(title: String, value: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size = Vector2(1000, 65)
+	var label := _make_label(title, 26)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
+	row.add_child(_make_button(value.to_upper(), Callable(self, "_show_placeholder_menu").bind(title), "", Vector2(300, 65)))
+	return row
+
 func _make_setting_check(key: String, title: String) -> CheckButton:
 	var check := CheckButton.new()
 	check.text = title
 	check.button_pressed = bool(settings.get(key, false))
-	check.custom_minimum_size = Vector2(520, 42)
+	check.custom_minimum_size = Vector2(1000, 70)
 	if menu_font != null:
 		check.add_theme_font_override("font", menu_font)
-	check.add_theme_font_size_override("font_size", 22)
+	check.add_theme_font_size_override("font_size", 26)
 	check.toggled.connect(Callable(self, "_set_bool_setting").bind(key))
 	_attach_tooltip(check, "Toggle %s." % title)
 	return check
@@ -2217,7 +2926,7 @@ func _make_button(text: String, callback: Callable, tooltip: String = "", min_si
 	button.focus_mode = Control.FOCUS_ALL
 	if menu_font != null:
 		button.add_theme_font_override("font", menu_font)
-	button.add_theme_font_size_override("font_size", 22)
+	button.add_theme_font_size_override("font_size", 26 if min_size.y >= 65 else 22)
 	button.add_theme_stylebox_override("normal", _button_texture_style(BUTTON_NORMAL_TINT))
 	button.add_theme_stylebox_override("hover", _button_texture_style(BUTTON_HOVER_TINT))
 	button.add_theme_stylebox_override("pressed", _button_texture_style(BUTTON_PRESSED_TINT, true))
@@ -2286,6 +2995,38 @@ func _apply_progress_theme(bar: ProgressBar, fill_color: Color) -> void:
 	bar.show_percentage = false
 	bar.add_theme_stylebox_override("background", _texture_style(ui_lifebar_bg_texture, Color(1, 1, 1, 1), 18, 18, 18, 18, 0))
 	bar.add_theme_stylebox_override("fill", _texture_style(ui_lifebar_fill_texture, fill_color, 18, 18, 18, 18, 0))
+
+func _make_labeled_progress(bar_key: String, label_key: String, fill_color: Color, size: Vector2, font_size: int) -> Control:
+	var holder := Control.new()
+	holder.custom_minimum_size = size
+	var bar := ProgressBar.new()
+	bar.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bar.custom_minimum_size = size
+	_apply_progress_theme(bar, fill_color)
+	holder.add_child(bar)
+	hud_refs[bar_key] = bar
+	var label := _make_label("", font_size, HORIZONTAL_ALIGNMENT_CENTER)
+	label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(label)
+	hud_refs[label_key] = label
+	return holder
+
+func _make_queue_row(title: String, count: int) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size = Vector2(480, 80)
+	row.modulate.a = 0.5
+	row.add_theme_constant_override("separation", 4)
+	var visible_count := mini(maxi(count, 0), 4)
+	for _i in range(visible_count):
+		var cell := PanelContainer.new()
+		cell.custom_minimum_size = Vector2(80, 80)
+		cell.add_theme_stylebox_override("panel", _ui_panel_style(Color(0.12, 0.12, 0.105, 0.95)))
+		cell.add_child(_make_label(title.substr(0, 1), 40, HORIZONTAL_ALIGNMENT_CENTER))
+		row.add_child(cell)
+	if count > 4:
+		row.add_child(_make_label("x%d" % count, 40, HORIZONTAL_ALIGNMENT_CENTER))
+	return row
 
 func _make_texture_icon(texture: Texture2D, size: Vector2, tint: Color = Color.WHITE) -> TextureRect:
 	var icon := TextureRect.new()
@@ -2359,20 +3100,25 @@ func _refresh_hud() -> void:
 	if player_data == null or wave_scheduler == null or hud_refs.is_empty():
 		return
 	var max_hp: int = player_data.get_max_health()
-	hud_refs["hp_label"].text = "HP %d/%d" % [player_data.current_health, max_hp]
+	hud_refs["hp_label"].text = "%d / %d" % [player_data.current_health, max_hp]
 	hud_refs["hp_bar"].max_value = max_hp
 	hud_refs["hp_bar"].value = player_data.current_health
 	var needed: float = formulas.next_level_xp_needed(player_data.level, player_data.get_stat("next_level_xp_needed"))
-	hud_refs["xp_label"].text = "LV.%d  XP %d/%d" % [player_data.level, floori(player_data.current_xp), ceili(needed)]
+	hud_refs["xp_label"].text = "LV.%d" % player_data.level
 	hud_refs["xp_bar"].max_value = needed
 	hud_refs["xp_bar"].value = player_data.current_xp
 	hud_refs["materials_label"].text = "%d" % player_data.materials
 	if hud_refs.has("queue_label"):
 		hud_refs["queue_label"].text = "UPGRADES %d   BOXES %d   ENEMIES %d" % [pending_level_ups, pending_crates.size(), enemies.size()]
 	var remaining: int = maxi(0, ceili(wave_scheduler.duration_seconds - wave_scheduler.elapsed_seconds))
-	hud_refs["wave_label"].text = "WAVE %d  %02d" % [current_wave, remaining]
+	if hud_refs.has("wave_title_label"):
+		hud_refs["wave_title_label"].text = "WAVE %d" % current_wave
+	hud_refs["wave_label"].text = "%02d" % remaining
 	hud_refs["timeline"].max_value = wave_scheduler.duration_seconds
 	hud_refs["timeline"].value = wave_scheduler.elapsed_seconds
+	if hud_refs.has("darken") and bool(settings.get("darken_screen", true)):
+		var hp_ratio: float = clamp(float(player_data.current_health) / max(1.0, float(max_hp)), 0.0, 1.0)
+		hud_refs["darken"].color = Color(0, 0, 0, clamp(0.8 - hp_ratio * 0.5, 0.0, 0.5))
 	if weapon_stats != null and hud_refs.has("weapon_label"):
 		hud_refs["weapon_label"].text = weapon_stats.display_name.to_upper()
 		hud_refs["weapon_detail_label"].text = "DMG %d   CD %.1fs   RANGE %d" % [

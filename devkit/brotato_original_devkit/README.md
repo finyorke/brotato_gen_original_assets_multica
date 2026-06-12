@@ -9,7 +9,7 @@
 brotato_original_devkit/
 ├── README.md                ← 本文件
 ├── AGENT_PROMPT.md          ← 交给开发 agent 的任务指令
-├── game_mechanics_docs/     ← 13 章设计文档（逻辑层：怎么算）
+├── game_mechanics_docs/     ← 14 章设计文档（逻辑层：怎么算 + 界面布局）
 │   ├── 00_总览与目录.md      ← 从这里开始读
 │   ├── 01_核心属性与数值系统.md
 │   ├── 02_角色系统.md            (49 角色)
@@ -22,7 +22,8 @@ brotato_original_devkit/
 │   ├── 09_进度挑战与联机系统.md  (113 挑战 + 合作模式)
 │   ├── 10_输入操控与玩家手感.md
 │   ├── 11_界面流程与HUD.md
-│   └── 12_表现层与底层系统.md
+│   ├── 12_表现层与底层系统.md
+│   └── 13_界面布局规格.md      (约 30 个页面的控件级布局)
 └── asset_pack/               ← 资产层：长什么样、放在哪、怎么播
     ├── README.md             ← 资产用法说明
     ├── assets/               ← 1535 个资产文件（139MB，按类别组织）

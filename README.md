@@ -58,6 +58,13 @@ Current M6 backend slice:
 - Co-op state helper for player join slots, shared material rotation, shared item box assignment, death/ready state, and per-player shop state creation.
 - Extended danger, endless, and co-op formulas with headless coverage.
 
+Current UI layout slice:
+
+- Synced the updated devkit, including `game_mechanics_docs/13_界面布局规格.md`, into the local spec copy.
+- Main scene menu surfaces now use the documented 1920x1080 design grid for title, settings, character/weapon/danger selection, combat HUD, shop, level-up, crate reward, pause, result, profile, codex, and credits screens.
+- UI image loading now supports raw devkit images directly, so the copied asset pack can drive runtime menus without relying on editor-generated `.import` metadata.
+- Web export excludes unused translation resources to avoid packaging-time translation optimizer errors from the full devkit localization tree.
+
 ## Run Locally
 
 ```powershell
@@ -70,6 +77,7 @@ Current M6 backend slice:
 python tools\import_m3_static_content.py
 & 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --script tests/run_tests.gd
 & 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --quit-after 3
+& 'C:\Users\fengbo\Developer\godot\Godot_v4.6.2-stable_win64_console.exe' --headless --path . --export-release Web export/web/index.html
 ```
 
 ## Preview
