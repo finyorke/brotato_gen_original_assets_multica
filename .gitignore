@@ -1,6 +1,7 @@
 .godot/
 .import/
 *.import
+devkit/brotato_original_devkit/**/*.uid
 export/
 *.tmp
 *.log
